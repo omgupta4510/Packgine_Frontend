@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { SearchBar } from '../components/ui/SearchBar';
 import { ProductCard } from '../components/ui/ProductCard';
+import { CategoryGrid } from '../components/products/CategoryGrid';
 import { Button } from '../components/ui/Button';
 import { Sliders, Check, ChevronDown, ChevronUp } from 'lucide-react';
 
-// Mock data - same as in FeaturedProducts
 const mockProducts = [
   {
     id: '1',
@@ -135,6 +135,7 @@ type FilterSection = {
 };
 
 export const ProductsPage = () => {
+  const [showCategories, setShowCategories] = useState(true);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [filterSections, setFilterSections] = useState<FilterSection[]>([
     {
@@ -199,12 +200,9 @@ export const ProductsPage = () => {
     setActiveFilters([]);
   };
 
-  // Filter products based on activeFilters
-  // This is simplified logic - in a real app, you'd have more robust filtering
   const filteredProducts = mockProducts.filter(product => {
     if (activeFilters.length === 0) return true;
     
-    // This is just a simple example - real implementation would be more complex
     const matchesMaterial = activeFilters.some(filter => 
       filter.toLowerCase().includes(product.material.toLowerCase())
     );
@@ -235,7 +233,6 @@ export const ProductsPage = () => {
 
   return (
     <div className="pt-20 min-h-screen bg-gray-50">
-      {/* Header Section */}
       <div className="bg-gradient-to-r from-green-50 to-green-100 py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
@@ -244,128 +241,143 @@ export const ProductsPage = () => {
           <div className="max-w-3xl mx-auto">
             <SearchBar placeholder="Search products by type, material, or supplier..." />
           </div>
+          <div className="flex justify-center mt-6 space-x-4">
+            <Button
+              variant={showCategories ? 'primary' : 'outline'}
+              onClick={() => setShowCategories(true)}
+            >
+              Browse Categories
+            </Button>
+            <Button
+              variant={!showCategories ? 'primary' : 'outline'}
+              onClick={() => setShowCategories(false)}
+            >
+              View All Products
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Filters Sidebar */}
-          <div className="md:w-1/4 bg-white p-6 rounded-lg shadow-sm h-fit sticky top-24">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold flex items-center">
-                <Sliders className="mr-2 h-5 w-5 text-green-500" />
-                Filters
-              </h2>
-              {activeFilters.length > 0 && (
-                <button
-                  onClick={clearFilters}
-                  className="text-sm text-green-600 hover:text-green-800"
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            {filterSections.map((section, index) => (
-              <div key={index} className="mb-6 border-b border-gray-100 pb-6">
-                <button
-                  className="flex items-center justify-between w-full text-left font-medium mb-3"
-                  onClick={() => toggleFilterSection(index)}
-                >
-                  {section.title}
-                  {section.isOpen ? (
-                    <ChevronUp className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
-                  )}
-                </button>
-
-                {section.isOpen && (
-                  <div className="space-y-2">
-                    {section.options.map((option) => (
-                      <label key={option.id} className="flex items-center cursor-pointer">
-                        <div className="relative flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={activeFilters.includes(option.id)}
-                            onChange={() => toggleFilter(option.id)}
-                            className="peer opacity-0 absolute h-5 w-5"
-                          />
-                          <div className="border-2 rounded border-gray-300 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 bg-white peer-checked:bg-green-500 peer-checked:border-green-500">
-                            <Check className="hidden peer-checked:block h-3 w-3 text-white" />
-                          </div>
-                        </div>
-                        <span className="text-sm text-gray-700">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
+      <div className="container mx-auto px-4 py-8">
+        {showCategories ? (
+          <CategoryGrid />
+        ) : (
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="md:w-1/4 bg-white p-6 rounded-lg shadow-sm h-fit sticky top-24">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold flex items-center">
+                  <Sliders className="mr-2 h-5 w-5 text-green-500" />
+                  Filters
+                </h2>
+                {activeFilters.length > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-green-600 hover:text-green-800"
+                  >
+                    Clear All
+                  </button>
                 )}
               </div>
-            ))}
-          </div>
 
-          {/* Products Grid */}
-          <div className="md:w-3/4">
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-gray-600">
-                Showing <span className="font-medium">{filteredProducts.length}</span>{' '}
-                products
-              </p>
-              <div className="flex items-center">
-                <label htmlFor="sort" className="text-sm text-gray-600 mr-2">Sort by:</label>
-                <select
-                  id="sort"
-                  className="border border-gray-300 rounded-md py-1 px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="relevance">Relevance</option>
-                  <option value="score-high">Eco Score (High to Low)</option>
-                  <option value="score-low">Eco Score (Low to High)</option>
-                  <option value="moq-low">MOQ (Low to High)</option>
-                </select>
-              </div>
+              {filterSections.map((section, index) => (
+                <div key={index} className="mb-6 border-b border-gray-100 pb-6">
+                  <button
+                    className="flex items-center justify-between w-full text-left font-medium mb-3"
+                    onClick={() => toggleFilterSection(index)}
+                  >
+                    {section.title}
+                    {section.isOpen ? (
+                      <ChevronUp className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-gray-500" />
+                    )}
+                  </button>
+
+                  {section.isOpen && (
+                    <div className="space-y-2">
+                      {section.options.map((option) => (
+                        <label key={option.id} className="flex items-center cursor-pointer">
+                          <div className="relative flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={activeFilters.includes(option.id)}
+                              onChange={() => toggleFilter(option.id)}
+                              className="peer opacity-0 absolute h-5 w-5"
+                            />
+                            <div className="border-2 rounded border-gray-300 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 bg-white peer-checked:bg-green-500 peer-checked:border-green-500">
+                              <Check className="hidden peer-checked:block h-3 w-3 text-white" />
+                            </div>
+                          </div>
+                          <span className="text-sm text-gray-700">{option.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
-            {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} {...product} />
-                ))}
+            <div className="md:w-3/4">
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-gray-600">
+                  Showing <span className="font-medium">{filteredProducts.length}</span>{' '}
+                  products
+                </p>
+                <div className="flex items-center">
+                  <label htmlFor="sort" className="text-sm text-gray-600 mr-2">Sort by:</label>
+                  <select
+                    id="sort"
+                    className="border border-gray-300 rounded-md py-1 px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="relevance">Relevance</option>
+                    <option value="score-high">Eco Score (High to Low)</option>
+                    <option value="score-low">Eco Score (Low to High)</option>
+                    <option value="moq-low">MOQ (Low to High)</option>
+                  </select>
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-16 bg-white rounded-lg">
-                <p className="text-lg text-gray-600 mb-4">No products match your current filters.</p>
-                <Button variant="primary" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
-              </div>
-            )}
 
-            {/* Pagination */}
-            <div className="mt-10 flex justify-center">
-              <nav className="flex items-center space-x-1">
-                <a className="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-md hover:bg-gray-50">
-                  Previous
-                </a>
-                <a className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md">
-                  1
-                </a>
-                <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
-                  2
-                </a>
-                <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
-                  3
-                </a>
-                <span className="px-4 py-2 text-sm font-medium text-gray-700">...</span>
-                <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
-                  8
-                </a>
-                <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
-                  Next
-                </a>
-              </nav>
+              {filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map(product => (
+                    <ProductCard key={product.id} {...product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-white rounded-lg">
+                  <p className="text-lg text-gray-600 mb-4">No products match your current filters.</p>
+                  <Button variant="primary" onClick={clearFilters}>
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
+
+              <div className="mt-10 flex justify-center">
+                <nav className="flex items-center space-x-1">
+                  <a className="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-md hover:bg-gray-50">
+                    Previous
+                  </a>
+                  <a className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md">
+                    1
+                  </a>
+                  <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
+                    2
+                  </a>
+                  <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
+                    3
+                  </a>
+                  <span className="px-4 py-2 text-sm font-medium text-gray-700">...</span>
+                  <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
+                    8
+                  </a>
+                  <a className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">
+                    Next
+                  </a>
+                </nav>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

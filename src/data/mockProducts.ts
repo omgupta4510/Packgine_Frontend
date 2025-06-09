@@ -17,6 +17,10 @@ const mockProducts = [
           capacity: 222,            // <-- Add this
   capacityUnit: 'ml', 
   sizeUnit: 'ml',   
+  tubeType: 'Extruded',
+  pouchStyle: 'Standup Pouch',
+  dispenserType: 'Zipper',
+  fill: 'up',
 
   },
   {
@@ -37,6 +41,9 @@ const mockProducts = [
           capacity: 222,            // <-- Add this
   capacityUnit: 'ml', 
   sizeUnit: 'ml',   
+  tubeType: 'Extruded',
+  pouchStyle: 'Standup Pouch',
+  dispenserType: 'Zipper',
 
   },
   {
@@ -57,6 +64,9 @@ const mockProducts = [
           capacity: 222,            // <-- Add this
   capacityUnit: 'ml', 
   sizeUnit: 'ml',   
+  tubeType: 'Extruded',
+  pouchStyle: 'Standup Pouch',
+  dispenserType: 'Zipper',
 
   },
   {
@@ -77,6 +87,8 @@ const mockProducts = [
           capacity: 222,            // <-- Add this
   capacityUnit: 'ml', 
   sizeUnit: 'ml',   
+   tubeType: 'Extruded',
+   pouchStyle: 'Standup Pouch',
 
   },
   {
@@ -97,7 +109,8 @@ const mockProducts = [
           capacity: 222,            // <-- Add this
   capacityUnit: 'ml', 
   sizeUnit: 'ml',   
-
+tubeType: 'Extruded',
+pouchStyle: 'Standup Pouch',
 },
 ];
 

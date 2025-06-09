@@ -581,6 +581,18 @@ const headings: HeadingMapType = headingMap[currentType] ?? {};
       return val >= min && val <= max;
     });
   }
+  if (selectedTubeType) {
+  filtered = filtered.filter((p) => p.tubeType === selectedTubeType);
+}
+if (selectedStyle) {
+  filtered = filtered.filter((p) => p.pouchStyle === selectedStyle);
+}
+if (selectedDispenser) {
+  filtered = filtered.filter((p) => p.dispenserType === selectedDispenser);
+}
+if (selectedFill) {
+  filtered = filtered.filter((p) => p.fill === selectedFill);
+}
 
   return (
     <div className="flex bg-gray-50 min-h-screen">

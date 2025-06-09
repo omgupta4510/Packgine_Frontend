@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 // Import all filters
@@ -244,13 +245,11 @@ const materialCategories = [
 
 
 function getNormalizedSubcategory(filterValue: string): string | null {
-  const normalized = (filterValue || '').toLowerCase().replace(/-/g, '');
+  const normalized = filterValue.toLowerCase().replace(/-/g, '');
   for (const mainCat of categories) {
     for (const sub of mainCat.subcategories) {
-      if (
-        normalized === sub.slug.replace(/-/g, '') ||
-        normalized.includes(sub.slug.replace(/-/g, ''))
-      ) {
+      const normalizedSlug = sub.slug.replace(/-/g, '');
+      if (normalized === normalizedSlug || normalized.includes(normalizedSlug)) {
         return sub.slug;
       }
     }
@@ -581,6 +580,18 @@ const headings: HeadingMapType = headingMap[currentType] ?? {};
       return val >= min && val <= max;
     });
   }
+  if (selectedTubeType) {
+  filtered = filtered.filter((p) => p.tubeType === selectedTubeType);
+}
+if (selectedStyle) {
+  filtered = filtered.filter((p) => p.pouchStyle === selectedStyle);
+}
+if (selectedDispenser) {
+  filtered = filtered.filter((p) => p.dispenserType === selectedDispenser);
+}
+if (selectedFill) {
+  filtered = filtered.filter((p) => p.fill === selectedFill);
+}
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
@@ -1224,7 +1235,8 @@ const headings: HeadingMapType = headingMap[currentType] ?? {};
       <main className="flex-1 px-8 py-8">
         <div className="mt-8">
           <div className="flex items-center mb-4 text-sm text-gray-500 space-x-2">
-            <span>All Products</span>
+              <Link to="/products" className="hover:text-green-600">All Products</Link>
+            
             <span>&gt;</span>
             <span className="text-green-700 font-semibold capitalize">
               {filterValue?.replace(/-/g, ' ')}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { ChevronDown, ChevronUp, X, Filter, Recycle, Leaf, Package, RefreshCw } from 'lucide-react';
 import { cn } from '../../utils/cn';
 

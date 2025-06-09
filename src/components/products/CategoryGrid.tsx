@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Bot as Bottle, 
@@ -72,14 +72,228 @@ const categories: MainCategory[] = [
           ]
         }
       },
-      { name: 'Jar', slug: 'jar', icon: <Package className="h-6 w-6" /> },
-      { name: 'Tube', slug: 'tube', icon: <Cylinder className="h-6 w-6" /> },
-      { name: 'Pouch', slug: 'pouch', icon: <Box className="h-6 w-6" /> },
-      { name: 'Stick', slug: 'stick', icon: <Box className="h-6 w-6" /> },
-      { name: 'Airless Bottle', slug: 'airless-bottle', icon: <Bottle className="h-6 w-6" /> },
-      { name: 'Airless Jar', slug: 'airless-jar', icon: <Package className="h-6 w-6" /> },
-      { name: 'Tottle', slug: 'tottle', icon: <Bottle className="h-6 w-6" /> },
-      { name: 'Compact', slug: 'compact', icon: <Circle className="h-6 w-6" /> },
+      { name: 'Jar', slug: 'jar', icon: <Package className="h-6 w-6" /> ,
+        details: {
+          materials: [
+            'Aluminum Jars',
+            'Bamboo Jars',
+            'Glass Jars',
+            'HDPE Jars',
+            'PE Jars',
+            'PET Jars',
+            'PP Jars'
+          ],
+          shapes: [
+            'Speciality Jars',
+            'Straight Sided',
+            'Square Jars',
+            'Round Jars',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+        }
+      },
+      { name: 'Tube', slug: 'tube', icon: <Cylinder className="h-6 w-6" />,
+         details: {
+          materials: [
+            'Aluminum Tubes',
+            'Bamboo Tubes',
+            'Glass Tubes',
+            'HDPE Tubes',
+            'PE Tubes',
+            'PET Tubes',
+            'PP Tubes'
+          ],
+          shapes: [
+            'Oval Tubes',
+            'Round Tubes',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+       },
+      { name: 'Pouch', slug: 'pouch', icon: <Box className="h-6 w-6" />,
+         details: {
+          materials: [
+            'Aluminum Pouches',
+            'Bamboo Pouches',
+            'Glass Pouches',
+            'HDPE Pouches',
+            'PE Pouches',
+            'PET Pouches',
+            'PP Pouches'
+          ],
+          shapes: [
+            'Oval Pouches',
+            'Round Pouches',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+       },
+      { name: 'Stick', slug: 'stick', icon: <Box className="h-6 w-6" /> ,
+                 details: {
+          materials: [
+            'Aluminum Sticks',
+            'Bamboo Sticks',
+            'Glass Sticks',
+            'HDPE Sticks',
+            'PE Sticks',
+            'PET Sticks',
+            'PP Sticks'
+          ],
+          shapes: [
+            'Oval Sticks',
+            'Round Sticks',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+      },
+      { name: 'Airless Bottle', slug: 'airless-bottle', icon: <Bottle className="h-6 w-6" />,
+                 details: {
+          materials: [
+            'Aluminum Airless Bottles',
+            'Bamboo Airless Bottles',
+            'Glass Airless Bottles',
+            'HDPE Airless Bottles',
+            'PE Airless Bottles',
+            'PET Airless Bottles',
+            'PP Airless Bottles'
+          ],
+          shapes: [
+            'Oval Airless Bottles',
+            'Round Airless Bottles',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+
+       },
+      { name: 'Airless Jar', slug: 'airless-jar', icon: <Package className="h-6 w-6" />,
+                 details: {
+          materials: [
+            'Aluminum Airless Jars',
+            'Bamboo Airless Jars',
+            'Glass Airless Jars',
+            'HDPE Airless Jars',
+            'PE Airless Jars',
+            'PET Airless Jars',
+            'PP Airless Jars'
+          ],
+          shapes: [
+            'Oval Airless Jars',
+            'Round Airless Jars',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+
+       },
+      { name: 'Tottle', slug: 'tottle', icon: <Bottle className="h-6 w-6" />,
+                 details: {
+          materials: [
+            'Aluminum Tottles',
+            'Bamboo Tottles',
+            'Glass Tottles',
+            'HDPE Tottles',
+            'PE Tottles',
+            'PET Tottles',
+            'PP Tottles'
+          ],
+          shapes: [
+            'Oval Tottles',
+            'Round Tottles',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+
+       },
+      { name: 'Compact', slug: 'compact', icon: <Circle className="h-6 w-6" />,
+                 details: {
+          materials: [
+            'Aluminum Compacts',
+            'Bamboo Compacts',
+            'Glass Compacts',
+            'HDPE Compacts',
+            'PE Compacts',
+            'PET Compacts',
+            'PP Compacts'
+          ],
+          shapes: [
+            'Oval Compacts',
+            'Round Compacts',
+          ],
+          sustainability: [
+            'Bio-based',
+            'Recyclable',
+            'Recycled Content'
+          ],
+          manufacturingLocations: [
+            'North America',
+            'Europe',
+            'Asia'
+          ]
+         },
+
+       },
     ],
   },
   {
@@ -114,7 +328,7 @@ const categories: MainCategory[] = [
     ],
   },
 ];
-
+export { categories };
 export const CategoryGrid = () => {
   const [activeCategory, setActiveCategory] = useState('bases');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);

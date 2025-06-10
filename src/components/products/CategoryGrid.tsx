@@ -1,132 +1,66 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import broaderCategories from '../../data/broaderCategories.json';
+import { Box, Package, Cylinder, Circle, Droplet, Leaf, Brush, SprayCan as Spray, Palette } from 'lucide-react';
 
-import {
-  Bot as Bottle,
-  Package,
-  Box,
-  Circle,
-  Cylinder,
-  Droplet,
-  Leaf,
-  Brush,
-  SprayCan as Spray,
-  Palette,
-} from 'lucide-react';
-
-type SubCategoryDetails = {
-  materials?: string[];
-  shapes?: string[];
-  sustainability?: string[];
-  manufacturingLocations?: string[];
+// Icon mapping for demo; you can expand this as needed
+const iconMap: Record<string, React.ReactNode> = {
+  'Bottle': <Cylinder className="h-8 w-8" />, 'Jar': <Package className="h-8 w-8" />, 'Tube': <Cylinder className="h-8 w-8" />,
+  'Pouch': <Box className="h-8 w-8" />, 'Stick': <Box className="h-8 w-8" />, 'Airless Bottle': <Cylinder className="h-8 w-8" />,
+  'Airless Jar': <Package className="h-8 w-8" />, 'Tottle': <Cylinder className="h-8 w-8" />, 'Compact': <Circle className="h-8 w-8" />,
+  'Cap': <Circle className="h-8 w-8" />, 'Dropper': <Droplet className="h-8 w-8" />, 'Other Closure': <Box className="h-8 w-8" />,
+  'Skin Care': <Brush className="h-8 w-8" />, 'Hair Care': <Spray className="h-8 w-8" />, 'Face Cream': <Palette className="h-8 w-8" />, 'Fragrance': <Leaf className="h-8 w-8" />,
+  'Laundry Detergent': <Box className="h-8 w-8" />, 'Surface Cleaners': <Box className="h-8 w-8" />, 'Dish Soap': <Box className="h-8 w-8" />,
+  'Folding Carton': <Box className="h-8 w-8" />, 'Lipstick': <Box className="h-8 w-8" />
 };
-
-type SubCategory = {
-  name: string;
-  slug: string;
-  icon?: React.ReactNode;
-  details?: SubCategoryDetails;
-};
-
-type MainCategory = {
-  name: string;
-  slug: string;
-  subcategories: SubCategory[];
-};
-
-const categories: MainCategory[] = [
-  {
-    name: 'Bases',
-    slug: 'bases',
-    subcategories: [
-      { name: 'Bottle', slug: 'bottle', icon: <Bottle className="h-6 w-6" /> },
-      { name: 'Jar', slug: 'jar', icon: <Package className="h-6 w-6" /> },
-      { name: 'Tube', slug: 'tube', icon: <Cylinder className="h-6 w-6" /> },
-      { name: 'Pouch', slug: 'pouch', icon: <Box className="h-6 w-6" /> },
-      { name: 'Stick', slug: 'stick', icon: <Box className="h-6 w-6" /> },
-      { name: 'Airless Bottle', slug: 'airless-bottle', icon: <Bottle className="h-6 w-6" /> },
-      { name: 'Airless Jar', slug: 'airless-jar', icon: <Package className="h-6 w-6" /> },
-      { name: 'Tottle', slug: 'tottle', icon: <Bottle className="h-6 w-6" /> },
-      { name: 'Compact', slug: 'compact', icon: <Circle className="h-6 w-6" /> },
-    ],
-  },
-  {
-    name: 'Closures',
-    slug: 'closures',
-    subcategories: [
-      { name: 'Caps & Lids', slug: 'caps-lids', icon: <Circle className="h-6 w-6" /> },
-      { name: 'Dispensers & Dosing', slug: 'dispensers-dosing', icon: <Spray className="h-6 w-6" /> },
-      { name: 'Droppers', slug: 'droppers', icon: <Droplet className="h-6 w-6" /> },
-      { name: 'Pumps', slug: 'pumps', icon: <Spray className="h-6 w-6" /> },
-      { name: 'Sprayers', slug: 'sprayers', icon: <Spray className="h-6 w-6" /> },
-    ],
-  },
-  {
-    name: 'Sustainability',
-    slug: 'sustainability',
-    subcategories: [
-      { name: 'PCR Options', slug: 'pcr-options', icon: <Leaf className="h-6 w-6" /> },
-      { name: 'Bio Based', slug: 'bio-based', icon: <Leaf className="h-6 w-6" /> },
-      { name: 'Refillable', slug: 'refillable', icon: <Droplet className="h-6 w-6" /> },
-      { name: 'Recyclable', slug: 'recyclable', icon: <Leaf className="h-6 w-6" /> },
-    ],
-  },
-  {
-    name: 'End Use',
-    slug: 'end-use',
-    subcategories: [
-      { name: 'Cosmetics', slug: 'cosmetics', icon: <Brush className="h-6 w-6" /> },
-      { name: 'Skincare', slug: 'skincare', icon: <Droplet className="h-6 w-6" /> },
-      { name: 'Haircare', slug: 'haircare', icon: <Spray className="h-6 w-6" /> },
-      { name: 'Personal Care', slug: 'personal-care', icon: <Palette className="h-6 w-6" /> },
-    ],
-  },
-];
-
-export { categories };
 
 export const CategoryGrid = () => {
-  const [activeCategory, setActiveCategory] = useState('bases');
+  const [activeCategory, setActiveCategory] = useState(broaderCategories.broader_categories[0].name);
   const navigate = useNavigate();
-
-  const activeCategoryData = categories.find(cat => cat.slug === activeCategory);
+  const activeCategoryData = broaderCategories.broader_categories.find(cat => cat.name === activeCategory);
 
   return (
     <div>
       {/* Tabs */}
       <div className="flex border-b border-gray-200">
-        {categories.map((category) => (
+        {broaderCategories.broader_categories.map((category) => (
           <button
-            key={category.slug}
-            className={`px-6 py-4 text-sm font-medium transition-colors ${
-              activeCategory === category.slug
-                ? 'text-green-600 border-b-2 border-green-500 -mb-px'
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-            onClick={() => setActiveCategory(category.slug)}
+            key={category.name}
+            className={`px-6 py-4 text-sm font-medium transition-colors ${activeCategory === category.name ? 'text-green-600 border-b-2 border-green-500 -mb-px' : 'text-gray-600 hover:text-gray-800'}`}
+            onClick={() => setActiveCategory(category.name)}
           >
             {category.name}
           </button>
         ))}
       </div>
-
       {/* Subcategory Grid */}
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-10 p-6">
-  {activeCategoryData?.subcategories.map((sub) => (
-    <button
-      key={sub.slug}
-      onClick={() =>
-        navigate(`/products/material/${sub.slug.toLowerCase().replace(/\s+/g, '-')}`)
-      }
-      className="group flex flex-col items-center justify-center text-gray-800 hover:text-green-600 transition-colors space-y-2"
-    >
-      <div className="text-gray-700 group-hover:text-green-600 transition-colors">
-        {React.cloneElement(sub.icon as React.ReactElement, { className: "w-8 h-8" })}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-10 p-6">
+        {activeCategoryData?.categories?.map((sub: string) => (
+          <button
+            key={sub}
+            onClick={() => navigate(`/products/material/${sub.toLowerCase().replace(/\s+/g, '-')}`)}
+            className="group flex flex-col items-center justify-center text-gray-800 hover:text-green-600 transition-colors space-y-2"
+          >
+            <div className="text-gray-700 group-hover:text-green-600 transition-colors">
+              {iconMap[sub] || <Box className="h-8 w-8" />}
+            </div>
+            <span className="text-base font-medium">{sub}</span>
+          </button>
+        ))}
+        {/* If this broader category has direct filters (like Sustainability), show a single card for it */}
+        {activeCategoryData?.filters && (
+          <button
+            key={activeCategoryData.name + '-filters'}
+            onClick={() => navigate(`/products/material/${activeCategoryData.name.toLowerCase().replace(/\s+/g, '-')}`)}
+            className="group flex flex-col items-center justify-center text-gray-800 hover:text-green-600 transition-colors space-y-2"
+          >
+            <div className="text-gray-700 group-hover:text-green-600 transition-colors">
+              <Leaf className="h-8 w-8" />
+            </div>
+            <span className="text-base font-medium">{activeCategoryData.name}</span>
+          </button>
+        )}
       </div>
-      <span className="text-base font-medium">{sub.name}</span>
-    </button>
-  ))}
-</div>
     </div>
   );
 };

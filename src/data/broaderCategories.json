@@ -1,0 +1,55 @@
+{
+  "broader_categories": [
+    {
+      "name": "Base Packaging",
+      "categories": [
+        "Bottle",
+        "Jar",
+        "Tube",
+        "Tottle",
+        "Folding Carton",
+        "Lipstick"
+      ]
+    },
+    {
+      "name": "Closure",
+      "categories": [
+        "Cap",
+        "Dropper",
+        "Other Closure"
+      ]
+    },
+    {
+      "name": "Personal Care",
+      "categories": [
+        "Skin Care",
+        "Hair Care",
+        "Face Cream",
+        "Fragrance"
+      ]
+    },
+    {
+      "name": "Household",
+      "categories": [
+        "Laundry Detergent",
+        "Surface Cleaners",
+        "Dish Soap"
+      ]
+    },
+    {
+      "name": "Sustainability",
+      "filters": [
+        {
+          "name": "Sustainability",
+          "type": "checkbox-group",
+          "options": [
+            "Recycled Content",
+            "Recycle Ready",
+            "Bio Based Material",
+            "Refill Ready"
+          ]
+        }
+      ]
+    }
+  ]
+}

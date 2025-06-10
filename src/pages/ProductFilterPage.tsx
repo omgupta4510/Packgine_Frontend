@@ -16,6 +16,7 @@ import * as tottleFilters from '../data/tottleFilters';
 import * as compactFilters from '../data/compactFilters'
 import { mockProducts } from '../data/mockProducts';
 
+
 type HeadingMapType = {
   sustainability?: string;
   shape?: string;
@@ -243,7 +244,6 @@ const materialCategories = [
   }
 ];
 
-
 function getNormalizedSubcategory(filterValue: string): string | null {
   const normalized = filterValue.toLowerCase().replace(/-/g, '');
   for (const mainCat of categories) {
@@ -256,6 +256,7 @@ function getNormalizedSubcategory(filterValue: string): string | null {
   }
   return null;
 }
+
 
 const ProductFilterPage = () => {
   const { filterType, filterValue } = useParams<{ filterType: string; filterValue: string }>();

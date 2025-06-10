@@ -1,0 +1,236 @@
+{
+  "filters": [
+    {
+      "name": "Sustainability",
+      "type": "checkbox-group",
+      "options": [
+        "Recycled Content",
+        "Recycle Ready",
+        "Bio Based Material",
+        "Refill Ready"
+      ]
+    },
+    {
+      "name": "Neck Dimensions",
+      "type": "composite",
+      "fields": [
+        {
+          "label": "Diameter",
+          "type": "range",
+          "unit": "mm"
+        },
+        {
+          "label": "Finish",
+          "type": "dropdown"
+        }
+      ]
+    },
+    {
+      "name": "Material",
+      "type": "checkbox-group",
+      "groups": [
+        {
+          "groupName": "All Plastic Types",
+          "options": [
+            "ABS", "Acrylic", "HDPE", "LDPE", "MDPE", "Nylon",
+            "PE", "PET", "PETG", "PMMA", "PP", "PS", "PVC"
+          ]
+        },
+        {
+          "groupName": "All Plant Based",
+          "options": ["Bamboo", "Paper"]
+        },
+        {
+          "groupName": "All Metals",
+          "options": ["Aluminum", "Stainless Steel"]
+        },
+        {
+          "groupName": "Other",
+          "options": ["Glass", "Mixed Material"]
+        }
+      ]
+    },
+    {
+      "name": "Size",
+      "type": "range-or-exact",
+      "unitOptions": ["ml", "oz"]
+    },
+    {
+      "name": "Minimum Order",
+      "type": "range"
+    },
+    {
+      "name": "Location",
+      "type": "location-group",
+      "toggleOptions": ["Manufacturing", "Warehousing"],
+      "defaultToggle": "Manufacturing",
+      "groups": [
+        {
+          "groupName": "North America",
+          "options": [
+            { "name": "USA", "code": "us" },
+            { "name": "Canada", "code": "ca" },
+            { "name": "Mexico", "code": "mx" }
+          ]
+        },
+        {
+          "groupName": "Europe",
+          "options": [
+            { "name": "UK", "code": "gb" },
+            { "name": "Germany", "code": "de" },
+            { "name": "Netherlands", "code": "nl" },
+            { "name": "Spain", "code": "es" },
+            { "name": "France", "code": "fr" },
+            { "name": "Italy", "code": "it" },
+            { "name": "Belgium", "code": "be" },
+            { "name": "Israel", "code": "il" },
+            { "name": "Poland", "code": "pl" }
+          ]
+        },
+        {
+          "groupName": "Asia",
+          "options": [
+            { "name": "China", "code": "cn" },
+            { "name": "Japan", "code": "jp" },
+            { "name": "South Korea", "code": "kr" },
+            { "name": "India", "code": "in" },
+            { "name": "Taiwan", "code": "tw" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "End Use",
+      "type": "checkbox-group",
+      "groups": [
+        {
+          "groupName": "Body Care",
+          "options": [
+            "Body Lotion",
+            "Body Oil",
+            "Body Scrub",
+            "Body Wash",
+            "Deodorant",
+            "Hand Cream",
+            "Hand Soap"
+          ]
+        },
+        {
+          "groupName": "Cosmetics",
+          "options": [
+            "Fragrance"
+          ]
+        },
+        {
+          "groupName": "Face Care",
+          "options": [
+            "Eye",
+            "Face Cleanser",
+            "Face Moisturizer",
+            "Face Serum",
+            "Lip",
+            "Toner"
+          ]
+        },
+        {
+          "groupName": "Hair Care",
+          "options": [
+            "Hair Oil",
+            "Hair Spray",
+            "Hair Treatment",
+            "Shampoo Conditioner"
+          ]
+        },
+        {
+          "groupName": "House Hold",
+          "options": [
+            "Dish Soap",
+            "Laundry Detergent",
+            "Surface Cleaners"
+          ]
+        },
+        {
+          "groupName": "Beverage",
+          "options": [
+            "Carbonated Beverage",
+            "Crown Cork",
+            "Juice",
+            "Liquor",
+            "Milk",
+            "Ready To Drink",
+            "Water",
+            "Wine"
+          ]
+        },
+        {
+          "groupName": "Food",
+          "options": [
+            "Dry Foods And Spreads",
+            "Oils",
+            "Sauces"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Color",
+      "type": "checkbox-group",
+      "options": [
+        "Amber",
+        "Black",
+        "Blue",
+        "Clear",
+        "Green",
+        "Grey",
+        "Gray",
+        "Natural",
+        "Purple",
+        "Pink",
+        "Red",
+        "White",
+        "Yellow",
+        "Gold",
+        "Silver",
+        "Orange"
+      ]
+    },
+    {
+      "name": "Deco",
+      "type": "checkbox-group",
+      "groups": [
+        {
+          "groupName": "Print",
+          "options": [
+            "Digital Print",
+            "Flexo",
+            "Gravure Printing",
+            "Offset Print",
+            "Silk Screen Print",
+            "Tampo Pad Print"
+          ]
+        },
+        {
+          "groupName": "Label",
+          "options": [
+            "Heat Transfer Label",
+            "Labelling"
+          ]
+        },
+        {
+          "groupName": "Other",
+          "options": [
+            "Embossing",
+            "Etching",
+            "Heat Stamping",
+            "Shrink Sleeve",
+            "Spray Coating"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supplier",
+      "type": "dropdown"
+    }
+  ]
+}

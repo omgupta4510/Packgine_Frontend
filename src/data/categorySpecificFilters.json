@@ -1,0 +1,281 @@
+{
+  "categories": [
+    {
+      "category": "Skin Care",
+      "filters": [
+        {
+          "name": "Type",
+          "type": "checkbox-group",
+          "options": [
+            "Body Lotion",
+            "Body Wash",
+            "Hand Soap",
+            "Body Oil",
+            "Body Scrub",
+            "Hand Cream",
+            "Deodorant"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Hair Care",
+      "filters": [
+        {
+          "name": "Type",
+          "type": "checkbox-group",
+          "options": [
+            "Hair Oil",
+            "Hair Spray",
+            "Hair Treatment",
+            "Shampoo/conditioner"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Face Cream",
+      "filters": [
+        {
+          "name": "Type",
+          "type": "checkbox-group",
+          "options": [
+            "Eye",
+            "Face Cleanser",
+            "Face Moisturizer",
+            "Face Serum",
+            "Lip",
+            "Toner"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Fragrance",
+      "filters": [
+        {
+          "name": "Pack Type",
+          "type": "checkbox-group",
+          "options": [
+            "Bottle",
+            "Vial",
+            "Spray",
+            "Atomizer",
+            "Rollerball",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Laundry Detergent",
+      "filters": [
+        {
+          "name": "Pack Type",
+          "type": "checkbox-group",
+          "options": [
+            "Bottle",
+            "Pouch",
+            "Jar",
+            "Can",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Surface Cleaners",
+      "filters": [
+        {
+          "name": "Pack Type",
+          "type": "checkbox-group",
+          "options": [
+            "Bottle",
+            "Pouch",
+            "Jar",
+            "Can",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Dish Soap",
+      "filters": [
+        {
+          "name": "Pack Type",
+          "type": "checkbox-group",
+          "options": [
+            "Bottle",
+            "Pouch",
+            "Jar",
+            "Can",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Cap",
+      "filters": [
+        {
+          "name": "Cap Type",
+          "type": "checkbox-group",
+          "options": [
+            "Flip Top Cap",
+            "Push Pull Cap",
+            "Disc Top Cap",
+            "Nail Polish Cap",
+            "Threaded Closure",
+            "Plug",
+            "Twist Open Cap",
+            "Tube Cap",
+            "Overcap",
+            "Sealing Disc",
+            "Weldspout"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Dropper",
+      "filters": [
+        {
+          "name": "Dropper Type",
+          "type": "checkbox-group",
+          "options": [
+            "Glass Pipette",
+            "Plastic Pipette",
+            "Bulb Dropper",
+            "Measuring Dropper"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Other Closure",
+      "filters": [
+        {
+          "name": "Other Closure Type",
+          "type": "checkbox-group",
+          "options": [
+            "Sprayer",
+            "Pump",
+            "Other"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Bottle",
+      "filters": [
+        {
+          "name": "Bottle Shape",
+          "type": "checkbox-group",
+          "options": [
+            "Bell",
+            "Bevel",
+            "Cylinder",
+            "Oval",
+            "Round",
+            "Specialty",
+            "Square",
+            "Teardrop"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Jar",
+      "filters": [
+        {
+          "name": "Jars Shape",
+          "type": "checkbox-group",
+          "options": [
+            "Round",
+            "Square",
+            "Specialty",
+            "Straight Sided"
+          ]
+        },
+        {
+          "name": "Jar Wall Type",
+          "type": "checkbox-group",
+          "options": [
+            "Double Wall",
+            "Single Wall",
+            "Thick Wall"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Lipstick",
+      "filters": [
+        {
+          "name": "Shape",
+          "type": "checkbox-group",
+          "options": [
+            "Cylinder",
+            "Rectangle",
+            "Round",
+            "Specialty"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Folding Carton",
+      "filters": []
+    },
+    {
+      "category": "Tube",
+      "filters": [
+        {
+          "name": "Tube Type",
+          "type": "checkbox-group",
+          "options": [
+            "Extruded",
+            "Laminate",
+            "Two Layer",
+            "Monomaterial",
+            "Collapsible"
+          ]
+        },
+        {
+          "name": "Tube Shape",
+          "type": "checkbox-group",
+          "options": [
+            "Oval",
+            "Round"
+          ]
+        },
+        {
+          "name": "Chambers",
+          "type": "checkbox-group",
+          "options": [
+            "Dual",
+            "Single",
+            "Triple"
+          ]
+        },
+        {
+          "name": "Tube Head Style",
+          "type": "checkbox-group",
+          "options": [
+            "22 400",
+            "Amplify",
+            "Brush",
+            "Caulking",
+            "Lip Slant",
+            "Lubricant"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Tottle",
+      "filters": []
+    }
+  ]
+}

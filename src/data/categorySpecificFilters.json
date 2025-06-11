@@ -170,7 +170,7 @@
       "category": "Bottle",
       "filters": [
         {
-          "name": "Bottle Shape",
+           "name": "Shape",
           "type": "checkbox-group",
           "options": [
             "Bell",

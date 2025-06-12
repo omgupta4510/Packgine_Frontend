@@ -4,6 +4,8 @@ import commonFilters from '../data/commonFilters.json';
 import categoryFilters from '../data/categorySpecificFilters.json';
 import CountryFlag from 'react-country-flag';
 
+import { mockProducts } from '../data/mockProducts';
+
 function getFiltersForCategory(category: string) {
   // Find category-specific filters
   const cat = categoryFilters.categories.find((c: any) => c.category.toLowerCase().replace(/\s+/g, '-') === category);
@@ -18,6 +20,74 @@ function getFiltersForCategory(category: string) {
   ];
   return merged;
 }
+function normalizeKey(str: string) {
+  return str.toLowerCase().replace(/\s+/g, '');
+}
+
+const countryCodeToName: Record<string, string> = {};
+const locationFilter = commonFilters.filters.find(f => f.name === "Location");
+if (locationFilter && locationFilter.groups) {
+  locationFilter.groups.forEach((group: any) => {
+    group.options.forEach((country: any) => {
+      countryCodeToName[country.code.toLowerCase()] = country.name;
+    });
+  });
+}
+
+function productMatchesFilters(product: any, filters: Record<string, any>) {
+  for (const key in filters) {
+    const value = filters[key];
+    if (!value || value.length === 0) continue;
+
+     // Special case for location group filter
+    if (key === 'locationcountries') {
+      // Map selected codes to names for comparison
+      const selectedNames = value
+        .map((code: string) => countryCodeToName[code.toLowerCase()]?.toLowerCase())
+        .filter(Boolean);
+      if (!selectedNames.includes(String(product.location).toLowerCase())) {
+        return false;
+      }
+      continue;
+    }
+
+     // Handle min/max for range filters
+    if (key.endsWith('_min') || key.endsWith('_max')) {
+      const baseKey = key.replace(/_(min|max)$/, '');
+      const productKey = Object.keys(product).find(
+        k => normalizeKey(k) === normalizeKey(baseKey)
+      );
+      if (!productKey) continue;
+      const productValue = Number(product[productKey]);
+      if (key.endsWith('_min') && value !== '' && !isNaN(Number(value))) {
+        if (productValue < Number(value)) return false;
+      }
+      if (key.endsWith('_max') && value !== '' && !isNaN(Number(value))) {
+        if (productValue > Number(value)) return false;
+      }
+      continue;
+    }
+
+    const normalizedKey = normalizeKey(key);
+    const productKey = Object.keys(product).find(
+      k => normalizeKey(k) === normalizedKey
+    );
+    if (!productKey) continue;
+
+    const productValue = product[productKey];
+
+    if (Array.isArray(value)) {
+      if (Array.isArray(productValue)) {
+        if (!value.some((v) => productValue.map((p: string) => p.toLowerCase()).includes(v.toLowerCase()))) return false;
+      } else {
+        if (!value.map((v: string) => v.toLowerCase()).includes(String(productValue).toLowerCase())) return false;
+      }
+    } else {
+      if (typeof productValue === 'string' && productValue.toLowerCase() !== String(value).toLowerCase()) return false;
+    }
+  }
+  return true;
+}
 
 const ProductFilterPage = () => {
   const { filterValue } = useParams<{ filterValue: string }>();
@@ -27,7 +97,7 @@ const ProductFilterPage = () => {
 
   // Handler for filter value changes
   const handleFilterChange = (filterName: string, value: any) => {
-    setFilterState((prev) => ({ ...prev, [filterName]: value }));
+    setFilterState((prev) => ({ ...prev, [filterName.toLowerCase()]: value }));
   };
 
   return (
@@ -59,13 +129,13 @@ const ProductFilterPage = () => {
                     {(() => {
                       let count = 0;
                       if (filter.type === 'checkbox-group') {
-                        if (filter.options && Array.isArray(filterState[filter.name])) {
-                          count = filterState[filter.name].length;
+                        if (filter.options && Array.isArray(filterState[filter.name.toLowerCase()])) {
+                          count = filterState[filter.name.toLowerCase()].length;
                         } else if (filter.groups && Array.isArray(filterState[filter.name])) {
                           count = filterState[filter.name].length;
                         }
-                      } else if (filter.type === 'location-group' && Array.isArray(filterState.locationCountries)) {
-                        count = filterState.locationCountries.length;
+                      } else if (filter.type === 'location-group' && Array.isArray(filterState.locationcountries)) {
+                        count = filterState.locationcountries.length;
                       } else if (filter.name === 'Color' && Array.isArray(filterState[filter.name])) {
                         count = filterState[filter.name].length;
                       }
@@ -82,20 +152,21 @@ const ProductFilterPage = () => {
                     {filter.type === 'checkbox-group' && filter.options && filter.name !== 'Color' && filter.options.map((opt: string) => (
                       <button
                         key={opt}
-                        className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name]) && filterState[filter.name].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
+                        className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
                         style={{ boxShadow: '0 1px 2px 0 rgba(60, 180, 80, 0.04)' }}
                         onClick={() => {
-                          const prev = Array.isArray(filterState[filter.name]) ? filterState[filter.name] : [];
+                          const prev = Array.isArray(filterState[filter.name.toLowerCase()]) ? filterState[filter.name.toLowerCase()] : [];
                           handleFilterChange(
-                            filter.name,
+                            filter.name.toLowerCase(),
                             prev.includes(opt) ? prev.filter((v: string) => v !== opt) : [...prev, opt]
                           );
                         }}
+                        type="button"
                       >
                         <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-green-50 group-hover:bg-green-100">
                           <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                            {Array.isArray(filterState[filter.name]) && filterState[filter.name].includes(opt) && (
+                            {Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) && (
                               <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             )}
                           </svg>
@@ -111,12 +182,12 @@ const ProductFilterPage = () => {
                           {group.options.map((opt: string) => (
                             <button
                               key={opt}
-                              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name]) && filterState[filter.name].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
+                              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
                               style={{ boxShadow: '0 1px 2px 0 rgba(60, 180, 80, 0.04)' }}
                               onClick={() => {
-                                const prev = Array.isArray(filterState[filter.name]) ? filterState[filter.name] : [];
+                                const prev = Array.isArray(filterState[filter.name.toLowerCase()]) ? filterState[filter.name.toLowerCase()] : [];
                                 handleFilterChange(
-                                  filter.name,
+                                  filter.name.toLowerCase(),
                                   prev.includes(opt) ? prev.filter((v: string) => v !== opt) : [...prev, opt]
                                 );
                               }}
@@ -124,7 +195,7 @@ const ProductFilterPage = () => {
                               <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-green-50 group-hover:bg-green-100">
                                 <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                   <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="2" fill="none" />
-                                  {Array.isArray(filterState[filter.name]) && filterState[filter.name].includes(opt) && (
+                                  {Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) && (
                                     <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   )}
                                 </svg>
@@ -153,16 +224,16 @@ const ProductFilterPage = () => {
                           type="number"
                           className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
                           placeholder="Min"
-                          value={filterState[`${filter.name}_min`] || ''}
-                          onChange={e => handleFilterChange(`${filter.name}_min`, e.target.value)}
+                          value={filterState[`${filter.name.toLowerCase()}_min`] || ''}
+                          onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_min`, e.target.value)}
                         />
                         <span>-</span>
                         <input
                           type="number"
                           className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
                           placeholder="Max"
-                          value={filterState[`${filter.name}_max`] || ''}
-                          onChange={e => handleFilterChange(`${filter.name}_max`, e.target.value)}
+                          value={filterState[`${filter.name.toLowerCase()}_max`] || ''}
+                          onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_max`, e.target.value)}
                         />
                       </div>
                     )}
@@ -171,32 +242,32 @@ const ProductFilterPage = () => {
                         <input
                           type="text"
                           className="border rounded px-2 py-1 w-full mb-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
-                          placeholder={`Exact ${filter.name}`}
-                          value={filterState[filter.name] || ''}
-                          onChange={e => handleFilterChange(filter.name, e.target.value)}
+                          placeholder={`Exact ${filter.name.toLowerCase()}`}
+                          value={filterState[filter.name.toLowerCase()] || ''}
+                          onChange={e => handleFilterChange(filter.name.toLowerCase(), e.target.value)}
                         />
                         <div className="flex items-center space-x-1 mb-1">
                           <input
                             type="number"
                             className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
                             placeholder="Min"
-                            value={filterState[`${filter.name}_min`] || ''}
-                            onChange={e => handleFilterChange(`${filter.name}_min`, e.target.value)}
+                            value={filterState[`${filter.name.toLowerCase()}_min`] || ''}
+                            onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_min`, e.target.value)}
                           />
                           <span>-</span>
                           <input
                             type="number"
                             className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
                             placeholder="Max"
-                            value={filterState[`${filter.name}_max`] || ''}
-                            onChange={e => handleFilterChange(`${filter.name}_max`, e.target.value)}
+                            value={filterState[`${filter.name.toLowerCase()}_max`] || ''}
+                            onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_max`, e.target.value)}
                           />
                         </div>
                         {filter.unitOptions && (
                           <select
                             className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
-                            value={filterState[`${filter.name}_unit`] || filter.unitOptions[0]}
-                            onChange={e => handleFilterChange(`${filter.name}_unit`, e.target.value)}
+                            value={filterState[`${filter.name.toLowerCase()}_unit`] || filter.unitOptions[0]}
+                            onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_unit`, e.target.value)}
                           >
                             {filter.unitOptions.map((unit: string) => (
                               <option key={unit} value={unit}>{unit}</option>
@@ -207,39 +278,42 @@ const ProductFilterPage = () => {
                     )}
                     {filter.type === 'composite' && filter.fields && (
                       <div className="space-y-1">
-                        {filter.fields.map((field: any) => (
-                          <div key={field.label} className="flex items-center space-x-1">
-                            <label className="w-20 text-xs text-gray-700">{field.label}{field.unit ? ` (${field.unit})` : ''}:</label>
-                            {field.type === 'range' ? (
-                              <input
-                                type="number"
-                                className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
-                                placeholder={field.label}
-                                value={filterState[`${filter.name}_${field.label}`] || ''}
-                                onChange={e => handleFilterChange(`${filter.name}_${field.label}`, e.target.value)}
-                              />
-                            ) : field.type === 'dropdown' ? (
-                              <select
-                                className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
-                                value={filterState[`${filter.name}_${field.label}`] || ''}
-                                onChange={e => handleFilterChange(`${filter.name}_${field.label}`, e.target.value)}
-                              >
-                                <option value="">Select {field.label}</option>
-                                {field.options && field.options.map((opt: string) => (
-                                  <option key={opt} value={opt}>{opt}</option>
-                                ))}
-                              </select>
-                            ) : (
-                              <input
-                                type="text"
-                                className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
-                                placeholder={field.label}
-                                value={filterState[`${filter.name}_${field.label}`] || ''}
-                                onChange={e => handleFilterChange(`${filter.name}_${field.label}`, e.target.value)}
-                              />
-                            )}
-                          </div>
-                        ))}
+                        {filter.fields.map((field: any) => {
+                          const compositeKey = `${normalizeKey(filter.name)}_${normalizeKey(field.label)}`;
+                          return (
+                            <div key={field.label} className="flex items-center space-x-1">
+                              <label className="w-20 text-xs text-gray-700">{field.label}{field.unit ? ` (${field.unit})` : ''}:</label>
+                              {field.type === 'range' ? (
+                                <input
+                                  type="number"
+                                  className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  placeholder={field.label}
+                                  value={filterState[compositeKey] || ''}
+                                  onChange={e => handleFilterChange(compositeKey, e.target.value)}
+                                />
+                              ) : field.type === 'dropdown' ? (
+                                <select
+                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  value={filterState[compositeKey] || ''}
+                                  onChange={e => handleFilterChange(compositeKey, e.target.value)}
+                                >
+                                  <option value="">Select {field.label}</option>
+                                  {field.options && field.options.map((opt: string) => (
+                                    <option key={opt} value={opt}>{opt}</option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  placeholder={field.label}
+                                  value={filterState[compositeKey] || ''}
+                                  onChange={e => handleFilterChange(compositeKey, e.target.value)}
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                     {/* Location filter (custom UI) */}
@@ -266,11 +340,11 @@ const ProductFilterPage = () => {
                               {group.options.map((country: any) => (
                                 <button
                                   key={country.code}
-                                  className={`flex items-center gap-2 px-2 py-1 rounded-full border text-xs font-medium transition w-full text-left ${Array.isArray(filterState.locationCountries) && filterState.locationCountries.includes(country.code) ? 'bg-green-50 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-700'}`}
+                                  className={`flex items-center gap-2 px-2 py-1 rounded-full border text-xs font-medium transition w-full text-left ${Array.isArray(filterState.locationcountries) && filterState.locationcountries.includes(country.code) ? 'bg-green-50 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-700'}`}
                                   onClick={() => {
-                                    const prev = Array.isArray(filterState.locationCountries) ? filterState.locationCountries : [];
+                                    const prev = Array.isArray(filterState.locationcountries) ? filterState.locationcountries : [];
                                     handleFilterChange(
-                                      'locationCountries',
+                                      'locationcountries',
                                       prev.includes(country.code)
                                         ? prev.filter((v: string) => v !== country.code)
                                         : [...prev, country.code]
@@ -329,10 +403,6 @@ const ProductFilterPage = () => {
         </div>
         {/* Action buttons */}
         <div className="flex items-center gap-3 mt-6">
-          <button className="flex items-center gap-1 px-3 py-1 rounded-md bg-green-50 text-green-700 font-semibold border border-green-200 hover:bg-green-100 transition text-xs">
-            <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            Apply
-          </button>
           <button className="text-green-600 hover:underline text-xs font-medium" onClick={() => setFilterState({})}>
             Clear
           </button>
@@ -351,7 +421,42 @@ const ProductFilterPage = () => {
           <h1 className="text-3xl font-bold mb-6 capitalize">
             {filterValue?.replace(/-/g, ' ')}
           </h1>
-          {/* Product grid and logic can be implemented here */}
+          {/* Product grid */}
+           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+     {mockProducts.filter(product =>
+    product.category?.toLowerCase() === (filterValue || '').toLowerCase()
+  ).filter(product => productMatchesFilters(product, filterState)).map(product => (
+        <div
+          key={product.id}
+          className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col"
+        >
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
+          />
+          <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
+          <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
+          <div className="flex flex-wrap gap-1 mb-2">
+            <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+            <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
+            <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+          </div>
+          <div className="text-xs mb-1">
+            <strong>MOQ:</strong> {product.moq}
+          </div>
+          <div className="text-xs mb-1">
+            <strong>Size:</strong> {product.size} {product.sizeUnit}
+          </div>
+          <div className="text-xs mb-1">
+            <strong>End Use:</strong> {product.endUse.join(', ')}
+          </div>
+           <div className="text-xs mb-1">
+            <strong>Supplier:</strong> {product.supplier}
+          </div>
+        </div>
+      ))}
+    </div>
         </div>
       </main>
     </div>

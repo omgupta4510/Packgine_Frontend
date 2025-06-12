@@ -1,117 +1,70 @@
-const mockProducts = [
+export const mockProducts = [
   {
-    id: 'jar-1',
-    title: 'Jerhel Plastics Inc 7.5oz /222ml Glass Straight Sided Jar',
-    material: 'glass-jar',
-    shape: 'straight-sided',
-    sustainability: 'recyclable',
-    location: 'china',
-    neckDimension: '70mm',
+    id: '1',
+    title: 'Amber PET Bottle 250ml',
+    category: 'Bottle',
+    material: 'PET',
+    shape: 'Round',
+    sustainability: 'Recycled Content',
+    location: 'Germany',
+    neckDimension: '', 
     moq: 1000,
-    image: 'https://dummyimage.com/200x300/8e8e8e/fff&text=Jar+1',
-     size: '500ml',
-      endUse: ['Body Lotion', 'Body Oil'], // <-- Add this as an array of strings
-     color: 'amber',
-     deco: ['Digital Print', 'Labelling'], // <-- Add this line
-         supplier: 'Jerhel Plastics Inc', // <-- Add this line
-          capacity: 222,            // <-- Add this
-  capacityUnit: 'ml', 
-  sizeUnit: 'ml',   
-  tubeType: 'Extruded',
-  pouchStyle: 'Standup Pouch',
-  dispenserType: 'Zipper',
-  fill: 'up',
-
+    'bottle shape': 'shape',
+    image: '/images/amber-pet-bottle.jpg',
+    size: '250',
+    sizeUnit: 'ml',
+    endUse: ['Shampoo Conditioner', 'Body Lotion'],
+    color: 'Amber',
+    supplier: 'EcoPack Supplier'
   },
   {
-    id: 'bottle-1',
-    title: 'Resilux 33.8oz /1L 28–PCO PET Round Bottle',
-    material: 'pet-bottle',
-    shape: 'round',
-    sustainability: 'recycled-content',
-    location: 'usa',
-    neckDimension: '28mm',
+    id: '2',
+    title: 'White HDPE Bottle 500ml',
+    material: 'HDPE',
+    category: 'Bottle',
+    shape: 'Square',
+    sustainability: 'Recycle Ready',
+    location: 'USA',
+    neckDimension: '',
+    moq: 2000,
+    image: '/images/white-hdpe-bottle.jpg',
+    size: '500',
+    sizeUnit: 'ml',
+    endUse: ['Surface Cleaners'],
+    color: 'White',
+    supplier: 'Green Bottles Inc'
+  },
+  {
+    id: '3',
+    title: 'Clear Glass Jar 100ml',
+    material: 'Glass',
+    category: 'Jar',
+    shape: 'Round',
+    sustainability: 'Bio Based Material',
+    location: 'France',
     moq: 500,
-    image: 'https://dummyimage.com/200x300/aaa/fff&text=Bottle+1',
-     size: '500ml',
-      endUse: ['Body Lotion', 'Body Oil'], // <-- Add this as an array of strings
-     color: 'amber',
-     deco: ['Digital Print', 'Labelling'], // <-- Add this line
-         supplier: 'Jerhel Plastics Inc', // <-- Add this line
-          capacity: 222,            // <-- Add this
-  capacityUnit: 'ml', 
-  sizeUnit: 'ml',   
-  tubeType: 'Extruded',
-  pouchStyle: 'Standup Pouch',
-  dispenserType: 'Zipper',
-
+    image: '/images/clear-glass-jar.jpg',
+    size: '100',
+    sizeUnit: 'ml',
+    endUse: ['Face Moisturizer'],
+    color: 'Clear',
+    supplier: 'EcoPack Supplier'
   },
   {
-    id: 'bottle-2',
-    title: 'Resilux 32oz /950ml 38–DBJ PET Bottle',
-    material: 'pet-bottle',
-    shape: 'specialty',
-    sustainability: 'bio-based',
-    location: 'usa',
-    neckDimension: '38mm',
-    moq: 500,
-    image: 'https://dummyimage.com/200x300/bbb/fff&text=Bottle+2',
-     size: '500ml',
-      endUse: ['Body Lotion', 'Body Oil'], // <-- Add this as an array of strings
-     color: 'amber',
-     deco: ['Digital Print', 'Labelling'], // <-- Add this line
-         supplier: 'Jerhel Plastics Inc', // <-- Add this line
-          capacity: 222,            // <-- Add this
-  capacityUnit: 'ml', 
-  sizeUnit: 'ml',   
-  tubeType: 'Extruded',
-  pouchStyle: 'Standup Pouch',
-  dispenserType: 'Zipper',
-
-  },
-  {
-    id: 'bottle-3',
-    title: 'Resilux 16oz /473ml 28–400 Cosmo PET Round Bottle',
-    material: 'pet-bottle',
-    shape: 'round',
-    sustainability: 'refill-ready',
-    location: 'usa',
-    neckDimension: '28mm',
-    moq: 1000,
-    image: 'https://dummyimage.com/200x300/ccc/fff&text=Bottle+3',
-     size: '500ml',
-      endUse: ['Body Lotion', 'Body Oil'], // <-- Add this as an array of strings
-     color: 'amber',
-     deco: ['Digital Print', 'Labelling'], // <-- Add this line
-         supplier: 'Jerhel Plastics Inc', // <-- Add this line
-          capacity: 222,            // <-- Add this
-  capacityUnit: 'ml', 
-  sizeUnit: 'ml',   
-   tubeType: 'Extruded',
-   pouchStyle: 'Standup Pouch',
-
-  },
-  {
-  id: 'bottle-4',
-  title: 'Aluminum 200ml Spray Bottle',
-  material: 'aluminum-bottle',
-  shape: 'cylinder',
-  sustainability: 'recyclable',
-  location: 'europe',
-  neckDimension: '24mm',
-  moq: 1000,
-  image: 'https://dummyimage.com/200x300/ddd/000&text=Aluminum+Bottle',
-   size: '500ml',
-    endUse: ['Body Lotion', 'Body Oil'], // <-- Add this as an array of strings
-     color: 'amber',
-     deco: ['Digital Print', 'Labelling'], // <-- Add this line
-         supplier: 'Jerhel Plastics Inc', // <-- Add this line
-          capacity: 222,            // <-- Add this
-  capacityUnit: 'ml', 
-  sizeUnit: 'ml',   
-tubeType: 'Extruded',
-pouchStyle: 'Standup Pouch',
-},
+    id: '4',
+    title: 'Black PP Tube 50ml',
+    material: 'PP',
+    category: 'Tube',
+    shape: 'Round',
+    sustainability: 'Refill Ready',
+    location: 'China',
+    neckDimension: '',
+    moq: 3000,
+    image: '/images/black-pp-jar.jpg',
+    size: '50',
+    sizeUnit: 'ml',
+    endUse: ['Eye', 'Face Serum'],
+    color: 'Black',
+    supplier: 'EcoPack Supplier'
+  }
 ];
-
-export { mockProducts };

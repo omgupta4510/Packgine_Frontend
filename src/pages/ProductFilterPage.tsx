@@ -421,6 +421,88 @@ const ProductFilterPage = () => {
           <h1 className="text-3xl font-bold mb-6 capitalize">
             {filterValue?.replace(/-/g, ' ')}
           </h1>
+          {/* Selected Filters Chips */}
+<div className="flex flex-wrap gap-2 mb-6">
+  {filtersToShow.flatMap((filter: any) => {
+    // Normalize filter key for state lookup
+    const key = filter.name.toLowerCase();
+    const value = filterState[key];
+
+    // For checkbox-group (multi-select)
+    if (filter.type === 'checkbox-group' && Array.isArray(value) && value.length > 0) {
+      return value.map((v: string) => (
+        <span
+          key={key + v}
+          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+        >
+          {v}
+          <button
+            className="ml-2 text-green-500 hover:text-green-700"
+            onClick={() => {
+              // Remove this value from the filter
+              const newArr = value.filter((item: string) => item !== v);
+              handleFilterChange(key, newArr);
+            }}
+            aria-label={`Remove ${v}`}
+            type="button"
+          >
+            &times;
+          </button>
+        </span>
+      ));
+    }
+
+    // For single-value filters (dropdown, range-or-exact, etc.)
+    if (
+      (filter.type === 'dropdown' || filter.type === 'range-or-exact' || filter.type === 'range') &&
+      value &&
+      value !== ''
+    ) {
+      return (
+        <span
+          key={key}
+          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+        >
+          {filter.name}: {value}
+          <button
+            className="ml-2 text-green-500 hover:text-green-700"
+            onClick={() => handleFilterChange(key, '')}
+            aria-label={`Remove ${filter.name}`}
+            type="button"
+          >
+            &times;
+          </button>
+        </span>
+      );
+    }
+
+    // For location group (multi-select)
+    if (filter.type === 'location-group' && Array.isArray(filterState.locationcountries) && filterState.locationcountries.length > 0) {
+      return filterState.locationcountries.map((code: string) => (
+        <span
+          key={'locationcountries' + code}
+          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+        >
+          {countryCodeToName[code.toLowerCase()] || code}
+          <button
+            className="ml-2 text-green-500 hover:text-green-700"
+            onClick={() => {
+              const newArr = filterState.locationcountries.filter((item: string) => item !== code);
+              handleFilterChange('locationcountries', newArr);
+            }}
+            aria-label={`Remove ${code}`}
+            type="button"
+          >
+            &times;
+          </button>
+        </span>
+      ));
+    }
+
+    return null;
+  })}
+</div>
+          
           {/* Product grid */}
            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
      {mockProducts.filter(product =>

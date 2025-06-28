@@ -50,7 +50,7 @@ export const Footer = () => {
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center mb-4">
               <Leaf className="w-8 h-8 text-green-500 mr-2" />
-              <span className="text-xl font-semibold text-gray-900">EcoPack</span>
+              <span className="text-xl font-semibold text-gray-900">Packgine</span>
             </Link>
             <p className="text-gray-600 mb-6">
               Making sustainable packaging accessible to all businesses, one package at a time.
@@ -96,7 +96,7 @@ export const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              &copy; {currentYear} EcoPack. All rights reserved.
+              &copy; {currentYear} Packgine. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0">
               <p className="text-gray-500 text-sm">

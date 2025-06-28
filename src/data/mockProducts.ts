@@ -10,12 +10,12 @@ export const mockProducts = [
     neckDimension: '', 
     moq: 1000,
     'bottle shape': 'shape',
-    image: '/images/amber-pet-bottle.jpg',
+    image: '/Images/image1.png',
     size: '250',
     sizeUnit: 'ml',
     endUse: ['Shampoo Conditioner', 'Body Lotion'],
     color: 'Amber',
-    supplier: 'EcoPack Supplier'
+    supplier: 'Packgine Supplier'
   },
   {
     id: '2',
@@ -27,7 +27,7 @@ export const mockProducts = [
     location: 'USA',
     neckDimension: '',
     moq: 2000,
-    image: '/images/white-hdpe-bottle.jpg',
+    image: '/Images/image2.png',
     size: '500',
     sizeUnit: 'ml',
     endUse: ['Surface Cleaners'],
@@ -43,12 +43,12 @@ export const mockProducts = [
     sustainability: 'Bio Based Material',
     location: 'France',
     moq: 500,
-    image: '/images/clear-glass-jar.jpg',
+    image: '/Images/image3.png',
     size: '100',
     sizeUnit: 'ml',
     endUse: ['Face Moisturizer'],
     color: 'Clear',
-    supplier: 'EcoPack Supplier'
+    supplier: 'Packgine Supplier'
   },
   {
     id: '4',
@@ -60,11 +60,11 @@ export const mockProducts = [
     location: 'China',
     neckDimension: '',
     moq: 3000,
-    image: '/images/black-pp-jar.jpg',
+    image: '/Images/image4.png',
     size: '50',
     sizeUnit: 'ml',
     endUse: ['Eye', 'Face Serum'],
     color: 'Black',
-    supplier: 'EcoPack Supplier'
+    supplier: 'Packgine Supplier'
   }
 ];

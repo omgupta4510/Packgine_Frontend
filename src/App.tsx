@@ -8,6 +8,7 @@ import { ProductDetailPage } from './pages/ProductDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import ProductFilterPage from './pages/ProductFilterPage';
+import { BecomeSupplierPage } from './pages/BecomeSupplierPage';
 
 
 function App() {
@@ -20,9 +21,11 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/:id" element={<ProductDetailPage />} />
-                <Route path="/products/:filterType/:filterValue" element={<ProductFilterPage />} />
+            <Route path="/products/filter/:filterValue" element={<ProductFilterPage />} />
+            <Route path="/products/:filterType/:filterValue" element={<ProductFilterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/become-supplier" element={<BecomeSupplierPage />} />
           </Routes>
         </main>
         <Footer />

@@ -37,7 +37,7 @@ export const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <Leaf className="w-8 h-8 text-green-500 mr-2" />
-            <span className="text-xl font-semibold text-gray-900">EcoPack</span>
+            <span className="text-xl font-semibold text-gray-900">Packgine</span>
           </Link>
 
           {/* Desktop Navigation */}

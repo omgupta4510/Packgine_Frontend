@@ -1,12 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import commonFilters from '../data/commonFilters.json';
 import categoryFilters from '../data/categorySpecificFilters.json';
 import CountryFlag from 'react-country-flag';
 
-import { mockProducts } from '../data/mockProducts';
+// Types for supplier data from backend
+interface SupplierData {
+  _id: string;
+  broaderCategory: string;
+  category: string;
+  filters: { [key: string]: string[] };
+  images: string[];
+  ecoScore: number;
+  ecoScoreDetails: {
+    recyclability: number;
+    carbonFootprint: number;
+    sustainableMaterials: number;
+    localSourcing: number;
+    certifications: string[];
+  };
+  submittedAt: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ProductData {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  material: string;
+  shape: string;
+  sustainability: string;
+  location: string;
+  color: string;
+  moq: string;
+  size: string;
+  sizeUnit: string;
+  endUse: string[];
+  supplier: string;
+  ecoScore: number;
+  ecoScoreDetails: {
+    recyclability: number;
+    carbonFootprint: number;
+    sustainableMaterials: number;
+    localSourcing: number;
+    certifications: string[];
+  };
+}
 
 function getFiltersForCategory(category: string) {
+  if (category === 'all') {
+    // Only show common filters for 'all products' view
+    return [...commonFilters.filters];
+  }
   // Find category-specific filters
   const cat = categoryFilters.categories.find((c: any) => c.category.toLowerCase().replace(/\s+/g, '-') === category);
   const specificFilters = cat && cat.filters ? [...cat.filters] : [];
@@ -93,7 +141,70 @@ const ProductFilterPage = () => {
   const { filterValue } = useParams<{ filterValue: string }>();
   const [filterState, setFilterState] = useState<Record<string, any>>({});
   const [openFilterIndexes, setOpenFilterIndexes] = useState<number[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const filtersToShow = getFiltersForCategory(filterValue || '');
+
+  // Fetch suppliers from backend
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/suppliers`);
+        const result = await response.json();
+        
+        if (result.success) {
+          setSuppliers(result.data);
+        } else {
+          setError('Failed to fetch suppliers');
+          console.error('Failed to fetch suppliers:', result.message);
+        }
+      } catch (err) {
+        setError('Failed to connect to server');
+        console.error('Error fetching suppliers:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
+
+  // Transform supplier data to product format for display
+  const transformSupplierToProduct = (supplier: SupplierData): ProductData => {
+    const filters = supplier.filters || {};
+    
+    return {
+      id: supplier._id,
+      title: `${supplier.category} - ${filters.Material?.join(', ') || 'Material not specified'}`,
+      category: supplier.category,
+      image: supplier.images?.[0] || '/placeholder-image.png',
+      material: filters.Material?.join(', ') || 'Not specified',
+      shape: filters.Shape?.join(', ') || 'Not specified',
+      sustainability: filters.Sustainability?.join(', ') || 'Not specified',
+      location: filters.Location?.join(', ') || 'Not specified',
+      color: filters.Color?.join(', ') || 'Not specified',
+      moq: filters['Minimum Order']?.join(' - ') || 'Contact supplier',
+      size: filters.Size?.[0]?.replace('Min: ', '').replace('Max: ', ' - ') || 'Not specified',
+      sizeUnit: filters.Size?.find(s => s.startsWith('Unit:'))?.replace('Unit: ', '') || '',
+      endUse: filters['End Use'] || [],
+      supplier: filters.Supplier?.join(', ') || 'Supplier not specified',
+      ecoScore: supplier.ecoScore || 0,
+      ecoScoreDetails: supplier.ecoScoreDetails || {
+        recyclability: 0,
+        carbonFootprint: 0,
+        sustainableMaterials: 0,
+        localSourcing: 0,
+        certifications: []
+      }
+    };
+  };
+
+  // Get products from suppliers data
+  const getAllProducts = (): ProductData[] => {
+    return suppliers.map(transformSupplierToProduct);
+  };
 
   // Handler for filter value changes
   const handleFilterChange = (filterName: string, value: any) => {
@@ -101,7 +212,7 @@ const ProductFilterPage = () => {
   };
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex bg-gray-50 my-10 min-h-screen">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r px-4 py-6 mt-8 rounded-xl shadow-lg ml-2 h-fit sticky top-8 transition-all duration-300">
         <div className="flex items-center mb-4">
@@ -503,42 +614,134 @@ const ProductFilterPage = () => {
   })}
 </div>
           
+          {/* Loading state */}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="loader mb-4" />
+              <p className="text-gray-600">Loading suppliers...</p>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && !loading && (
+            <div className="text-center py-12">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+                <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Data</h3>
+                <p className="text-red-600 mb-4">{error}</p>
+                <button 
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
+          
           {/* Product grid */}
-           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-     {mockProducts.filter(product =>
-    product.category?.toLowerCase() === (filterValue || '').toLowerCase()
-  ).filter(product => productMatchesFilters(product, filterState)).map(product => (
-        <div
-          key={product.id}
-          className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col"
-        >
-          <img
-            src={product.image}
-            alt={product.title}
-            className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
-          />
-          <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
-          <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
-          <div className="flex flex-wrap gap-1 mb-2">
-            <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
-            <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
-            <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
-          </div>
-          <div className="text-xs mb-1">
-            <strong>MOQ:</strong> {product.moq}
-          </div>
-          <div className="text-xs mb-1">
-            <strong>Size:</strong> {product.size} {product.sizeUnit}
-          </div>
-          <div className="text-xs mb-1">
-            <strong>End Use:</strong> {product.endUse.join(', ')}
-          </div>
-           <div className="text-xs mb-1">
-            <strong>Supplier:</strong> {product.supplier}
-          </div>
-        </div>
-      ))}
-    </div>
+          {!loading && !error && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {(() => {
+                const allProducts = getAllProducts();
+                const filteredProducts = filterValue === 'all'
+                  ? allProducts.filter(product => productMatchesFilters(product, filterState))
+                  : allProducts.filter(product =>
+                      product.category?.toLowerCase() === (filterValue || '').toLowerCase()
+                    ).filter(product => productMatchesFilters(product, filterState));
+
+                if (filteredProducts.length === 0) {
+                  return (
+                    <div className="col-span-full text-center py-12">
+                      <div className="text-gray-400 mb-4">
+                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8l-4 4m0 0l-4-4m4 4V3"></path>
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No suppliers found</h3>
+                      <p className="text-gray-600 mb-4">
+                        {suppliers.length === 0 
+                          ? "No suppliers have registered yet."
+                          : "No suppliers match your selected filters. Try adjusting your filters."
+                        }
+                      </p>
+                      {filterState && Object.keys(filterState).length > 0 && (
+                        <button 
+                          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                          onClick={() => setFilterState({})}
+                        >
+                          Clear All Filters
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+
+                return filteredProducts.map(product => (
+                  <button
+                    key={product.id}
+                    className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col text-left hover:shadow-lg transition cursor-pointer"
+                    onClick={() => window.location.href = `/products/${product.id}`}
+                    style={{ outline: 'none', border: 'none' }}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-image.png';
+                      }}
+                    />
+                    <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
+                    <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
+                    
+                    {/* Eco Score Badge */}
+                    {product.ecoScore > 0 && (
+                      <div className="mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            product.ecoScore >= 80 ? 'bg-green-100 text-green-800' :
+                            product.ecoScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                            product.ecoScore >= 40 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            🌱 Eco Score: {product.ecoScore}/100
+                          </div>
+                        </div>
+                        <div className="mt-1 bg-gray-200 rounded-full h-1.5">
+                          <div 
+                            className={`h-1.5 rounded-full ${
+                              product.ecoScore >= 80 ? 'bg-green-500' :
+                              product.ecoScore >= 60 ? 'bg-yellow-500' :
+                              product.ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${product.ecoScore}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+                      <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
+                      <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+                    </div>
+                    <div className="text-xs mb-1">
+                      <strong>MOQ:</strong> {product.moq}
+                    </div>
+                    <div className="text-xs mb-1">
+                      <strong>Size:</strong> {product.size} {product.sizeUnit}
+                    </div>
+                    <div className="text-xs mb-1">
+                      <strong>End Use:</strong> {product.endUse.join(', ')}
+                    </div>
+                    <div className="text-xs mb-1">
+                      <strong>Supplier:</strong> {product.supplier}
+                    </div>
+                  </button>
+                ));
+              })()}
+            </div>
+          )}
         </div>
       </main>
     </div>
@@ -555,4 +758,26 @@ function getColorHex(color: string) {
     Silver: '#c0c0c0', Orange: '#ffa500'
   };
   return map[color] || '#eee';
+}
+
+// Add CSS for loader
+const style = document.createElement('style');
+style.innerHTML = `
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4ade80;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+if (!document.querySelector('#product-filter-styles')) {
+  style.id = 'product-filter-styles';
+  document.head.appendChild(style);
 }

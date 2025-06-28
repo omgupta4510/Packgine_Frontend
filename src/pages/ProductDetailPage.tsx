@@ -35,7 +35,7 @@ const mockProduct = {
     'Compostable in industrial facilities'
   ],
   images: [
-    'https://images.pexels.com/photos/7262764/pexels-photo-7262764.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    'https://images.pexels.com/photos/6044266/pexels-photo-6044266.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     'https://images.pexels.com/photos/6044537/pexels-photo-6044537.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     'https://images.pexels.com/photos/6044266/pexels-photo-6044266.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     'https://images.pexels.com/photos/7262954/pexels-photo-7262954.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'

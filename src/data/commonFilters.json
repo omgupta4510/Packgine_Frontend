@@ -227,10 +227,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "Supplier",
-      "type": "dropdown"
     }
   ]
 }

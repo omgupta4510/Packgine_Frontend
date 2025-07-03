@@ -7,6 +7,7 @@ import CountryFlag from 'react-country-flag';
 // Types for supplier data from backend
 interface SupplierData {
   _id: string;
+  name?: string;
   broaderCategory: string;
   category: string;
   filters: { [key: string]: string[] };
@@ -83,23 +84,26 @@ if (locationFilter && locationFilter.groups) {
 }
 
 function productMatchesFilters(product: any, filters: Record<string, any>) {
+  console.log('Checking product match:', { product: product.title, filters });
+  
   for (const key in filters) {
     const value = filters[key];
     if (!value || value.length === 0) continue;
 
-     // Special case for location group filter
+    // Special case for location group filter
     if (key === 'locationcountries') {
       // Map selected codes to names for comparison
       const selectedNames = value
         .map((code: string) => countryCodeToName[code.toLowerCase()]?.toLowerCase())
         .filter(Boolean);
       if (!selectedNames.includes(String(product.location).toLowerCase())) {
+        console.log('Location filter failed:', { selectedNames, productLocation: product.location });
         return false;
       }
       continue;
     }
 
-     // Handle min/max for range filters
+    // Handle min/max for range filters
     if (key.endsWith('_min') || key.endsWith('_max')) {
       const baseKey = key.replace(/_(min|max)$/, '');
       const productKey = Object.keys(product).find(
@@ -108,32 +112,84 @@ function productMatchesFilters(product: any, filters: Record<string, any>) {
       if (!productKey) continue;
       const productValue = Number(product[productKey]);
       if (key.endsWith('_min') && value !== '' && !isNaN(Number(value))) {
-        if (productValue < Number(value)) return false;
+        if (productValue < Number(value)) {
+          console.log('Min filter failed:', { productValue, minValue: value });
+          return false;
+        }
       }
       if (key.endsWith('_max') && value !== '' && !isNaN(Number(value))) {
-        if (productValue > Number(value)) return false;
+        if (productValue > Number(value)) {
+          console.log('Max filter failed:', { productValue, maxValue: value });
+          return false;
+        }
       }
       continue;
     }
 
+    // Find the matching product property
     const normalizedKey = normalizeKey(key);
     const productKey = Object.keys(product).find(
       k => normalizeKey(k) === normalizedKey
     );
-    if (!productKey) continue;
+    
+    if (!productKey) {
+      console.log('Product key not found:', { key, normalizedKey, productKeys: Object.keys(product) });
+      continue;
+    }
 
     const productValue = product[productKey];
+    console.log('Comparing values:', { filterKey: key, productKey, productValue, filterValue: value });
 
     if (Array.isArray(value)) {
+      // Filter value is an array (multi-select)
       if (Array.isArray(productValue)) {
-        if (!value.some((v) => productValue.map((p: string) => p.toLowerCase()).includes(v.toLowerCase()))) return false;
+        // Product value is also an array
+        const matches = value.some((filterVal) => 
+          productValue.some((prodVal: any) => 
+            String(prodVal).toLowerCase().includes(String(filterVal).toLowerCase()) ||
+            String(filterVal).toLowerCase().includes(String(prodVal).toLowerCase())
+          )
+        );
+        if (!matches) {
+          console.log('Array-to-array filter failed:', { productValue, filterValue: value });
+          return false;
+        }
       } else {
-        if (!value.map((v: string) => v.toLowerCase()).includes(String(productValue).toLowerCase())) return false;
+        // Product value is a single value
+        const matches = value.some((filterVal) => 
+          String(productValue).toLowerCase().includes(String(filterVal).toLowerCase()) ||
+          String(filterVal).toLowerCase().includes(String(productValue).toLowerCase())
+        );
+        if (!matches) {
+          console.log('Array-to-single filter failed:', { productValue, filterValue: value });
+          return false;
+        }
       }
     } else {
-      if (typeof productValue === 'string' && productValue.toLowerCase() !== String(value).toLowerCase()) return false;
+      // Filter value is a single value
+      if (Array.isArray(productValue)) {
+        // Product value is an array
+        const matches = productValue.some((prodVal: any) => 
+          String(prodVal).toLowerCase().includes(String(value).toLowerCase()) ||
+          String(value).toLowerCase().includes(String(prodVal).toLowerCase())
+        );
+        if (!matches) {
+          console.log('Single-to-array filter failed:', { productValue, filterValue: value });
+          return false;
+        }
+      } else {
+        // Both are single values
+        const matches = String(productValue).toLowerCase().includes(String(value).toLowerCase()) ||
+                       String(value).toLowerCase().includes(String(productValue).toLowerCase());
+        if (!matches) {
+          console.log('Single-to-single filter failed:', { productValue, filterValue: value });
+          return false;
+        }
+      }
     }
   }
+  
+  console.log('Product matches all filters');
   return true;
 }
 
@@ -146,49 +202,178 @@ const ProductFilterPage = () => {
   const [error, setError] = useState<string | null>(null);
   const filtersToShow = getFiltersForCategory(filterValue || '');
 
-  // Fetch suppliers from backend
+  // Fetch products from backend
   useEffect(() => {
-    const fetchSuppliers = async () => {
+    const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/suppliers`);
-        const result = await response.json();
+        console.log('Fetching products from backend...');
         
-        if (result.success) {
-          setSuppliers(result.data);
+        // Fetch both approved and pending products
+        const [approvedResponse, pendingResponse] = await Promise.all([
+          fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/products?limit=100&status=approved`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/products?limit=100&status=pending`)
+        ]);
+        
+        console.log('API response statuses:', {
+          approved: approvedResponse.status,
+          pending: pendingResponse.status
+        });
+        
+        const [approvedResult, pendingResult] = await Promise.all([
+          approvedResponse.json(),
+          pendingResponse.json()
+        ]);
+        
+        console.log('API results:', { approvedResult, pendingResult });
+        
+        const allProducts = [
+          ...(approvedResult.products || []),
+          ...(pendingResult.products || [])
+        ];
+        
+        console.log('All products combined:', allProducts);
+        
+        if (allProducts.length > 0) {
+          // Transform product data to match expected format
+          const transformedProducts = allProducts.map(transformProductToDisplayFormat);
+          console.log('Transformed products:', transformedProducts);
+          setSuppliers(transformedProducts);
         } else {
-          setError('Failed to fetch suppliers');
-          console.error('Failed to fetch suppliers:', result.message);
+          setError('No products found');
+          console.error('No products returned from API');
         }
       } catch (err) {
         setError('Failed to connect to server');
-        console.error('Error fetching suppliers:', err);
+        console.error('Error fetching products:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSuppliers();
+    fetchProducts();
   }, []);
+
+  // Transform product data from backend to display format
+  const transformProductToDisplayFormat = (product: any): SupplierData => {
+    console.log('Transforming product:', product);
+    
+    // Initialize merged filters object
+    const mergedFilters: { [key: string]: any[] } = {};
+    
+    // Helper to merge filter arrays - handle the new schema structure
+    function mergeFilterArray(filterArray: any[], arrayName: string) {
+      console.log(`Processing ${arrayName}:`, filterArray);
+      
+      if (Array.isArray(filterArray)) {
+        filterArray.forEach((filterItem, index) => {
+          console.log(`${arrayName}[${index}]:`, filterItem);
+          
+          if (filterItem && typeof filterItem === 'object' && !Array.isArray(filterItem)) {
+            // Handle objects with filter names as keys
+            Object.entries(filterItem).forEach(([filterName, filterValues]) => {
+              console.log(`Filter: ${filterName}, Values:`, filterValues);
+              
+              if (!mergedFilters[filterName]) {
+                mergedFilters[filterName] = [];
+              }
+              
+              if (Array.isArray(filterValues)) {
+                // If it's already an array, spread it
+                mergedFilters[filterName].push(...filterValues);
+              } else if (filterValues !== null && filterValues !== undefined) {
+                // If it's a single value, push it
+                mergedFilters[filterName].push(filterValues);
+              }
+            });
+          }
+        });
+      }
+    }
+    
+    // Process categoryFilters and commonFilters
+    mergeFilterArray(product.categoryFilters || [], 'categoryFilters');
+    mergeFilterArray(product.commonFilters || [], 'commonFilters');
+    
+    // Add default/legacy fields for compatibility - only if not already set
+    if (!mergedFilters.Material) {
+      mergedFilters.Material = [product.specifications?.material || 'Not specified'];
+    }
+    if (!mergedFilters.Location) {
+      mergedFilters.Location = [product.supplier?.address?.country || 'Not specified'];
+    }
+    if (!mergedFilters['Minimum Order']) {
+      mergedFilters['Minimum Order'] = [`${product.specifications?.minimumOrderQuantity || 1} units`];
+    }
+    if (!mergedFilters.Supplier) {
+      mergedFilters.Supplier = [product.supplier?.companyName || 'Unknown Supplier'];
+    }
+    if (!mergedFilters.Price) {
+      mergedFilters.Price = [`$${product.pricing?.basePrice || 0}`];
+    }
+    
+    console.log('Final merged filters:', mergedFilters);
+
+    return {
+      _id: product._id,
+      name: product.name || '',
+      broaderCategory: product.broaderCategory || '',
+      category: product.category || '',
+      filters: mergedFilters,
+      images: product.images || [],
+      ecoScore: product.ecoScore || 0,
+      ecoScoreDetails: product.ecoScoreDetails || {
+        recyclability: 0,
+        carbonFootprint: 0,
+        sustainableMaterials: 0,
+        localSourcing: 0,
+        certifications: []
+      },
+      submittedAt: product.createdAt || '',
+      status: product.status || 'pending',
+      createdAt: product.createdAt || '',
+      updatedAt: product.updatedAt || ''
+    };
+  };
 
   // Transform supplier data to product format for display
   const transformSupplierToProduct = (supplier: SupplierData): ProductData => {
     const filters = supplier.filters || {};
+    console.log('Transforming supplier to product:', { supplier: supplier.name, filters });
     
     return {
       id: supplier._id,
-      title: `${supplier.category} - ${filters.Material?.join(', ') || 'Material not specified'}`,
+      title: supplier.name || `${supplier.category} Product`,
       category: supplier.category,
       image: supplier.images?.[0] || '/placeholder-image.png',
       material: filters.Material?.join(', ') || 'Not specified',
-      shape: filters.Shape?.join(', ') || 'Not specified',
-      sustainability: filters.Sustainability?.join(', ') || 'Not specified',
+      shape: filters.Shape?.join(', ') || filters.Form?.join(', ') || 'Not specified',
+      sustainability: filters.Sustainability?.join(', ') || filters['Eco-Friendly']?.join(', ') || 'Not specified',
       location: filters.Location?.join(', ') || 'Not specified',
       color: filters.Color?.join(', ') || 'Not specified',
-      moq: filters['Minimum Order']?.join(' - ') || 'Contact supplier',
-      size: filters.Size?.[0]?.replace('Min: ', '').replace('Max: ', ' - ') || 'Not specified',
-      sizeUnit: filters.Size?.find(s => s.startsWith('Unit:'))?.replace('Unit: ', '') || '',
-      endUse: filters['End Use'] || [],
+      moq: filters['Minimum Order']?.join(' - ') || filters.MOQ?.join(' - ') || 'Contact supplier',
+      size: (() => {
+        const sizeData = filters.Size || filters.Capacity || filters.Volume || [];
+        if (sizeData.length === 0) return 'Not specified';
+        
+        // Handle range format (Min: X, Max: Y)
+        const minVal = sizeData.find((s: string) => s.startsWith('Min:'))?.replace('Min: ', '');
+        const maxVal = sizeData.find((s: string) => s.startsWith('Max:'))?.replace('Max: ', '');
+        
+        if (minVal && maxVal) {
+          return `${minVal} - ${maxVal}`;
+        } else if (minVal) {
+          return `${minVal}+`;
+        } else if (maxVal) {
+          return `Up to ${maxVal}`;
+        } else {
+          return sizeData.join(', ');
+        }
+      })(),
+      sizeUnit: filters.Size?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '') || 
+                filters.Capacity?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '') || 
+                'units',
+      endUse: filters['End Use'] || filters.Application || filters.Purpose || [],
       supplier: filters.Supplier?.join(', ') || 'Supplier not specified',
       ecoScore: supplier.ecoScore || 0,
       ecoScoreDetails: supplier.ecoScoreDetails || {
@@ -618,7 +803,7 @@ const ProductFilterPage = () => {
           {loading && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="loader mb-4" />
-              <p className="text-gray-600">Loading suppliers...</p>
+              <p className="text-gray-600">Loading Prodcuts...</p>
             </div>
           )}
 

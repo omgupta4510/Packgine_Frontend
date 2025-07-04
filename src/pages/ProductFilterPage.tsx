@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import commonFilters from '../data/commonFilters.json';
 import categoryFilters from '../data/categorySpecificFilters.json';
 import CountryFlag from 'react-country-flag';
-
+const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 // Types for supplier data from backend
 interface SupplierData {
   _id: string;
@@ -211,8 +211,8 @@ const ProductFilterPage = () => {
         
         // Fetch both approved and pending products
         const [approvedResponse, pendingResponse] = await Promise.all([
-          fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/products?limit=100&status=approved`),
-          fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/products?limit=100&status=pending`)
+          fetch(`${API_URL}/api/products?limit=100&status=approved`),
+          fetch(`${API_URL}/api/products?limit=100&status=pending`)
         ]);
         
         console.log('API response statuses:', {

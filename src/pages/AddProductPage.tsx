@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import broaderCategories from '../data/broaderCategories.json';
 import categorySpecificFilters from '../data/categorySpecificFilters.json';
 import commonFilters from '../data/commonFilters.json';
+const API_URL= import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 
 const AddProductPage: React.FC = () => {
   const navigate = useNavigate();
@@ -178,7 +180,7 @@ const AddProductPage: React.FC = () => {
 
       console.log('Sending product data:', productData);
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/dashboard/products`, {
+      const response = await fetch(`${API_URL}/api/dashboard/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

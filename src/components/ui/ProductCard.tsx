@@ -1,8 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { SustainabilityScore } from './SustainabilityScore';
 import { Button } from './Button';
-import { Heart } from 'lucide-react';
+import { FavoriteButton } from './FavoriteButton';
 
 type ProductCardProps = {
   id: string;
@@ -36,9 +35,7 @@ export const ProductCard = ({
           />
         </Link>
         <div className="absolute top-3 right-3">
-          <button className="bg-white p-1.5 rounded-full shadow-sm hover:bg-gray-50 transition-colors">
-            <Heart size={18} className="text-gray-400 hover:text-red-500 transition-colors" />
-          </button>
+          <FavoriteButton productId={id} />
         </div>
         <div className="absolute bottom-3 left-3">
           <SustainabilityScore score={sustainabilityScore} size="sm" />

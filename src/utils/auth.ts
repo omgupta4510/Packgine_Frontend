@@ -78,10 +78,14 @@ export const getToken = (): string | null => {
 
 export const setToken = (token: string): void => {
   localStorage.setItem(TOKEN_KEY, token);
+  // Dispatch custom event to notify components
+  window.dispatchEvent(new Event('authStateChanged'));
 };
 
 export const removeToken = (): void => {
   localStorage.removeItem(TOKEN_KEY);
+  // Dispatch custom event to notify components
+  window.dispatchEvent(new Event('authStateChanged'));
 };
 
 // Create axios instance with auth header
@@ -123,31 +127,31 @@ const authApi = createAuthAxios();
 export const authService = {
   // Register new supplier
   register: async (data: RegisterData): Promise<AuthResponse> => {
-    const response = await axios.post(`${API_URL}/api/auth/register`, data);
+    const response = await axios.post(`${API_URL}/api/supplier/auth/register`, data);
     return response.data;
   },
 
   // Login supplier
   login: async (data: LoginData): Promise<AuthResponse> => {
-    const response = await axios.post(`${API_URL}/api/auth/login`, data);
+    const response = await axios.post(`${API_URL}/api/supplier/auth/login`, data);
     return response.data;
   },
 
   // Get supplier profile
   getProfile: async (): Promise<Supplier> => {
-    const response = await authApi.get('/api/auth/profile');
+    const response = await authApi.get('/api/supplier/auth/profile');
     return response.data;
   },
 
   // Update supplier profile
   updateProfile: async (data: Partial<Supplier>): Promise<{ message: string; supplier: Supplier }> => {
-    const response = await authApi.put('/api/auth/profile', data);
+    const response = await authApi.put('/api/supplier/auth/profile', data);
     return response.data;
   },
 
   // Change password
   changePassword: async (currentPassword: string, newPassword: string): Promise<{ message: string }> => {
-    const response = await authApi.post('/api/auth/change-password', {
+    const response = await authApi.post('/api/supplier/auth/change-password', {
       currentPassword,
       newPassword,
     });
@@ -156,13 +160,13 @@ export const authService = {
 
   // Verify token
   verifyToken: async (): Promise<{ valid: boolean; supplier: Supplier }> => {
-    const response = await authApi.get('/api/auth/verify-token');
+    const response = await authApi.get('/api/supplier/auth/verify-token');
     return response.data;
   },
 
   // Logout
   logout: async (): Promise<{ message: string }> => {
-    const response = await authApi.post('/api/auth/logout');
+    const response = await authApi.post('/api/supplier/auth/logout');
     removeToken();
     return response.data;
   },

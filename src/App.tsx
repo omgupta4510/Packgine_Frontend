@@ -6,6 +6,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
+import { UserDashboard } from './pages/UserDashboard';
 import ProductFilterPage from './pages/ProductFilterPage';
 import { BecomeSupplierPage } from './pages/BecomeSupplierPage';
 import SupplierAuthPage from './pages/SupplierAuthPage';
@@ -30,6 +31,7 @@ function App() {
             <Route path="/products/:filterType/:filterValue" element={<ProductFilterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/become-supplier" element={<BecomeSupplierPage />} />
             
             {/* Supplier Authentication */}

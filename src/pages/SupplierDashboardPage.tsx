@@ -106,22 +106,7 @@ const SupplierDashboardPage: React.FC = () => {
               </h1>
               <p className="text-gray-600">Manage your products and view performance</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/supplier/profile')}
-                className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900"
-              >
-                <Settings className="h-5 w-5 mr-2" />
-                Settings
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex items-center px-4 py-2 text-red-600 hover:text-red-700"
-              >
-                <LogOut className="h-5 w-5 mr-2" />
-                Logout
-              </button>
-            </div>
+            
           </div>
         </div>
       </header>

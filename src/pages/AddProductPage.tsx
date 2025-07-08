@@ -37,7 +37,66 @@ const AddProductPage: React.FC = () => {
     description: '',
     price: '',
     minimumOrderQuantity: 1,
-    availableQuantity: 100
+    availableQuantity: 100,
+    features: [] as string[],
+    // Capacity
+    capacity: '',
+    capacityUnit: 'ml',
+    // Dimensions
+    height: '',
+    width: '',
+    depth: '',
+    dimensionUnit: 'mm',
+    // Weight
+    weight: '',
+    weightUnit: 'g',
+    // Other specifications
+    color: '',
+    finish: '',
+    closure: '',
+    // Lead time
+    standardLeadTime: '',
+    customLeadTime: '',
+    rushLeadTime: '',
+    // SEO
+    metaTitle: '',
+    metaDescription: '',
+    keywords: [] as string[]
+  });
+
+  const [sustainability, setSustainability] = useState({
+    recycledContent: 0,
+    biodegradable: false,
+    compostable: false,
+    refillable: false,
+    sustainableSourcing: false,
+    carbonNeutral: false
+  });
+
+  const [certifications, setCertifications] = useState<Array<{
+    name: string;
+    certificationBody?: string;
+    validUntil?: string;
+    certificateNumber?: string;
+  }>>([]);
+
+  const [customization, setCustomization] = useState({
+    printingAvailable: false,
+    labelingAvailable: false,
+    colorOptions: [] as string[],
+    printingMethods: [] as string[],
+    customSizes: false
+  });
+
+  const [newFeature, setNewFeature] = useState('');
+  const [newKeyword, setNewKeyword] = useState('');
+  const [newColorOption, setNewColorOption] = useState('');
+  const [newPrintingMethod, setNewPrintingMethod] = useState('');
+  const [newCertification, setNewCertification] = useState({
+    name: '',
+    certificationBody: '',
+    validUntil: '',
+    certificateNumber: ''
   });
 
   // Update available categories when broader category changes
@@ -159,14 +218,29 @@ const AddProductPage: React.FC = () => {
         broaderCategory: selectedBroaderCategory,
         category: selectedCategory,
         images: uploadedImages,
+        primaryImage: uploadedImages[0] || null,
+        features: productInfo.features,
         specifications: {
-          material: selectedCategoryFilters['Material']?.[0] || selectedCommonFilters['Material']?.[0] || 'Not specified',
+          material: (selectedCategoryFilters['Material'] || selectedCommonFilters['Material'] || ['Not specified']).join(', '),
+          capacity: productInfo.capacity ? {
+            value: parseFloat(productInfo.capacity),
+            unit: productInfo.capacityUnit
+          } : undefined,
+          dimensions: {
+            height: parseFloat(productInfo.height) || undefined,
+            width: parseFloat(productInfo.width) || undefined,
+            depth: parseFloat(productInfo.depth) || undefined,
+            unit: productInfo.dimensionUnit
+          },
+          weight: productInfo.weight ? {
+            value: parseFloat(productInfo.weight),
+            unit: productInfo.weightUnit
+          } : undefined,
+          color: productInfo.color || undefined,
+          finish: productInfo.finish || undefined,
+          closure: productInfo.closure || undefined,
           minimumOrderQuantity: productInfo.minimumOrderQuantity,
-          availableQuantity: productInfo.availableQuantity,
-          capacity: {
-            value: 1,
-            unit: 'unit'
-          }
+          availableQuantity: productInfo.availableQuantity
         },
         pricing: {
           basePrice: parseFloat(productInfo.price),
@@ -174,6 +248,20 @@ const AddProductPage: React.FC = () => {
         },
         ecoScore: ecoScore,
         ecoScoreDetails: ecoScoreDetails,
+        sustainability: sustainability,
+        certifications: certifications,
+        customization: customization,
+        leadTime: {
+          standard: productInfo.standardLeadTime ? parseInt(productInfo.standardLeadTime) : undefined,
+          custom: productInfo.customLeadTime ? parseInt(productInfo.customLeadTime) : undefined,
+          rush: productInfo.rushLeadTime ? parseInt(productInfo.rushLeadTime) : undefined
+        },
+        seo: {
+          metaTitle: productInfo.metaTitle || undefined,
+          metaDescription: productInfo.metaDescription || undefined,
+          keywords: productInfo.keywords,
+          slug: productInfo.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+        },
         categoryFilters: selectedCategoryFilters,
         commonFilters: selectedCommonFilters
       };
@@ -499,30 +587,6 @@ const AddProductPage: React.FC = () => {
                               }}
                             />
                           </div>
-                          {filter.unitOptions && (
-                            <div className="w-32">
-                              <label className="block text-sm font-medium text-gray-600 mb-2">Unit</label>
-                              <select 
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                                onChange={(e) => {
-                                  const currentSelections = selectedCategoryFilters[filter.name] || [];
-                                  const updatedSelections = currentSelections.filter((item: any) => !item.startsWith('Unit:'));
-                                  if (e.target.value) {
-                                    updatedSelections.push(`Unit: ${e.target.value}`);
-                                  }
-                                  setSelectedCategoryFilters({
-                                    ...selectedCategoryFilters,
-                                    [filter.name]: updatedSelections
-                                  });
-                                }}
-                              >
-                                <option value="">Select</option>
-                                {filter.unitOptions.map((unit: string) => (
-                                  <option key={unit} value={unit}>{unit}</option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
                         </div>
                       </div>
                     )}
@@ -593,6 +657,77 @@ const AddProductPage: React.FC = () => {
                     {filter.type === 'checkbox-group' && filter.groups && (
                       <div className="space-y-6">
                         {filter.groups.map((group: any, groupIndex: number) => (
+                          <div key={groupIndex}>
+                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <div className="space-y-2">
+                              {group.options.map((option: any, optionIndex: number) => {
+                                const optionValue = typeof option === 'string' ? option : option.name;
+                                const isSelected = selectedCommonFilters[filter.name]?.includes(optionValue) || false;
+                                return (
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        const currentSelections = selectedCommonFilters[filter.name] || [];
+                                        let updatedSelections;
+                                        if (e.target.checked) {
+                                          updatedSelections = [...currentSelections, optionValue];
+                                        } else {
+                                          updatedSelections = currentSelections.filter((item: any) => item !== optionValue);
+                                        }
+                                        setSelectedCommonFilters({
+                                          ...selectedCommonFilters,
+                                          [filter.name]: updatedSelections
+                                        });
+                                      }}
+                                      className="w-4 h-4 text-green-600"
+                                    />
+                                    <span>{optionValue}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Handle location-group filters */}
+                    {filter.type === 'location-group' && (
+                      <div className="space-y-6">
+                        {/* Toggle options (Manufacturing/Warehousing) */}
+                        {filter.toggleOptions && (
+                          <div className="mb-4">
+                            <div className="flex space-x-4">
+                              {filter.toggleOptions.map((toggle: string) => (
+                                <button
+                                  key={toggle}
+                                  type="button"
+                                  onClick={() => {
+                                    const currentSelections = selectedCommonFilters[filter.name] || [];
+                                    const updatedSelections = currentSelections.filter((item: any) => !item.startsWith('Toggle:'));
+                                    updatedSelections.push(`Toggle: ${toggle}`);
+                                    setSelectedCommonFilters({
+                                      ...selectedCommonFilters,
+                                      [filter.name]: updatedSelections
+                                    });
+                                  }}
+                                  className={`px-4 py-2 rounded-lg border ${
+                                    selectedCommonFilters[filter.name]?.some((item: string) => item === `Toggle: ${toggle}`) 
+                                      ? 'bg-green-500 text-white border-green-500' 
+                                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  {toggle}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Location groups */}
+                        {filter.groups && filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
                             <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
@@ -763,159 +898,6 @@ const AddProductPage: React.FC = () => {
                             </div>
                           )}
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">Or Exact Value</label>
-                          <input 
-                            type="number" 
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                            placeholder="Exact value"
-                            onChange={(e) => {
-                              const currentSelections = selectedCommonFilters[filter.name] || [];
-                              const updatedSelections = currentSelections.filter((item: any) => !item.startsWith('Exact:'));
-                              if (e.target.value) {
-                                updatedSelections.push(`Exact: ${e.target.value}`);
-                              }
-                              setSelectedCommonFilters({
-                                ...selectedCommonFilters,
-                                [filter.name]: updatedSelections
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Handle composite filters (like Neck Dimensions) */}
-                    {filter.type === 'composite' && filter.fields && (
-                      <div className="space-y-4">
-                        {filter.fields.map((field: any, fieldIndex: number) => (
-                          <div key={fieldIndex}>
-                            <label className="block text-sm font-medium text-gray-600 mb-2">{field.label}</label>
-                            {field.type === 'range' && (
-                              <div className="flex gap-4">
-                                <div className="flex-1">
-                                  <input 
-                                    type="number" 
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                                    placeholder={`Min ${field.label}`}
-                                    onChange={(e) => {
-                                      const currentSelections = selectedCommonFilters[filter.name] || [];
-                                      const updatedSelections = currentSelections.filter((item: any) => !item.startsWith(`${field.label} Min:`));
-                                      if (e.target.value) {
-                                        updatedSelections.push(`${field.label} Min: ${e.target.value}${field.unit ? ` ${field.unit}` : ''}`);
-                                      }
-                                      setSelectedCommonFilters({
-                                        ...selectedCommonFilters,
-                                        [filter.name]: updatedSelections
-                                      });
-                                    }}
-                                  />
-                                </div>
-                                <div className="flex-1">
-                                  <input 
-                                    type="number" 
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                                    placeholder={`Max ${field.label}`}
-                                    onChange={(e) => {
-                                      const currentSelections = selectedCommonFilters[filter.name] || [];
-                                      const updatedSelections = currentSelections.filter((item: any) => !item.startsWith(`${field.label} Max:`));
-                                      if (e.target.value) {
-                                        updatedSelections.push(`${field.label} Max: ${e.target.value}${field.unit ? ` ${field.unit}` : ''}`);
-                                      }
-                                      setSelectedCommonFilters({
-                                        ...selectedCommonFilters,
-                                        [filter.name]: updatedSelections
-                                      });
-                                    }}
-                                  />
-                                </div>
-                                {field.unit && (
-                                  <div className="w-16 flex items-end">
-                                    <span className="text-sm text-gray-500">{field.unit}</span>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            {field.type === 'dropdown' && (
-                              <select 
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                                onChange={(e) => {
-                                  const currentSelections = selectedCommonFilters[filter.name] || [];
-                                  const updatedSelections = currentSelections.filter((item: any) => !item.startsWith(`${field.label}:`));
-                                  if (e.target.value) {
-                                    updatedSelections.push(`${field.label}: ${e.target.value}`);
-                                  }
-                                  setSelectedCommonFilters({
-                                    ...selectedCommonFilters,
-                                    [filter.name]: updatedSelections
-                                  });
-                                }}
-                              >
-                                <option value="">Select {field.label}</option>
-                                {field.options?.map((option: string) => (
-                                  <option key={option} value={option}>{option}</option>
-                                ))}
-                              </select>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Handle location-group filters */}
-                    {filter.type === 'location-group' && filter.groups && (
-                      <div className="space-y-6">
-                        {filter.toggleOptions && (
-                          <div className="flex gap-4 mb-4">
-                            {filter.toggleOptions.map((toggle: string) => (
-                              <label key={toggle} className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  name={`${filter.name}_toggle`}
-                                  value={toggle}
-                                  defaultChecked={toggle === filter.defaultToggle}
-                                  className="w-4 h-4 text-green-600"
-                                />
-                                <span className="text-sm font-medium">{toggle}</span>
-                              </label>
-                            ))}
-                          </div>
-                        )}
-                        {filter.groups.map((group: any, groupIndex: number) => (
-                          <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
-                            <div className="grid grid-cols-2 gap-2">
-                              {group.options.map((option: any, optionIndex: number) => {
-                                const optionValue = typeof option === 'string' ? option : option.name;
-                                const optionCode = typeof option === 'object' ? option.code : option.toLowerCase();
-                                const isSelected = selectedCommonFilters[filter.name]?.includes(optionCode) || false;
-                                return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
-                                    <input
-                                      type="checkbox"
-                                      checked={isSelected}
-                                      onChange={(e) => {
-                                        const currentSelections = selectedCommonFilters[filter.name] || [];
-                                        let updatedSelections;
-                                        if (e.target.checked) {
-                                          updatedSelections = [...currentSelections, optionCode];
-                                        } else {
-                                          updatedSelections = currentSelections.filter((item: any) => item !== optionCode);
-                                        }
-                                        setSelectedCommonFilters({
-                                          ...selectedCommonFilters,
-                                          [filter.name]: updatedSelections
-                                        });
-                                      }}
-                                      className="w-4 h-4 text-green-600"
-                                    />
-                                    <span>{optionValue}</span>
-                                  </label>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -1181,69 +1163,597 @@ const AddProductPage: React.FC = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 7: Product Details & Review</h2>
             <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  value={productInfo.name}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  required
-                />
+              {/* Basic Information */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={productInfo.name}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description *
+                    </label>
+                    <textarea
+                      value={productInfo.description}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Price ($) *
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={productInfo.price}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Min Order Quantity
+                      </label>
+                      <input
+                        type="number"
+                        value={productInfo.minimumOrderQuantity}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Available Quantity
+                      </label>
+                      <input
+                        type="number"
+                        value={productInfo.availableQuantity}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 0 }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description *
-                </label>
-                <textarea
-                  value={productInfo.description}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  required
-                />
+              {/* Product Features */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Features</h3>
+                <div className="space-y-4">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Add a feature..."
+                      value={newFeature}
+                      onChange={(e) => setNewFeature(e.target.value)}
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      onKeyPress={(e) => e.key === 'Enter' && addFeature()}
+                    />
+                    <button
+                      type="button"
+                      onClick={addFeature}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {productInfo.features.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {productInfo.features.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800"
+                        >
+                          {feature}
+                          <button
+                            type="button"
+                            onClick={() => removeFeature(index)}
+                            className="ml-2 hover:text-red-600"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price ($) *
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={productInfo.price}
-                    onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    required
-                  />
-                </div>
+              {/* Specifications */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Specifications</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Dimensions */}
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-3">Dimensions</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        type="number"
+                        placeholder="Height"
+                        value={productInfo.height}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, height: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Width"
+                        value={productInfo.width}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, width: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Depth"
+                        value={productInfo.depth}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, depth: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+                    <select
+                      value={productInfo.dimensionUnit}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, dimensionUnit: e.target.value }))}
+                      className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="mm">mm</option>
+                      <option value="cm">cm</option>
+                      <option value="inch">inch</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Min Order Quantity
-                  </label>
-                  <input
-                    type="number"
-                    value={productInfo.minimumOrderQuantity}
-                    onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
+                  {/* Weight */}
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-3">Weight</h4>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        placeholder="Weight"
+                        value={productInfo.weight}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, weight: e.target.value }))}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                      <select
+                        value={productInfo.weightUnit}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, weightUnit: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="oz">oz</option>
+                        <option value="lb">lb</option>
+                      </select>
+                    </div>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Available Quantity
-                  </label>
-                  <input
-                    type="number"
-                    value={productInfo.availableQuantity}
-                    onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 0 }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
+                  {/* Capacity */}
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-3">Capacity</h4>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        placeholder="Capacity"
+                        value={productInfo.capacity}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, capacity: e.target.value }))}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                      <select
+                        value={productInfo.capacityUnit}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, capacityUnit: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="ml">ml</option>
+                        <option value="L">L</option>
+                        <option value="oz">oz</option>
+                        <option value="gal">gal</option>
+                        <option value="cc">cc</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Color */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Transparent, White, Black"
+                      value={productInfo.color}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, color: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* Finish */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Finish</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Matte, Glossy, Textured"
+                      value={productInfo.finish}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, finish: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* Closure */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Closure Type</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Pump, Spray, Cap, Screw-on"
+                      value={productInfo.closure}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, closure: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Lead Time */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Lead Time (Days)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Standard</label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 14"
+                      value={productInfo.standardLeadTime}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, standardLeadTime: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Custom</label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 21"
+                      value={productInfo.customLeadTime}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, customLeadTime: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Rush</label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 7"
+                      value={productInfo.rushLeadTime}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, rushLeadTime: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sustainability */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sustainability Features</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Recycled Content (%)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={sustainability.recycledContent}
+                      onChange={(e) => setSustainability(prev => ({ ...prev, recycledContent: parseInt(e.target.value) || 0 }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.biodegradable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, biodegradable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Biodegradable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.compostable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, compostable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Compostable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.refillable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, refillable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Refillable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.sustainableSourcing}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, sustainableSourcing: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Sustainable Sourcing
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.carbonNeutral}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, carbonNeutral: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Carbon Neutral
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Certifications */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Certifications</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Certification Name"
+                      value={newCertification.name}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, name: e.target.value }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Certification Body"
+                      value={newCertification.certificationBody}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, certificationBody: e.target.value }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                    <input
+                      type="date"
+                      placeholder="Valid Until"
+                      value={newCertification.validUntil}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, validUntil: e.target.value }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Certificate Number"
+                      value={newCertification.certificateNumber}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, certificateNumber: e.target.value }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addCertification}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Add Certification
+                  </button>
+                  {certifications.length > 0 && (
+                    <div className="space-y-2">
+                      {certifications.map((cert, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div>
+                            <span className="font-medium">{cert.name}</span>
+                            {cert.certificationBody && <span className="text-sm text-gray-600 ml-2">by {cert.certificationBody}</span>}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeCertification(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Customization Options */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Customization Options</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.printingAvailable}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, printingAvailable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Printing Available
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.labelingAvailable}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, labelingAvailable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Labeling Available
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.customSizes}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, customSizes: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Custom Sizes
+                    </label>
+                  </div>
+
+                  {/* Color Options */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Color Options</label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        placeholder="Add color option..."
+                        value={newColorOption}
+                        onChange={(e) => setNewColorOption(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        onKeyPress={(e) => e.key === 'Enter' && addColorOption()}
+                      />
+                      <button
+                        type="button"
+                        onClick={addColorOption}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    {customization.colorOptions.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {customization.colorOptions.map((color, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                          >
+                            {color}
+                            <button
+                              type="button"
+                              onClick={() => removeColorOption(index)}
+                              className="ml-2 hover:text-red-600"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Printing Methods */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Printing Methods</label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        placeholder="Add printing method..."
+                        value={newPrintingMethod}
+                        onChange={(e) => setNewPrintingMethod(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        onKeyPress={(e) => e.key === 'Enter' && addPrintingMethod()}
+                      />
+                      <button
+                        type="button"
+                        onClick={addPrintingMethod}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    {customization.printingMethods.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {customization.printingMethods.map((method, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800"
+                          >
+                            {method}
+                            <button
+                              type="button"
+                              onClick={() => removePrintingMethod(index)}
+                              className="ml-2 hover:text-red-600"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* SEO Information */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Meta Title</label>
+                    <input
+                      type="text"
+                      placeholder="SEO friendly title..."
+                      value={productInfo.metaTitle}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaTitle: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
+                    <textarea
+                      placeholder="SEO friendly description..."
+                      value={productInfo.metaDescription}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaDescription: e.target.value }))}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Keywords</label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        placeholder="Add keyword..."
+                        value={newKeyword}
+                        onChange={(e) => setNewKeyword(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
+                      />
+                      <button
+                        type="button"
+                        onClick={addKeyword}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    {productInfo.keywords.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {productInfo.keywords.map((keyword, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800"
+                          >
+                            {keyword}
+                            <button
+                              type="button"
+                              onClick={() => removeKeyword(index)}
+                              className="ml-2 hover:text-red-600"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1255,10 +1765,14 @@ const AddProductPage: React.FC = () => {
                     <p><strong>Category:</strong> {selectedBroaderCategory} → {selectedCategory}</p>
                     <p><strong>Eco Score:</strong> {ecoScore}/100</p>
                     <p><strong>Images:</strong> {uploadedImages.length} uploaded</p>
+                    <p><strong>Features:</strong> {productInfo.features.length} added</p>
+                    <p><strong>Certifications:</strong> {certifications.length} added</p>
                   </div>
                   <div>
                     <p><strong>Category Filters:</strong> {Object.keys(selectedCategoryFilters).length} selected</p>
                     <p><strong>Common Filters:</strong> {Object.keys(selectedCommonFilters).length} selected</p>
+                    <p><strong>Sustainability Features:</strong> {Object.values(sustainability).filter(v => typeof v === 'boolean' && v).length} enabled</p>
+                    <p><strong>Customization Options:</strong> {Object.values(customization).filter(v => typeof v === 'boolean' && v).length} enabled</p>
                   </div>
                 </div>
               </div>
@@ -1269,6 +1783,91 @@ const AddProductPage: React.FC = () => {
       default:
         return null;
     }
+  };
+
+  // Helper functions for managing arrays
+  const addFeature = () => {
+    if (newFeature.trim() && !productInfo.features.includes(newFeature.trim())) {
+      setProductInfo(prev => ({
+        ...prev,
+        features: [...prev.features, newFeature.trim()]
+      }));
+      setNewFeature('');
+    }
+  };
+
+  const removeFeature = (index: number) => {
+    setProductInfo(prev => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addKeyword = () => {
+    if (newKeyword.trim() && !productInfo.keywords.includes(newKeyword.trim())) {
+      setProductInfo(prev => ({
+        ...prev,
+        keywords: [...prev.keywords, newKeyword.trim()]
+      }));
+      setNewKeyword('');
+    }
+  };
+
+  const removeKeyword = (index: number) => {
+    setProductInfo(prev => ({
+      ...prev,
+      keywords: prev.keywords.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addColorOption = () => {
+    if (newColorOption.trim() && !customization.colorOptions.includes(newColorOption.trim())) {
+      setCustomization(prev => ({
+        ...prev,
+        colorOptions: [...prev.colorOptions, newColorOption.trim()]
+      }));
+      setNewColorOption('');
+    }
+  };
+
+  const removeColorOption = (index: number) => {
+    setCustomization(prev => ({
+      ...prev,
+      colorOptions: prev.colorOptions.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addPrintingMethod = () => {
+    if (newPrintingMethod.trim() && !customization.printingMethods.includes(newPrintingMethod.trim())) {
+      setCustomization(prev => ({
+        ...prev,
+        printingMethods: [...prev.printingMethods, newPrintingMethod.trim()]
+      }));
+      setNewPrintingMethod('');
+    }
+  };
+
+  const removePrintingMethod = (index: number) => {
+    setCustomization(prev => ({
+      ...prev,
+      printingMethods: prev.printingMethods.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addCertification = () => {
+    if (newCertification.name.trim()) {
+      setCertifications(prev => [...prev, { ...newCertification }]);
+      setNewCertification({
+        name: '',
+        certificationBody: '',
+        validUntil: '',
+        certificateNumber: ''
+      });
+    }
+  };
+
+  const removeCertification = (index: number) => {
+    setCertifications(prev => prev.filter((_, i) => i !== index));
   };
 
   return (

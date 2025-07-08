@@ -70,14 +70,14 @@ export const BecomeSupplierPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 my-20">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-green-600 to-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                Join EcoPack as a Supplier
+                Join Packgine as a Supplier
               </h1>
               <p className="text-xl mb-8 text-green-100">
                 Connect with eco-conscious buyers worldwide and grow your sustainable packaging business on our trusted marketplace.
@@ -103,7 +103,7 @@ export const BecomeSupplierPage: React.FC = () => {
                 <Building2 className="w-24 h-24 text-white mx-auto mb-4" />
                 <div className="text-center">
                   <h3 className="text-2xl font-semibold mb-2">Join 500+ Suppliers</h3>
-                  <p className="text-green-100">Already selling on EcoPack</p>
+                  <p className="text-green-100">Already selling on Packgine</p>
                 </div>
               </div>
             </div>
@@ -114,7 +114,7 @@ export const BecomeSupplierPage: React.FC = () => {
       {/* Benefits Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose EcoPack?</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Packgine?</h2>
           <p className="text-xl text-gray-600">Everything you need to succeed in the eco-packaging market</p>
         </div>
 
@@ -219,7 +219,7 @@ export const BecomeSupplierPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Selling?</h2>
           <p className="text-xl text-green-100 mb-8">
-            Join thousands of suppliers already growing their business on EcoPack
+            Join thousands of suppliers already growing their business on Packgine
           </p>
           <button
             onClick={handleGetStarted}

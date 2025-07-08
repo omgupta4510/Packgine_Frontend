@@ -1,12 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
-import { SearchBar } from '../ui/SearchBar';
-import { Menu, X, Leaf } from 'lucide-react';
+import { Menu, X, Leaf, Settings, LogOut, BarChart3, User } from 'lucide-react';
+import { isAuthenticated, logoutSupplier } from '../../utils/auth';
+import { isUserAuthenticated, logoutUser, getUserData } from '../../utils/userAuth';
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [supplierAuthenticated, setSupplierAuthenticated] = useState(false);
+  const [userAuthenticated, setUserAuthenticated] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const navigate = useNavigate();
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      setSupplierAuthenticated(isAuthenticated());
+      setUserAuthenticated(isUserAuthenticated());
+      
+      // Get user data if user is authenticated
+      if (isUserAuthenticated()) {
+        const data = getUserData();
+        setUserData(data);
+      } else {
+        setUserData(null);
+      }
+    };
+    
+    // Check initial auth state
+    checkAuth();
+    
+    // Listen for storage changes (when token is added/removed)
+    window.addEventListener('storage', checkAuth);
+    
+    // Also listen for a custom event we'll dispatch when auth changes
+    window.addEventListener('authStateChanged', checkAuth);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('authStateChanged', checkAuth);
+    };
+  }, []);
+
+  // Handle supplier logout
+  const handleSupplierLogout = async () => {
+    try {
+      await logoutSupplier();
+      setSupplierAuthenticated(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Supplier logout error:', error);
+    }
+  };
+
+  // Handle user logout
+  const handleUserLogout = async () => {
+    try {
+      await logoutUser();
+      setUserAuthenticated(false);
+      setUserData(null);
+      navigate('/');
+    } catch (error) {
+      console.error('User logout error:', error);
+    }
+  };
 
   // Handle scroll effect
   useEffect(() => {
@@ -21,7 +79,7 @@ export const Header = () => {
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
-    { name: 'Suppliers', path: '/suppliers' },
+    { name: 'Suppliers', path: '/become-supplier' },
     { name: 'Sustainability', path: '/sustainability' },
     { name: 'About Us', path: '/about' },
   ];
@@ -61,9 +119,55 @@ export const Header = () => {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="sm" href="/login">Login</Button>
-            <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
-            <Button variant="secondary" size="sm" href="/become-supplier">Supplier Login</Button>
+            {supplierAuthenticated ? (
+              // Supplier is logged in
+              <>
+                <Button variant="outline" size="sm" href="/supplier/dashboard" className="flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" />
+                  Dashboard
+                </Button>
+                <Button variant="outline" size="sm" href="/supplier/profile" className="flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  Settings
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={handleSupplierLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </>
+            ) : userAuthenticated ? (
+              // User is logged in
+              <>
+                <Button variant="outline" size="sm" href="/dashboard" className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Dashboard
+                </Button>
+                <span className="text-sm text-gray-600">
+                  Welcome, {userData?.firstName || 'User'}!
+                </span>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={handleUserLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              // No one is logged in
+              <>
+                <Button variant="outline" size="sm" href="/login">Login</Button>
+                <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
+                <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Login</Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,22 +203,68 @@ export const Header = () => {
               ))}
             </nav>
             <div className="flex flex-col space-y-2">
-              <Button variant="outline" size="sm" href="/login">Login</Button>
-              <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
-              <Button variant="secondary" size="sm" href="/become-supplier">Become a Supplier</Button>
+              {supplierAuthenticated ? (
+                // Supplier is logged in
+                <>
+                  <Button variant="outline" size="sm" href="/supplier/dashboard" className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" />
+                    Dashboard
+                  </Button>
+                  <Button variant="outline" size="sm" href="/supplier/profile" className="flex items-center gap-2">
+                    <Settings className="w-4 h-4" />
+                    Settings
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={handleSupplierLogout}
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </Button>
+                </>
+              ) : userAuthenticated ? (
+                // User is logged in
+                <>
+                  <span className="text-sm text-gray-600 px-3 py-2">
+                    Welcome, {userData?.firstName || 'User'}!
+                  </span>
+                  <Button variant="outline" size="sm" href="/dashboard" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Dashboard
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={handleUserLogout}
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                // No one is logged in
+                <>
+                  <Button variant="outline" size="sm" href="/login">Login</Button>
+                  <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
+                  <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Login</Button>
+                </>
+              )}
             </div>
           </div>
         </div>
       )}
 
       {/* Search bar - on scrolled state */}
-      {isScrolled && (
+      {/* {isScrolled && (
         <div className="bg-green-50 py-3 border-t border-green-100">
           <div className="container mx-auto px-4">
             <SearchBar />
           </div>
         </div>
-      )}
+      )} */}
     </header>
   );
 };

@@ -63,7 +63,7 @@ export const Header = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="outline" size="sm" href="/login">Login</Button>
             <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
-            <Button variant="secondary" size="sm" href="/become-supplier">Become a Supplier</Button>
+            <Button variant="secondary" size="sm" href="/become-supplier">Supplier Login</Button>
           </div>
 
           {/* Mobile Menu Button */}

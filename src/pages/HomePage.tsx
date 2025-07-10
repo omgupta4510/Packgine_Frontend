@@ -10,7 +10,6 @@ export const HomePage = () => {
     <>
       <HeroSection />
       <HowItWorks />
-      {/* <FeaturedProducts /> */}
       <SustainabilityImpact />
       <TestimonialsSection />
       <CtaSection />

@@ -14,8 +14,10 @@ import SupplierDashboardPage from './pages/SupplierDashboardPage';
 import SupplierProductsPage from './pages/SupplierProductsPage';
 import SupplierProfilePage from './pages/SupplierProfilePage';
 import AddProductPage from './pages/AddProductPage';
+import EditProductPage from './pages/EditProductPage';
 import SustainabilityPage from './pages/SustainabilityPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AboutPage from './pages/AboutPage';
 
 
 function App() {
@@ -35,7 +37,7 @@ function App() {
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/sustainability" element={<SustainabilityPage />} />
             <Route path="/become-supplier" element={<BecomeSupplierPage />} />
-            
+            <Route path="/about" element={<AboutPage/>} />
             {/* Supplier Authentication */}
             <Route path="/supplier/auth" element={<SupplierAuthPage />} />
             
@@ -53,6 +55,11 @@ function App() {
             <Route path="/supplier/products/add" element={
               <ProtectedRoute>
                 <AddProductPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/supplier/products/edit/:id" element={
+              <ProtectedRoute>
+                <EditProductPage />
               </ProtectedRoute>
             } />
             <Route path="/supplier/profile" element={

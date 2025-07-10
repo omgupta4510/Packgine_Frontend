@@ -39,10 +39,13 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   const checkFavoriteStatus = async () => {
     if (isUserAuthenticated()) {
       try {
+        setIsLoading(true);
         const favoriteStatus = await isProductInFavorites(productId);
         setIsFavorite(favoriteStatus);
       } catch (error) {
         console.error('Error checking favorite status:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -61,15 +64,23 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
       return;
     }
 
+    // Optimistically update UI for immediate feedback
+    setIsFavorite(!isFavorite);
     setIsLoading(true);
+    
     try {
       const result = await toggleFavorite(productId);
-      setIsFavorite(result.isFavorite);
+      // Update the state if the backend result is different (shouldn't happen often)
+      if (result.isFavorite !== !isFavorite) {
+        setIsFavorite(result.isFavorite);
+      }
       
       // Show success message briefly
       setShowTooltip(true);
       setTimeout(() => setShowTooltip(false), 2000);
     } catch (error) {
+      // Revert on error
+      setIsFavorite(!isFavorite);
       console.error('Error toggling favorite:', error);
       // Show error message
       setShowTooltip(true);
@@ -111,13 +122,6 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
           } ${isLoading ? 'animate-pulse' : ''}`}
         />
       </button>
-      
-      {/* Login Required Modal */}
-      <LoginRequiredModal 
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        feature="add products to favorites"
-      />
       
       {/* Tooltip */}
       {showTooltip && (

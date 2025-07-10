@@ -399,7 +399,9 @@ const ProductFilterPage = () => {
   return (
     <div className="flex bg-gray-50 my-10 min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r px-4 py-6 mt-8 rounded-xl shadow-lg ml-2 h-fit sticky top-8 transition-all duration-300">
+      <aside
+        className="w-64 bg-white border-r px-4 py-6 mt-8 rounded-xl shadow-lg ml-2 sticky top-8 transition-all duration-300 max-h-[80vh] overflow-y-auto hide-scrollbar"
+      >
         <div className="flex items-center mb-4">
           <svg className="w-5 h-5 text-green-500 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
           <h2 className="text-lg font-bold text-gray-900 tracking-tight">Filters</h2>
@@ -945,7 +947,7 @@ function getColorHex(color: string) {
   return map[color] || '#eee';
 }
 
-// Add CSS for loader
+// Add CSS for loader and hide-scrollbar
 const style = document.createElement('style');
 style.innerHTML = `
   .loader {
@@ -960,6 +962,15 @@ style.innerHTML = `
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
   }
 `;
 if (!document.querySelector('#product-filter-styles')) {

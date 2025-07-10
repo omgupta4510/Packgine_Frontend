@@ -120,7 +120,8 @@ export const isProductInFavorites = async (productId: string): Promise<boolean> 
     }
 
     const favorites = await getUserFavorites();
-    return favorites.some(fav => fav.productId._id === productId);
+    // Check if productId exists and has _id property before comparing
+    return favorites.some(fav => fav.productId && fav.productId._id === productId);
   } catch (error) {
     console.error('Error checking favorite status:', error);
     return false;
@@ -134,7 +135,14 @@ export const toggleFavorite = async (productId: string): Promise<{ isFavorite: b
       throw new Error('Please login to manage favorites');
     }
 
-    const isFavorite = await isProductInFavorites(productId);
+    // Wrap the isProductInFavorites call in a try-catch to handle potential errors
+    let isFavorite = false;
+    try {
+      isFavorite = await isProductInFavorites(productId);
+    } catch (error) {
+      console.error('Error checking favorite status during toggle:', error);
+      // Continue with adding as default action if check fails
+    }
     
     if (isFavorite) {
       await removeFromFavorites(productId);

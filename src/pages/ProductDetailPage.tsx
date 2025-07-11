@@ -282,7 +282,7 @@ export const ProductDetailPage = () => {
                 <img 
                   src={product.images[selectedImage] || product.primaryImage || '/Images/image1.png'} 
                   alt={product.name}
-                  className="w-full h-100 object-contain" 
+                  className="w-full h-90 object-contain" 
                 />
                 
                 {/* Navigation Buttons */}

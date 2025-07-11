@@ -200,6 +200,8 @@ const ProductFilterPage = () => {
   const [suppliers, setSuppliers] = useState<SupplierData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
   const filtersToShow = getFiltersForCategory(filterValue || '');
 
   // Fetch products from backend
@@ -253,6 +255,11 @@ const ProductFilterPage = () => {
 
     fetchProducts();
   }, []);
+
+  // Reset pagination when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterValue]);
 
   // Transform product data from backend to display format
   const transformProductToDisplayFormat = (product: any): SupplierData => {
@@ -394,6 +401,7 @@ const ProductFilterPage = () => {
   // Handler for filter value changes
   const handleFilterChange = (filterName: string, value: any) => {
     setFilterState((prev) => ({ ...prev, [filterName.toLowerCase()]: value }));
+    setCurrentPage(1); // Reset to first page when filters change
   };
 
   return (
@@ -701,7 +709,10 @@ const ProductFilterPage = () => {
         </div>
         {/* Action buttons */}
         <div className="flex items-center gap-3 mt-6">
-          <button className="text-green-600 hover:underline text-xs font-medium" onClick={() => setFilterState({})}>
+          <button className="text-green-600 hover:underline text-xs font-medium" onClick={() => {
+            setFilterState({});
+            setCurrentPage(1);
+          }}>
             Clear
           </button>
         </div>
@@ -827,7 +838,118 @@ const ProductFilterPage = () => {
           
           {/* Product grid */}
           {!loading && !error && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {(() => {
+                  const allProducts = getAllProducts();
+                  const filteredProducts = filterValue === 'all'
+                    ? allProducts.filter(product => productMatchesFilters(product, filterState))
+                    : allProducts.filter(product =>
+                        product.category?.toLowerCase() === (filterValue || '').toLowerCase()
+                      ).filter(product => productMatchesFilters(product, filterState));
+
+                  // Calculate pagination
+                  const startIndex = (currentPage - 1) * productsPerPage;
+                  const endIndex = startIndex + productsPerPage;
+                  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+                  if (filteredProducts.length === 0) {
+                    return (
+                      <div className="col-span-full text-center py-12">
+                        <div className="text-gray-400 mb-4">
+                          <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8l-4 4m0 0l-4-4m4 4V3"></path>
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No suppliers found</h3>
+                        <p className="text-gray-600 mb-4">
+                          {suppliers.length === 0 
+                            ? "No suppliers have registered yet."
+                            : "No suppliers match your selected filters. Try adjusting your filters."
+                          }
+                        </p>
+                        {filterState && Object.keys(filterState).length > 0 && (
+                          <button 
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                            onClick={() => {
+                              setFilterState({});
+                              setCurrentPage(1);
+                            }}
+                          >
+                            Clear All Filters
+                          </button>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return paginatedProducts.map(product => (
+                    <button
+                      key={product.id}
+                      className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col text-left hover:shadow-lg transition cursor-pointer"
+                      onClick={() => window.location.href = `/products/${product.id}`}
+                      style={{ outline: 'none', border: 'none' }}
+                    >
+                      <img
+                        src={product.image}
+                        alt={product.title}
+                        className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/placeholder-image.png';
+                        }}
+                      />
+                      <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
+                      <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
+                      
+                      {/* Eco Score Badge */}
+                      {product.ecoScore > 0 && (
+                        <div className="mb-2">
+                          <div className="flex items-center space-x-2">
+                            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              product.ecoScore >= 80 ? 'bg-green-100 text-green-800' :
+                              product.ecoScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                              product.ecoScore >= 40 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                              🌱 Eco Score: {product.ecoScore}/100
+                            </div>
+                          </div>
+                          <div className="mt-1 bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className={`h-1.5 rounded-full ${
+                                product.ecoScore >= 80 ? 'bg-green-500' :
+                                product.ecoScore >= 60 ? 'bg-yellow-500' :
+                                product.ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${product.ecoScore}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+                        <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
+                        <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+                      </div>
+                      <div className="text-xs mb-1">
+                        <strong>MOQ:</strong> {product.moq}
+                      </div>
+                      <div className="text-xs mb-1">
+                        <strong>Size:</strong> {product.size} {product.sizeUnit}
+                      </div>
+                      <div className="text-xs mb-1">
+                        <strong>End Use:</strong> {product.endUse.join(', ')}
+                      </div>
+                      <div className="text-xs mb-1">
+                        <strong>Supplier:</strong> {product.supplier}
+                      </div>
+                    </button>
+                  ));
+                })()}
+              </div>
+
+              {/* Pagination */}
               {(() => {
                 const allProducts = getAllProducts();
                 const filteredProducts = filterValue === 'all'
@@ -836,98 +958,76 @@ const ProductFilterPage = () => {
                       product.category?.toLowerCase() === (filterValue || '').toLowerCase()
                     ).filter(product => productMatchesFilters(product, filterState));
 
-                if (filteredProducts.length === 0) {
-                  return (
-                    <div className="col-span-full text-center py-12">
-                      <div className="text-gray-400 mb-4">
-                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8l-4 4m0 0l-4-4m4 4V3"></path>
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No suppliers found</h3>
-                      <p className="text-gray-600 mb-4">
-                        {suppliers.length === 0 
-                          ? "No suppliers have registered yet."
-                          : "No suppliers match your selected filters. Try adjusting your filters."
-                        }
-                      </p>
-                      {filterState && Object.keys(filterState).length > 0 && (
-                        <button 
-                          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                          onClick={() => setFilterState({})}
-                        >
-                          Clear All Filters
-                        </button>
-                      )}
-                    </div>
-                  );
-                }
+                const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-                return filteredProducts.map(product => (
-                  <button
-                    key={product.id}
-                    className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col text-left hover:shadow-lg transition cursor-pointer"
-                    onClick={() => window.location.href = `/products/${product.id}`}
-                    style={{ outline: 'none', border: 'none' }}
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/placeholder-image.png';
-                      }}
-                    />
-                    <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
-                    <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
+                if (totalPages <= 1) return null;
+
+                return (
+                  <div className="flex items-center justify-between mt-8">
+                    <div className="text-sm text-gray-700">
+                      Showing {((currentPage - 1) * productsPerPage) + 1} to {Math.min(currentPage * productsPerPage, filteredProducts.length)} of {filteredProducts.length} products
+                    </div>
                     
-                    {/* Eco Score Badge */}
-                    {product.ecoScore > 0 && (
-                      <div className="mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            product.ecoScore >= 80 ? 'bg-green-100 text-green-800' :
-                            product.ecoScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                            product.ecoScore >= 40 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
-                          }`}>
-                            🌱 Eco Score: {product.ecoScore}/100
-                          </div>
-                        </div>
-                        <div className="mt-1 bg-gray-200 rounded-full h-1.5">
-                          <div 
-                            className={`h-1.5 rounded-full ${
-                              product.ecoScore >= 80 ? 'bg-green-500' :
-                              product.ecoScore >= 60 ? 'bg-yellow-500' :
-                              product.ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                    <div className="flex items-center space-x-2">
+                      {/* Previous button */}
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          currentPage === 1
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        Previous
+                      </button>
+
+                      {/* Page numbers */}
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                        // Show first page, last page, current page, and pages around current
+                        const shouldShow = page === 1 || page === totalPages || 
+                                         (page >= currentPage - 2 && page <= currentPage + 2);
+                        
+                        if (!shouldShow) {
+                          // Show ellipsis for gaps
+                          if (page === currentPage - 3 || page === currentPage + 3) {
+                            return <span key={page} className="px-2 text-gray-400">...</span>;
+                          }
+                          return null;
+                        }
+
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`px-3 py-2 rounded-md text-sm font-medium ${
+                              currentPage === page
+                                ? 'bg-green-600 text-white'
+                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                             }`}
-                            style={{ width: `${product.ecoScore}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
-                      <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
-                      <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+
+                      {/* Next button */}
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          currentPage === totalPages
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        Next
+                      </button>
                     </div>
-                    <div className="text-xs mb-1">
-                      <strong>MOQ:</strong> {product.moq}
-                    </div>
-                    <div className="text-xs mb-1">
-                      <strong>Size:</strong> {product.size} {product.sizeUnit}
-                    </div>
-                    <div className="text-xs mb-1">
-                      <strong>End Use:</strong> {product.endUse.join(', ')}
-                    </div>
-                    <div className="text-xs mb-1">
-                      <strong>Supplier:</strong> {product.supplier}
-                    </div>
-                  </button>
-                ));
+                  </div>
+                );
               })()}
-            </div>
+            </>
           )}
         </div>
       </main>

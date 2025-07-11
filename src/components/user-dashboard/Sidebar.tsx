@@ -12,7 +12,7 @@ interface SidebarProps {
 export const Sidebar = ({ user, stats, activeTab, setActiveTab, onLogout }: SidebarProps) => {
   return (
     <div className="w-full lg:w-64 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center space-x-3 mb-6">
+      {/* <div className="flex items-center space-x-3 mb-6">
         <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
           {user.profileImage ? (
             <img src={user.profileImage} alt="Profile" className="h-12 w-12 rounded-full object-cover" />
@@ -24,7 +24,7 @@ export const Sidebar = ({ user, stats, activeTab, setActiveTab, onLogout }: Side
           <h3 className="font-semibold text-gray-900">{user.firstName}</h3>
           <p className="text-sm text-gray-500">{user.email}</p>
         </div>
-      </div>
+      </div> */}
 
       <nav className="space-y-2">
         <button

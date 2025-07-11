@@ -13,6 +13,7 @@ import SupplierAuthPage from './pages/SupplierAuthPage';
 import SupplierDashboardPage from './pages/SupplierDashboardPage';
 import SupplierProductsPage from './pages/SupplierProductsPage';
 import SupplierProfilePage from './pages/SupplierProfilePage';
+import SupplierInquiriesPage from './pages/SupplierInquiriesPage';
 import AddProductPage from './pages/AddProductPage';
 import EditProductPage from './pages/EditProductPage';
 import SustainabilityPage from './pages/SustainabilityPage';
@@ -65,6 +66,11 @@ function App() {
             <Route path="/supplier/profile" element={
               <ProtectedRoute>
                 <SupplierProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/supplier/inquiries" element={
+              <ProtectedRoute>
+                <SupplierInquiriesPage />
               </ProtectedRoute>
             } />
           </Routes>

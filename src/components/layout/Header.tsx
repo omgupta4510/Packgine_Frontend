@@ -165,7 +165,7 @@ export const Header = () => {
               <>
                 <Button variant="outline" size="sm" href="/login">Login</Button>
                 <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
-                <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Login</Button>
+                <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Setup</Button>
               </>
             )}
           </div>
@@ -249,7 +249,7 @@ export const Header = () => {
                 <>
                   <Button variant="outline" size="sm" href="/login">Login</Button>
                   <Button variant="primary" size="sm" href="/signup">Sign Up</Button>
-                  <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Login</Button>
+                  <Button variant="secondary" size="sm" href="/supplier/auth">Supplier Setup</Button>
                 </>
               )}
             </div>

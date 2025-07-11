@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { dashboardService, Product } from '../utils/dashboard';
-import { Plus, Edit, Trash2, Eye, Package, Calendar } from 'lucide-react';
+import { dashboardService, Product, getStatusColor } from '../utils/dashboard';
+import { isAuthenticated } from '../utils/auth';
+import { Plus, Edit, Trash2, Eye, Package, Calendar, ArrowLeft } from 'lucide-react';
 
 const SupplierProductsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -11,8 +12,13 @@ const SupplierProductsPage: React.FC = () => {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check authentication first
+    if (!isAuthenticated()) {
+      navigate('/supplier-auth');
+      return;
+    }
     fetchProducts();
-  }, []);
+  }, [navigate]);
 
   const fetchProducts = async () => {
     try {
@@ -47,7 +53,10 @@ const SupplierProductsPage: React.FC = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | undefined) => {
+    if (typeof price !== 'number' || isNaN(price)) {
+      return '$0.00';
+    }
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
@@ -64,23 +73,37 @@ const SupplierProductsPage: React.FC = () => {
       </div>
     );
   }
-
+  console.log(products);
+  
   return (
     <div className="min-h-screen bg-gray-50 my-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Products</h1>
-            <p className="text-gray-600 mt-2">Manage your product listings</p>
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <button
+              onClick={() => navigate('/supplier/dashboard')}
+              className="flex items-center text-gray-600 hover:text-gray-800 mr-4"
+            >
+              <ArrowLeft className="h-5 w-5 mr-1" />
+              Back to Dashboard
+            </button>
           </div>
-          <button
-            onClick={() => navigate('/supplier/products/add')}
-            className="mt-4 sm:mt-0 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            Add New Product
-          </button>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Manage Products</h1>
+              <p className="text-gray-600 mt-2">
+                Manage your product listings ({products.length} total)
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/supplier/products/add')}
+              className="mt-4 sm:mt-0 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Product
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -108,11 +131,11 @@ const SupplierProductsPage: React.FC = () => {
               <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Product Image */}
                 <div className="aspect-video bg-gray-200 relative">
-                  {product.images && product.images.length > 0 ? (
+                  {product.primaryImage ? (
                     <img
-                      src={product.images[0]}
+                      src={product.primaryImage}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -120,7 +143,7 @@ const SupplierProductsPage: React.FC = () => {
                     </div>
                   )}
                   <div className="absolute top-2 right-2 bg-white rounded-full px-2 py-1 text-sm font-semibold">
-                    {product.ecoScore}/100
+                    {product.ecoScore || 0}/100
                   </div>
                 </div>
 
@@ -130,16 +153,21 @@ const SupplierProductsPage: React.FC = () => {
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
                   
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-bold text-green-600">{formatPrice(product.pricing.basePrice)}</span>
-                    <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                      {product.category}
-                    </span>
+                    <span className="text-2xl font-bold text-green-600">{formatPrice(product.pricing?.basePrice || 0)}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        {product.category || 'Unknown'}
+                      </span>
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(product.status)}`}>
+                        {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
                     <span className="flex items-center gap-1">
                       <Package className="w-4 h-4" />
-                      Stock: {product.specifications.availableQuantity || 'N/A'}
+                      Stock: {product.specifications?.availableQuantity || 'N/A'}
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />

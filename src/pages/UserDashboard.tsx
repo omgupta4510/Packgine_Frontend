@@ -67,12 +67,12 @@ export const UserDashboard = () => {
       const data = await response.json();
       setUser(data.user);
       
-      // Calculate stats
+      // Use inquiry stats from backend
       setStats({
-        totalInquiries: data.user.inquiries?.length || 0,
+        totalInquiries: data.user.inquiryStats?.totalInquiries || 0,
         totalFavorites: data.user.favorites?.length || 0,
         totalOrders: data.user.analytics?.totalOrders || 0,
-        pendingQuotes: 0 // This would come from actual quotes API
+        pendingQuotes: data.user.inquiryStats?.pendingQuotes || 0
       });
       
     } catch (err) {
@@ -85,6 +85,14 @@ export const UserDashboard = () => {
   const handleLogout = async () => {
     await logoutUser();
     navigate('/login');
+  };
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    // Refresh stats when switching to inquiries tab
+    if (tab === 'inquiries') {
+      fetchUserData();
+    }
   };
 
   const handleRemoveFavorite = async (productId: string) => {
@@ -114,7 +122,7 @@ export const UserDashboard = () => {
             user={user}
             stats={stats}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleTabChange}
             onLogout={handleLogout}
           />
 
@@ -139,7 +147,9 @@ export const UserDashboard = () => {
             {activeTab === 'settings' && (
               <SettingsSection user={user} />
             )}
-            {activeTab === 'inquiries' && <InquiriesSection />}
+            {activeTab === 'inquiries' && (
+              <InquiriesSection onInquiryChange={fetchUserData} />
+            )}
             {activeTab === 'orders' && <OrdersSection />}
           </div>
         </div>

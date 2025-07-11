@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   getCurrentSupplier, 
-  logoutSupplier, 
   isAuthenticated,
   Supplier 
 } from '../utils/auth';
@@ -18,8 +17,6 @@ import {
   Eye, 
   MessageCircle, 
   Plus, 
-  Settings, 
-  LogOut,
   TrendingUp,
   Clock,
   CheckCircle,
@@ -60,14 +57,6 @@ const SupplierDashboardPage: React.FC = () => {
 
     loadDashboardData();
   }, [navigate]);
-
-  const handleLogout = async () => {
-    try {
-      await logoutSupplier();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
 
   if (loading) {
     return (
@@ -162,9 +151,23 @@ const SupplierDashboardPage: React.FC = () => {
                 <MessageCircle className="h-8 w-8 text-orange-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Inquiries</p>
+                <p className="text-sm font-medium text-gray-600">New Inquiries</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {dashboardData?.stats.totalInquiries || 0}
+                  {dashboardData?.stats.newInquiries || 0}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <Clock className="h-8 w-8 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pending</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {dashboardData?.stats.pendingInquiries || 0}
                 </p>
               </div>
             </div>
@@ -194,18 +197,31 @@ const SupplierDashboardPage: React.FC = () => {
             <BarChart3 className="h-5 w-5 mr-2" />
             View Analytics
           </button>
+          <button
+            onClick={() => navigate('/supplier/inquiries')}
+            className="flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 font-medium"
+          >
+            <MessageCircle className="h-5 w-5 mr-2" />
+            Manage Inquiries
+          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Products */}
           <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-900">Recent Products</h2>
+              <button
+                onClick={() => navigate('/supplier/products')}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                View All
+              </button>
             </div>
             <div className="p-6">
               {dashboardData?.recentProducts && dashboardData.recentProducts.length > 0 ? (
                 <div className="space-y-4">
-                  {dashboardData.recentProducts.map((product) => (
+                  {dashboardData.recentProducts.slice(0, 5).map((product) => (
                     <div key={product._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-center">
                         {product.primaryImage && (
@@ -236,6 +252,16 @@ const SupplierDashboardPage: React.FC = () => {
                       </div>
                     </div>
                   ))}
+                  {dashboardData.recentProducts.length > 5 && (
+                    <div className="text-center pt-4">
+                      <button
+                        onClick={() => navigate('/supplier/products')}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
+                        View {dashboardData.recentProducts.length - 5} more products
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -284,7 +310,15 @@ const SupplierDashboardPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <TrendingUp className="h-5 w-5 text-green-600" />
+                      <div className="flex items-center space-x-2">
+                        <TrendingUp className="h-5 w-5 text-green-600" />
+                        <button
+                          onClick={() => navigate(`/supplier/products/edit/${product._id}`)}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -114,6 +114,8 @@ export interface DashboardStats {
   rejectedProducts: number;
   totalViews: number;
   totalInquiries: number;
+  newInquiries?: number;
+  pendingInquiries?: number;
 }
 
 export interface DashboardOverview {

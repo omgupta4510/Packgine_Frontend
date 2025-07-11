@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { SustainabilityScore } from '../components/ui/SustainabilityScore';
 import { FavoriteButton } from '../components/ui/FavoriteButton';
+import { isUserAuthenticated, getUserToken } from '../utils/userAuth';
 import { 
   ChevronRight, 
+  ChevronLeft,
   Leaf, 
   Droplets, 
-  Factory, 
   Recycle, 
   ThumbsUp, 
   Package, 
   Download,
   Share2,
   Info,
-  Star
+  Star,
+  MessageSquare
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -147,11 +149,15 @@ const getLocation = (product: ProductData): string => {
 
 export const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [activeTab, setActiveTab] = useState<'overview' | 'specs' | 'sustainability'>('overview');
   const [product, setProduct] = useState<ProductData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteSuccess, setQuoteSuccess] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -176,6 +182,57 @@ export const ProductDetailPage = () => {
 
     fetchProduct();
   }, [id]);
+
+  const handleRequestQuote = async () => {
+    // Check if user is authenticated
+    if (!isUserAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+
+    setShowQuoteModal(true);
+  };
+
+  const submitQuoteRequest = async () => {
+    if (!product || !id) return;
+
+    try {
+      setQuoteLoading(true);
+      const token = getUserToken();
+      
+      const response = await fetch(`${API_URL}/api/products/${id}/quote-request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          productId: id,
+          subject: `Quote Request for ${product.name}`,
+          message: `I am interested in getting a quote for ${product.name}. Please provide pricing details and availability.`,
+          requestedQuantity: product.specifications.minimumOrderQuantity
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send quote request');
+      }
+
+      setQuoteSuccess(true);
+      setShowQuoteModal(false);
+      
+      // Show success message
+      setTimeout(() => {
+        setQuoteSuccess(false);
+      }, 5000);
+
+    } catch (err) {
+      console.error('Quote request error:', err);
+      alert('Failed to send quote request. Please try again.');
+    } finally {
+      setQuoteLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -221,26 +278,52 @@ export const ProductDetailPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             {/* Product Images */}
             <div>
-              <div className="relative mb-4 bg-gray-50 rounded-lg overflow-hidden">
+              <div className="relative mb- bg-gray-50 rounded-lg overflow-hidden group">
                 <img 
                   src={product.images[selectedImage] || product.primaryImage || '/Images/image1.png'} 
                   alt={product.name}
-                  className="w-full h-80 object-contain" 
+                  className="w-full h-100 object-contain" 
                 />
+                
+                {/* Navigation Buttons */}
+                {product.images && product.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImage(selectedImage > 0 ? selectedImage - 1 : product.images.length - 1)}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >
+                      <ChevronLeft className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImage(selectedImage < product.images.length - 1 ? selectedImage + 1 : 0)}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >
+                      <ChevronRight className="h-5 w-5 text-gray-700" />
+                    </button>
+                  </>
+                )}
+                
+                {/* Image Counter */}
+                {product.images && product.images.length > 1 && (
+                  <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                    {selectedImage + 1} / {product.images.length}
+                  </div>
+                )}
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              
+              <div className="flex gap-2 overflow-x-auto pb-2">
                 {product.images && product.images.length > 0 ? product.images.map((image: string, index: number) => (
                   <button
                     key={index}
-                    className={`relative border-2 rounded-md overflow-hidden ${
-                      selectedImage === index ? 'border-green-500' : 'border-transparent'
+                    className={`relative border-2 rounded-md overflow-hidden flex-shrink-0 ${
+                      selectedImage === index ? 'border-green-500' : 'border-gray-200 hover:border-gray-300'
                     }`}
                     onClick={() => setSelectedImage(index)}
                   >
                     <img 
                       src={image} 
                       alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-20 object-cover" 
+                      className="w-20 h-20 object-cover" 
                     />
                   </button>
                 )) : (
@@ -307,7 +390,7 @@ export const ProductDetailPage = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3 ">
-                  <Button variant="primary" size="lg"  className='flex-1'>
+                  <Button variant="primary" size="lg" className='flex-1' onClick={handleRequestQuote}>
                     Request Quote
                   </Button>
                   <Button variant="secondary" size="lg" className="flex-1">
@@ -644,6 +727,47 @@ export const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Success Message */}
+      {quoteSuccess && (
+        <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg z-50">
+          <div className="flex items-center">
+            <MessageSquare className="h-5 w-5 mr-2" />
+            <p className="font-medium">Quote request sent successfully!</p>
+          </div>
+          <p className="text-sm mt-1">Our sales team will contact you soon.</p>
+        </div>
+      )}
+
+      {/* Quote Request Modal */}
+      {showQuoteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Quote</h3>
+            <p className="text-gray-600 mb-6">
+              Your quote request for "{product?.name}" will be sent to our sales team. 
+              They will contact you with pricing details and availability.
+            </p>
+            <div className="flex gap-3">
+              <Button 
+                variant="primary" 
+                onClick={submitQuoteRequest}
+                disabled={quoteLoading}
+                className="flex-1"
+              >
+                {quoteLoading ? 'Sending...' : 'Send Request'}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowQuoteModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

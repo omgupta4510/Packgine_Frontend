@@ -151,7 +151,7 @@ function productMatchesFilters(product: any, filters: Record<string, any>) {
           )
         );
         if (!matches) {
-          console.log('Array-to-array filter failed:', { productValue, filterValue: value });
+          // console.log('Array-to-array filter failed:', { productValue, filterValue: value });
           return false;
         }
       } else {
@@ -161,7 +161,7 @@ function productMatchesFilters(product: any, filters: Record<string, any>) {
           String(filterVal).toLowerCase().includes(String(productValue).toLowerCase())
         );
         if (!matches) {
-          console.log('Array-to-single filter failed:', { productValue, filterValue: value });
+          // console.log('Array-to-single filter failed:', { productValue, filterValue: value });
           return false;
         }
       }
@@ -174,7 +174,7 @@ function productMatchesFilters(product: any, filters: Record<string, any>) {
           String(value).toLowerCase().includes(String(prodVal).toLowerCase())
         );
         if (!matches) {
-          console.log('Single-to-array filter failed:', { productValue, filterValue: value });
+          // console.log('Single-to-array filter failed:', { productValue, filterValue: value });
           return false;
         }
       } else {
@@ -182,14 +182,14 @@ function productMatchesFilters(product: any, filters: Record<string, any>) {
         const matches = String(productValue).toLowerCase().includes(String(value).toLowerCase()) ||
                        String(value).toLowerCase().includes(String(productValue).toLowerCase());
         if (!matches) {
-          console.log('Single-to-single filter failed:', { productValue, filterValue: value });
+          // console.log('Single-to-single filter failed:', { productValue, filterValue: value });
           return false;
         }
       }
     }
   }
   
-  console.log('Product matches all filters');
+  // console.log('Product matches all filters');
   return true;
 }
 
@@ -209,7 +209,6 @@ const ProductFilterPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        console.log('Fetching products from backend...');
         
         // Fetch both approved and pending products
         const [approvedResponse, pendingResponse] = await Promise.all([
@@ -217,10 +216,10 @@ const ProductFilterPage = () => {
           fetch(`${API_URL}/api/products?limit=100&status=pending`)
         ]);
         
-        console.log('API response statuses:', {
-          approved: approvedResponse.status,
-          pending: pendingResponse.status
-        });
+        // console.log('API response statuses:', {
+        //   approved: approvedResponse.status,
+        //   pending: pendingResponse.status
+        // });
         
         const [approvedResult, pendingResult] = await Promise.all([
           approvedResponse.json(),
@@ -302,21 +301,35 @@ const ProductFilterPage = () => {
     mergeFilterArray(product.categoryFilters || [], 'categoryFilters');
     mergeFilterArray(product.commonFilters || [], 'commonFilters');
     
-    // Add default/legacy fields for compatibility - only if not already set
-    if (!mergedFilters.Material) {
-      mergedFilters.Material = [product.specifications?.material || 'Not specified'];
+    // Add default/legacy fields for compatibility - only if actual values exist
+    if (product.specifications?.material && product.specifications.material.trim() !== '') {
+      if (!mergedFilters.Material) {
+        mergedFilters.Material = [product.specifications.material];
+      }
     }
-    if (!mergedFilters.Location) {
-      mergedFilters.Location = [product.supplier?.address?.country || 'Not specified'];
+    
+    if (product.supplier?.address?.country && product.supplier.address.country.trim() !== '') {
+      if (!mergedFilters.Location) {
+        mergedFilters.Location = [product.supplier.address.country];
+      }
     }
-    if (!mergedFilters['Minimum Order']) {
-      mergedFilters['Minimum Order'] = [`${product.specifications?.minimumOrderQuantity || 1} units`];
+    
+    if (product.specifications?.minimumOrderQuantity && product.specifications.minimumOrderQuantity > 0) {
+      if (!mergedFilters['Minimum Order']) {
+        mergedFilters['Minimum Order'] = [`${product.specifications.minimumOrderQuantity} units`];
+      }
     }
-    if (!mergedFilters.Supplier) {
-      mergedFilters.Supplier = [product.supplier?.companyName || 'Unknown Supplier'];
+    
+    if (product.supplier?.companyName && product.supplier.companyName.trim() !== '') {
+      if (!mergedFilters.Supplier) {
+        mergedFilters.Supplier = [product.supplier.companyName];
+      }
     }
-    if (!mergedFilters.Price) {
-      mergedFilters.Price = [`$${product.pricing?.basePrice || 0}`];
+    
+    if (product.pricing?.basePrice && product.pricing.basePrice > 0) {
+      if (!mergedFilters.Price) {
+        mergedFilters.Price = [`$${product.pricing.basePrice}`];
+      }
     }
     
     console.log('Final merged filters:', mergedFilters);
@@ -348,40 +361,64 @@ const ProductFilterPage = () => {
     const filters = supplier.filters || {};
     console.log('Transforming supplier to product:', { supplier: supplier.name, filters });
     
+    // Helper function to get first valid value from filter array
+    const getFilterValue = (filterKeys: string[]) => {
+      for (const key of filterKeys) {
+        const value = filters[key];
+        if (value && Array.isArray(value) && value.length > 0) {
+          const firstValue = value[0];
+          if (firstValue && firstValue.trim() !== '' && firstValue !== 'Not specified') {
+            return value.join(', ');
+          }
+        }
+      }
+      return '';
+    };
+
+    // Helper function to get size with proper formatting
+    const getSizeValue = () => {
+      const sizeData = filters.Size || filters.Capacity || filters.Volume || [];
+      if (sizeData.length === 0) return '';
+      
+      // Handle range format (Min: X, Max: Y)
+      const minVal = sizeData.find((s: string) => s.startsWith('Min:'))?.replace('Min: ', '');
+      const maxVal = sizeData.find((s: string) => s.startsWith('Max:'))?.replace('Max: ', '');
+      
+      if (minVal && maxVal) {
+        return `${minVal} - ${maxVal}`;
+      } else if (minVal) {
+        return `${minVal}+`;
+      } else if (maxVal) {
+        return `Up to ${maxVal}`;
+      } else {
+        // Filter out empty values
+        const validSizes = sizeData.filter((s: string) => s && s.trim() !== '' && s !== 'Not specified');
+        return validSizes.length > 0 ? validSizes.join(', ') : '';
+      }
+    };
+
+    // Helper function to get size unit
+    const getSizeUnit = () => {
+      const unitValue = filters.Size?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '') || 
+                      filters.Capacity?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '');
+      return (unitValue && unitValue.trim() !== '' && unitValue !== 'Not specified') ? unitValue : '';
+    };
+    
     return {
       id: supplier._id,
       title: supplier.name || `${supplier.category} Product`,
       category: supplier.category,
       image: supplier.images?.[0] || '/placeholder-image.png',
-      material: filters.Material?.join(', ') || 'Not specified',
-      shape: filters.Shape?.join(', ') || filters.Form?.join(', ') || 'Not specified',
-      sustainability: filters.Sustainability?.join(', ') || filters['Eco-Friendly']?.join(', ') || 'Not specified',
-      location: filters.Location?.join(', ') || 'Not specified',
-      color: filters.Color?.join(', ') || 'Not specified',
-      moq: filters['Minimum Order']?.join(' - ') || filters.MOQ?.join(' - ') || 'Contact supplier',
-      size: (() => {
-        const sizeData = filters.Size || filters.Capacity || filters.Volume || [];
-        if (sizeData.length === 0) return 'Not specified';
-        
-        // Handle range format (Min: X, Max: Y)
-        const minVal = sizeData.find((s: string) => s.startsWith('Min:'))?.replace('Min: ', '');
-        const maxVal = sizeData.find((s: string) => s.startsWith('Max:'))?.replace('Max: ', '');
-        
-        if (minVal && maxVal) {
-          return `${minVal} - ${maxVal}`;
-        } else if (minVal) {
-          return `${minVal}+`;
-        } else if (maxVal) {
-          return `Up to ${maxVal}`;
-        } else {
-          return sizeData.join(', ');
-        }
-      })(),
-      sizeUnit: filters.Size?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '') || 
-                filters.Capacity?.find((s: string) => s.startsWith('Unit:'))?.replace('Unit: ', '') || 
-                'units',
+      material: getFilterValue(['Material']),
+      shape: getFilterValue(['Shape', 'Form']),
+      sustainability: getFilterValue(['Sustainability', 'Eco-Friendly']),
+      location: getFilterValue(['Location']),
+      color: getFilterValue(['Color']),
+      moq: getFilterValue(['Minimum Order', 'MOQ']) || '',
+      size: getSizeValue(),
+      sizeUnit: getSizeUnit(),
       endUse: filters['End Use'] || filters.Application || filters.Purpose || [],
-      supplier: filters.Supplier?.join(', ') || 'Supplier not specified',
+      supplier: getFilterValue(['Supplier']),
       ecoScore: supplier.ecoScore || 0,
       ecoScoreDetails: supplier.ecoScoreDetails || {
         recyclability: 0,
@@ -900,7 +937,13 @@ const ProductFilterPage = () => {
                         }}
                       />
                       <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
-                      <div className="text-xs text-gray-500 mb-2">{product.material} &bull; {product.shape}</div>
+                      
+                      {/* Material and Shape - only show if both have values */}
+                      {(product.material || product.shape) && (
+                        <div className="text-xs text-gray-500 mb-2">
+                          {[product.material, product.shape].filter(Boolean).join(' • ')}
+                        </div>
+                      )}
                       
                       {/* Eco Score Badge */}
                       {product.ecoScore > 0 && (
@@ -928,22 +971,36 @@ const ProductFilterPage = () => {
                       )}
                       
                       <div className="flex flex-wrap gap-1 mb-2">
-                        <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
-                        <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
-                        <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+                        {product.sustainability && (
+                          <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+                        )}
+                        {product.location && (
+                          <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
+                        )}
+                        {product.color && (
+                          <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-xs">{product.color}</span>
+                        )}
                       </div>
-                      <div className="text-xs mb-1">
-                        <strong>MOQ:</strong> {product.moq}
-                      </div>
-                      <div className="text-xs mb-1">
-                        <strong>Size:</strong> {product.size} {product.sizeUnit}
-                      </div>
-                      <div className="text-xs mb-1">
-                        <strong>End Use:</strong> {product.endUse.join(', ')}
-                      </div>
-                      <div className="text-xs mb-1">
-                        <strong>Supplier:</strong> {product.supplier}
-                      </div>
+                      {product.moq && (
+                        <div className="text-xs mb-1">
+                          <strong>MOQ:</strong> {product.moq}
+                        </div>
+                      )}
+                      {(product.size || product.sizeUnit) && (
+                        <div className="text-xs mb-1">
+                          <strong>Size:</strong> {[product.size, product.sizeUnit].filter(Boolean).join(' ')}
+                        </div>
+                      )}
+                      {product.endUse && product.endUse.length > 0 && (
+                        <div className="text-xs mb-1">
+                          <strong>End Use:</strong> {product.endUse.join(', ')}
+                        </div>
+                      )}
+                      {product.supplier && (
+                        <div className="text-xs mb-1">
+                          <strong>Supplier:</strong> {product.supplier}
+                        </div>
+                      )}
                     </button>
                   ));
                 })()}

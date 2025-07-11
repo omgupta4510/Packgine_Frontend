@@ -278,7 +278,7 @@ export const ProductDetailPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             {/* Product Images */}
             <div>
-              <div className="relative mb- bg-gray-50 rounded-lg overflow-hidden group">
+              <div className="relative mb-4 bg-gray-50 rounded-lg overflow-hidden group">
                 <img 
                   src={product.images[selectedImage] || product.primaryImage || '/Images/image1.png'} 
                   alt={product.name}

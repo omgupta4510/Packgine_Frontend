@@ -22,11 +22,11 @@ export const CategoryGrid = () => {
   return (
     <div>
       {/* Tabs */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-berlin-gray-200">
         {broaderCategories.broader_categories.map((category) => (
           <button
             key={category.name}
-            className={`px-6 py-4 text-sm font-medium transition-colors ${activeCategory === category.name ? 'text-green-600 border-b-2 border-green-500 -mb-px' : 'text-gray-600 hover:text-gray-800'}`}
+            className={`px-6 py-4 text-sm font-medium transition-colors ${activeCategory === category.name ? 'text-berlin-red-600 border-b-2 border-berlin-red-500 -mb-px' : 'text-berlin-gray-600 hover:text-berlin-gray-800'}`}
             onClick={() => setActiveCategory(category.name)}
           >
             {category.name}
@@ -39,27 +39,14 @@ export const CategoryGrid = () => {
           <button
             key={sub}
             onClick={() => navigate(`/products/material/${sub.toLowerCase().replace(/\s+/g, '-')}`)}
-            className="group flex flex-col items-center justify-center text-gray-800 hover:text-green-600 transition-colors space-y-2"
+            className="group flex flex-col items-center justify-center text-berlin-gray-800 hover:text-berlin-red-600 transition-colors space-y-2"
           >
-            <div className="text-gray-700 group-hover:text-green-600 transition-colors">
+            <div className="text-berlin-gray-700 group-hover:text-berlin-red-600 transition-colors">
               {iconMap[sub] || <Box className="h-8 w-8" />}
             </div>
             <span className="text-base font-medium">{sub}</span>
           </button>
         ))}
-        {/* If this broader category has direct filters (like Sustainability), show a single card for it */}
-        {activeCategoryData?.filters && (
-          <button
-            key={activeCategoryData.name + '-filters'}
-            onClick={() => navigate(`/products/material/${activeCategoryData.name.toLowerCase().replace(/\s+/g, '-')}`)}
-            className="group flex flex-col items-center justify-center text-gray-800 hover:text-green-600 transition-colors space-y-2"
-          >
-            <div className="text-gray-700 group-hover:text-green-600 transition-colors">
-              <Leaf className="h-8 w-8" />
-            </div>
-            <span className="text-base font-medium">{activeCategoryData.name}</span>
-          </button>
-        )}
       </div>
     </div>
   );

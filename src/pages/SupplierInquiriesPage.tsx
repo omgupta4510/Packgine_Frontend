@@ -188,11 +188,11 @@ const SupplierInquiriesPage: React.FC = () => {
       case 'quoted':
         return <MessageSquare className="h-5 w-5 text-blue-500" />;
       case 'accepted':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-berlin-red-500" />;
       case 'rejected':
         return <XCircle className="h-5 w-5 text-red-500" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-500" />;
+        return <Clock className="h-5 w-5 text-berlin-gray-500" />;
     }
   };
 
@@ -205,48 +205,48 @@ const SupplierInquiriesPage: React.FC = () => {
       case 'quoted':
         return 'bg-blue-100 text-blue-800';
       case 'accepted':
-        return 'bg-green-100 text-green-800';
+        return 'bg-berlin-red-100 text-berlin-red-800';
       case 'rejected':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-berlin-gray-100 text-berlin-gray-800';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 my-10">
+    <div className="min-h-screen bg-berlin-gray-50 py-8 my-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center mb-4">
             <button
               onClick={() => navigate('/supplier/dashboard')}
-              className="flex items-center text-gray-600 hover:text-gray-800 mr-4"
+              className="flex items-center text-berlin-gray-600 hover:text-berlin-gray-800 mr-4"
             >
               <ArrowLeft className="h-5 w-5 mr-1" />
               Back to Dashboard
             </button>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Customer Inquiries</h1>
-          <p className="text-gray-600 mt-2">Manage and respond to customer quote requests</p>
+          <h1 className="text-3xl font-bold text-berlin-gray-900">Customer Inquiries</h1>
+          <p className="text-berlin-gray-600 mt-2">Manage and respond to customer quote requests</p>
         </div>
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow mb-6 p-4">
           <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-gray-700">Filter by status:</label>
+            <label className="text-sm font-medium text-berlin-gray-700">Filter by status:</label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+              className="border border-berlin-gray-300 rounded-md px-3 py-2 text-sm"
             >
               <option value="all">All Inquiries</option>
               <option value="pending">Pending</option>
@@ -265,9 +265,9 @@ const SupplierInquiriesPage: React.FC = () => {
           </div>
         ) : inquiries.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <MessageSquare className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Inquiries Found</h3>
-            <p className="text-gray-500">
+            <MessageSquare className="h-16 w-16 text-berlin-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">No Inquiries Found</h3>
+            <p className="text-berlin-gray-500">
               {selectedStatus === 'all' 
                 ? "You haven't received any customer inquiries yet."
                 : `No inquiries with status "${selectedStatus}" found.`
@@ -288,13 +288,13 @@ const SupplierInquiriesPage: React.FC = () => {
                       />
                     )}
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h3 className="text-lg font-semibold text-berlin-gray-900 mb-1">
                         {inquiry.productId.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-sm text-berlin-gray-600 mb-2">
                         Inquiry #{inquiry.inquiryNumber}
                       </p>
-                      <div className="flex items-center text-sm text-gray-500 space-x-4">
+                      <div className="flex items-center text-sm text-berlin-gray-500 space-x-4">
                         <span className="flex items-center">
                           <User className="h-4 w-4 mr-1" />
                           {inquiry.userId.firstName} {inquiry.userId.lastName}
@@ -317,30 +317,30 @@ const SupplierInquiriesPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-gray-600">Requested Quantity</p>
+                    <p className="text-sm text-berlin-gray-600">Requested Quantity</p>
                     <p className="font-medium">{inquiry.requestedQuantity.toLocaleString()} units</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Target Price</p>
+                    <p className="text-sm text-berlin-gray-600">Target Price</p>
                     <p className="font-medium">
                       {inquiry.targetPrice ? `$${inquiry.targetPrice.toFixed(2)}` : 'Not specified'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Customer Email</p>
+                    <p className="text-sm text-berlin-gray-600">Customer Email</p>
                     <p className="font-medium">{inquiry.userId.email}</p>
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">Message</p>
-                  <p className="text-gray-800 bg-gray-50 p-3 rounded-md">{inquiry.message}</p>
+                  <p className="text-sm text-berlin-gray-600 mb-2">Message</p>
+                  <p className="text-berlin-gray-800 bg-berlin-gray-50 p-3 rounded-md">{inquiry.message}</p>
                 </div>
 
                 {inquiry.customRequirements && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Custom Requirements</p>
-                    <p className="text-gray-800 bg-gray-50 p-3 rounded-md">{inquiry.customRequirements}</p>
+                    <p className="text-sm text-berlin-gray-600 mb-2">Custom Requirements</p>
+                    <p className="text-berlin-gray-800 bg-berlin-gray-50 p-3 rounded-md">{inquiry.customRequirements}</p>
                   </div>
                 )}
 
@@ -382,7 +382,7 @@ const SupplierInquiriesPage: React.FC = () => {
                           setSelectedInquiry(inquiry);
                           setShowResponseModal(true);
                         }}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm flex items-center"
+                        className="bg-berlin-red-600 text-white px-4 py-2 rounded-md hover:bg-berlin-red-700 text-sm flex items-center"
                       >
                         <Send className="h-4 w-4 mr-1" />
                         Send Quote
@@ -396,7 +396,7 @@ const SupplierInquiriesPage: React.FC = () => {
                         setSelectedInquiry(inquiry);
                         setShowResponseModal(true);
                       }}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm flex items-center"
+                      className="bg-berlin-red-600 text-white px-4 py-2 rounded-md hover:bg-berlin-red-700 text-sm flex items-center"
                     >
                       <Send className="h-4 w-4 mr-1" />
                       Send Quote
@@ -406,7 +406,7 @@ const SupplierInquiriesPage: React.FC = () => {
                   {inquiry.status === 'quoted' && (
                     <button
                       onClick={() => updateInquiryStatus(inquiry._id, 'accepted')}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm"
+                      className="bg-berlin-red-600 text-white px-4 py-2 rounded-md hover:bg-berlin-red-700 text-sm"
                     >
                       Mark as Complete
                     </button>
@@ -430,23 +430,23 @@ const SupplierInquiriesPage: React.FC = () => {
         {showResponseModal && selectedInquiry && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-screen overflow-y-auto">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">
                 Send Quote Response
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-berlin-gray-600 mb-6">
                 Responding to inquiry for: {selectedInquiry.productId.name}
               </p>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                     Response Message *
                   </label>
                   <textarea
                     value={responseForm.message}
                     onChange={(e) => setResponseForm({ ...responseForm, message: e.target.value })}
                     rows={4}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    className="w-full border border-berlin-gray-300 rounded-md px-3 py-2"
                     placeholder="Enter your response message..."
                     required
                   />
@@ -454,7 +454,7 @@ const SupplierInquiriesPage: React.FC = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Quoted Price ($)
                     </label>
                     <input
@@ -462,46 +462,46 @@ const SupplierInquiriesPage: React.FC = () => {
                       step="0.01"
                       value={responseForm.quotedPrice}
                       onChange={(e) => setResponseForm({ ...responseForm, quotedPrice: e.target.value })}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
+                      className="w-full border border-berlin-gray-300 rounded-md px-3 py-2"
                       placeholder="0.00"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Quoted Quantity
                     </label>
                     <input
                       type="number"
                       value={responseForm.quotedQuantity}
                       onChange={(e) => setResponseForm({ ...responseForm, quotedQuantity: e.target.value })}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
+                      className="w-full border border-berlin-gray-300 rounded-md px-3 py-2"
                       placeholder="Enter quantity"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Lead Time (days)
                     </label>
                     <input
                       type="number"
                       value={responseForm.leadTime}
                       onChange={(e) => setResponseForm({ ...responseForm, leadTime: e.target.value })}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
+                      className="w-full border border-berlin-gray-300 rounded-md px-3 py-2"
                       placeholder="Enter lead time"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Quote Valid Until
                     </label>
                     <input
                       type="date"
                       value={responseForm.validUntil}
                       onChange={(e) => setResponseForm({ ...responseForm, validUntil: e.target.value })}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
+                      className="w-full border border-berlin-gray-300 rounded-md px-3 py-2"
                     />
                   </div>
                 </div>
@@ -510,7 +510,7 @@ const SupplierInquiriesPage: React.FC = () => {
               <div className="flex justify-end space-x-3 mt-6">
                 <button
                   onClick={() => setShowResponseModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  className="px-4 py-2 border border-berlin-gray-300 rounded-md text-berlin-gray-700 hover:bg-berlin-gray-50"
                 >
                   Cancel
                 </button>

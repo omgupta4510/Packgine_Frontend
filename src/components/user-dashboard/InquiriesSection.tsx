@@ -95,11 +95,11 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
       case 'quoted':
         return <MessageSquare className="h-5 w-5 text-blue-500" />;
       case 'accepted':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-berlin-red-500" />;
       case 'rejected':
         return <XCircle className="h-5 w-5 text-red-500" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-500" />;
+        return <Clock className="h-5 w-5 text-berlin-gray-500" />;
     }
   };
 
@@ -111,19 +111,19 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
       case 'quoted':
         return 'bg-blue-100 text-blue-800';
       case 'accepted':
-        return 'bg-green-100 text-green-800';
+        return 'bg-berlin-red-100 text-berlin-red-800';
       case 'rejected':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-berlin-gray-100 text-berlin-gray-800';
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
-        <span className="ml-2 text-gray-600">Loading inquiries...</span>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-berlin-red-500"></div>
+        <span className="ml-2 text-berlin-gray-600">Loading inquiries...</span>
       </div>
     );
   }
@@ -132,7 +132,7 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
     return (
       <div className="text-center py-12">
         <XCircle className="h-16 w-16 text-red-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Error</h3>
+        <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">Error</h3>
         <p className="text-red-600">{error}</p>
       </div>
     );
@@ -141,12 +141,12 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
   if (inquiries.length === 0) {
     return (
       <div className="text-center py-12">
-        <MessageSquare className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Inquiries Yet</h3>
-        <p className="text-gray-500 mb-4">You haven't made any quote requests yet.</p>
+        <MessageSquare className="h-16 w-16 text-berlin-gray-300 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">No Inquiries Yet</h3>
+        <p className="text-berlin-gray-500 mb-4">You haven't made any quote requests yet.</p>
         <a 
           href="/products" 
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className="inline-flex items-center px-4 py-2 bg-berlin-red-600 text-white rounded-md hover:bg-berlin-red-700"
         >
           <Package className="h-4 w-4 mr-2" />
           Browse Products
@@ -158,9 +158,9 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Your Inquiries</h2>
+        <h2 className="text-2xl font-bold text-berlin-gray-900">Your Inquiries</h2>
         <div className="flex items-center space-x-2">
-          <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+          <span className="bg-berlin-red-100 text-berlin-red-800 text-sm font-medium px-3 py-1 rounded-full">
             {inquiries.length} {inquiries.length === 1 ? 'Inquiry' : 'Inquiries'}
           </span>
         </div>
@@ -168,7 +168,7 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
 
       <div className="space-y-4">
         {inquiries.map((inquiry) => (
-          <div key={inquiry._id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+          <div key={inquiry._id} className="bg-white border border-berlin-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-start space-x-4">
                 {inquiry.productId.primaryImage && (
@@ -179,13 +179,13 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
                   />
                 )}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  <h3 className="text-lg font-semibold text-berlin-gray-900 mb-1">
                     {inquiry.productId.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-berlin-gray-600 mb-2">
                     Inquiry #{inquiry.inquiryNumber}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-berlin-gray-500">
                     Supplier: {inquiry.supplierId.companyName}
                   </p>
                 </div>
@@ -200,11 +200,11 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <p className="text-sm text-gray-600">Requested Quantity</p>
+                <p className="text-sm text-berlin-gray-600">Requested Quantity</p>
                 <p className="font-medium">{inquiry.requestedQuantity.toLocaleString()} units</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Submitted</p>
+                <p className="text-sm text-berlin-gray-600">Submitted</p>
                 <p className="font-medium">
                   {new Date(inquiry.createdAt).toLocaleDateString()}
                 </p>
@@ -212,9 +212,9 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
             </div>
 
             {inquiry.supplierResponse && (
-              <div className="bg-gray-50 rounded-md p-4 mb-4">
+              <div className="bg-berlin-gray-50 rounded-md p-4 mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-gray-900">Supplier Response</h4>
+                  <h4 className="font-medium text-berlin-gray-900">Supplier Response</h4>
                   {inquiry.supplierResponse.validUntil && 
                    new Date(inquiry.supplierResponse.validUntil) < new Date() && (
                     <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
@@ -223,33 +223,33 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
                   )}
                 </div>
                 {inquiry.supplierResponse.message && (
-                  <p className="text-sm text-gray-700 mb-2">{inquiry.supplierResponse.message}</p>
+                  <p className="text-sm text-berlin-gray-700 mb-2">{inquiry.supplierResponse.message}</p>
                 )}
                 {inquiry.supplierResponse.quotedPrice && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-600">Quoted Price: </span>
+                      <span className="text-berlin-gray-600">Quoted Price: </span>
                       <span className="font-medium">${inquiry.supplierResponse.quotedPrice.toFixed(2)}</span>
                     </div>
                     {inquiry.supplierResponse.quotedQuantity && (
                       <div>
-                        <span className="text-gray-600">Quantity: </span>
+                        <span className="text-berlin-gray-600">Quantity: </span>
                         <span className="font-medium">{inquiry.supplierResponse.quotedQuantity.toLocaleString()} units</span>
                       </div>
                     )}
                     {inquiry.supplierResponse.leadTime && (
                       <div>
-                        <span className="text-gray-600">Lead Time: </span>
+                        <span className="text-berlin-gray-600">Lead Time: </span>
                         <span className="font-medium">{inquiry.supplierResponse.leadTime} days</span>
                       </div>
                     )}
                     {inquiry.supplierResponse.validUntil && (
                       <div>
-                        <span className="text-gray-600">Valid Until: </span>
+                        <span className="text-berlin-gray-600">Valid Until: </span>
                         <span className={`font-medium ${
                           new Date(inquiry.supplierResponse.validUntil) < new Date() 
                             ? 'text-red-600' 
-                            : 'text-green-600'
+                            : 'text-berlin-red-600'
                         }`}>
                           {new Date(inquiry.supplierResponse.validUntil).toLocaleDateString()}
                           {new Date(inquiry.supplierResponse.validUntil) < new Date() && (
@@ -264,12 +264,12 @@ export const InquiriesSection = ({ onInquiryChange }: InquiriesSectionProps = {}
             )}
 
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600 truncate max-w-md">
+              <p className="text-sm text-berlin-gray-600 truncate max-w-md">
                 {inquiry.subject}
               </p>
               <Link 
                 to={`/products/${inquiry.productId._id}`}
-                className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors justify-center space-x-1"
+                className="text-berlin-red-600 hover:text-berlin-red-800 text-sm font-medium flex items-center px-3 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700 transition-colors justify-center space-x-1"
               >
                 <Eye className="h-4 w-4 mr-1" />
                 View Details

@@ -113,14 +113,14 @@ const SupplierAuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-berlin-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Building2 className="mx-auto h-12 w-12 text-blue-600" />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-berlin-gray-900">
             {isLogin ? 'Sign in to your supplier account' : 'Create your supplier account'}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-berlin-gray-600">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
               onClick={() => {
@@ -145,7 +145,7 @@ const SupplierAuthPage: React.FC = () => {
           )}
 
           {success && (
-            <div className="mb-4 bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded">
+            <div className="mb-4 bg-berlin-red-50 border border-berlin-red-200 text-berlin-red-600 px-4 py-3 rounded">
               {success}
             </div>
           )}
@@ -153,12 +153,12 @@ const SupplierAuthPage: React.FC = () => {
           {isLogin ? (
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-berlin-gray-700">
                   Email address
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                    <Mail className="h-5 w-5 text-berlin-gray-400" />
                   </div>
                   <input
                     id="email"
@@ -166,7 +166,7 @@ const SupplierAuthPage: React.FC = () => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                   />
@@ -174,12 +174,12 @@ const SupplierAuthPage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-berlin-gray-700">
                   Password
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-berlin-gray-400" />
                   </div>
                   <input
                     id="password"
@@ -187,7 +187,7 @@ const SupplierAuthPage: React.FC = () => {
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
                     required
-                    className="pl-10 pr-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-10 pr-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={loginData.password}
                     onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                   />
@@ -197,9 +197,9 @@ const SupplierAuthPage: React.FC = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
+                      <EyeOff className="h-5 w-5 text-berlin-gray-400" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
+                      <Eye className="h-5 w-5 text-berlin-gray-400" />
                     )}
                   </button>
                 </div>
@@ -220,22 +220,22 @@ const SupplierAuthPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Basic Information */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                  <h3 className="text-lg font-medium text-berlin-gray-900 mb-4">Basic Information</h3>
                 </div>
 
                 <div>
-                  <label htmlFor="reg-email" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="reg-email" className="block text-sm font-medium text-berlin-gray-700">
                     Email address *
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
+                      <Mail className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="reg-email"
                       type="email"
                       required
-                      className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={registerData.email}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                     />
@@ -243,18 +243,18 @@ const SupplierAuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="username" className="block text-sm font-medium text-berlin-gray-700">
                     Username *
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-gray-400" />
+                      <User className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="username"
                       type="text"
                       required
-                      className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={registerData.username}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, username: e.target.value }))}
                     />
@@ -262,18 +262,18 @@ const SupplierAuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="reg-password" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="reg-password" className="block text-sm font-medium text-berlin-gray-700">
                     Password *
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="reg-password"
                       type={showPassword ? 'text' : 'password'}
                       required
-                      className="pl-10 pr-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 pr-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                     />
@@ -283,27 +283,27 @@ const SupplierAuthPage: React.FC = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
+                        <EyeOff className="h-5 w-5 text-berlin-gray-400" />
                       ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
+                        <Eye className="h-5 w-5 text-berlin-gray-400" />
                       )}
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="companyName" className="block text-sm font-medium text-berlin-gray-700">
                     Company Name *
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Building2 className="h-5 w-5 text-gray-400" />
+                      <Building2 className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="companyName"
                       type="text"
                       required
-                      className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={registerData.companyName}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, companyName: e.target.value }))}
                     />
@@ -311,13 +311,13 @@ const SupplierAuthPage: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label htmlFor="companyDescription" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="companyDescription" className="block text-sm font-medium text-berlin-gray-700">
                     Company Description
                   </label>
                   <textarea
                     id="companyDescription"
                     rows={3}
-                    className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Brief description of your company and products..."
                     value={registerData.companyDescription}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, companyDescription: e.target.value }))}
@@ -326,17 +326,17 @@ const SupplierAuthPage: React.FC = () => {
 
                 {/* Contact Information */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4 mt-6">Contact Information</h3>
+                  <h3 className="text-lg font-medium text-berlin-gray-900 mb-4 mt-6">Contact Information</h3>
                 </div>
 
                 <div>
-                  <label htmlFor="contactName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="contactName" className="block text-sm font-medium text-berlin-gray-700">
                     Contact Person Name
                   </label>
                   <input
                     id="contactName"
                     type="text"
-                    className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={registerData.contactInfo?.primaryContact?.name || ''}
                     onChange={(e) => setRegisterData(prev => ({
                       ...prev,
@@ -352,13 +352,13 @@ const SupplierAuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="contactPhone" className="block text-sm font-medium text-berlin-gray-700">
                     Phone Number
                   </label>
                   <input
                     id="contactPhone"
                     type="tel"
-                    className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={registerData.contactInfo?.primaryContact?.phone || ''}
                     onChange={(e) => setRegisterData(prev => ({
                       ...prev,
@@ -375,21 +375,21 @@ const SupplierAuthPage: React.FC = () => {
 
                 {/* Address */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4 mt-6">Address</h3>
+                  <h3 className="text-lg font-medium text-berlin-gray-900 mb-4 mt-6">Address</h3>
                 </div>
 
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="country" className="block text-sm font-medium text-berlin-gray-700">
                     Country
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <MapPin className="h-5 w-5 text-gray-400" />
+                      <MapPin className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="country"
                       type="text"
-                      className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={registerData.address?.country || ''}
                       onChange={(e) => setRegisterData(prev => ({
                         ...prev,
@@ -403,13 +403,13 @@ const SupplierAuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="city" className="block text-sm font-medium text-berlin-gray-700">
                     City
                   </label>
                   <input
                     id="city"
                     type="text"
-                    className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 appearance-none block w-full px-3 py-2 border border-berlin-gray-300 rounded-md placeholder-berlin-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={registerData.address?.city || ''}
                     onChange={(e) => setRegisterData(prev => ({
                       ...prev,
@@ -423,8 +423,8 @@ const SupplierAuthPage: React.FC = () => {
 
                 {/* Categories */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4 mt-6">Product Categories</h3>
-                  <p className="text-sm text-gray-600 mb-4">Select the categories you specialize in:</p>
+                  <h3 className="text-lg font-medium text-berlin-gray-900 mb-4 mt-6">Product Categories</h3>
+                  <p className="text-sm text-berlin-gray-600 mb-4">Select the categories you specialize in:</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                     {availableCategories.map((category) => (
                       <label key={category} className="relative flex items-center">
@@ -438,7 +438,7 @@ const SupplierAuthPage: React.FC = () => {
                           flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors
                           ${registerData.categories?.includes(category)
                             ? 'bg-blue-100 text-blue-800 border-blue-300'
-                            : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                            : 'bg-berlin-gray-100 text-berlin-gray-700 border-berlin-gray-300 hover:bg-berlin-gray-200'
                           }
                           border
                         `}>

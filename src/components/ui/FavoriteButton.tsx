@@ -105,7 +105,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
         className={`bg-white p-2 rounded-full shadow-md transition-all duration-200 border-2 ${
           isFavorite 
             ? 'border-red-300 bg-red-50 hover:bg-red-100' 
-            : 'border-gray-200 hover:border-red-300 hover:bg-red-50'
+            : 'border-berlin-gray-200 hover:border-red-300 hover:bg-red-50'
         } ${
           isLoading 
             ? 'opacity-50 cursor-not-allowed' 
@@ -118,16 +118,16 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
           className={`transition-all duration-200 ${
             isFavorite 
               ? 'text-red-600 fill-red-600 scale-110' 
-              : 'text-gray-500 hover:text-red-500 hover:scale-105'
+              : 'text-berlin-gray-500 hover:text-red-500 hover:scale-105'
           } ${isLoading ? 'animate-pulse' : ''}`}
         />
       </button>
       
       {/* Tooltip */}
       {showTooltip && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded whitespace-nowrap z-10">
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-berlin-gray-800 text-white text-sm rounded whitespace-nowrap z-10">
           {getTooltipMessage()}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-berlin-gray-800"></div>
         </div>
       )}
 

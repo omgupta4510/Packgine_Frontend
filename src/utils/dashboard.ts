@@ -313,17 +313,17 @@ export const dashboardService = {
 export const getStatusColor = (status: string): string => {
   switch (status) {
     case 'approved':
-      return 'text-green-600 bg-green-100';
+      return 'text-berlin-red-600 bg-berlin-red-100';
     case 'pending':
       return 'text-yellow-600 bg-yellow-100';
     case 'rejected':
       return 'text-red-600 bg-red-100';
     case 'draft':
-      return 'text-gray-600 bg-gray-100';
+      return 'text-berlin-gray-600 bg-berlin-gray-100';
     case 'archived':
       return 'text-purple-600 bg-purple-100';
     default:
-      return 'text-gray-600 bg-gray-100';
+      return 'text-berlin-gray-600 bg-berlin-gray-100';
   }
 };
 

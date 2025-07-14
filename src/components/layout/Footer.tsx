@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, Leaf } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -43,17 +42,21 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="bg-berlin-gray-900 text-white">
+      <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center mb-4">
-              <Leaf className="w-8 h-8 text-green-500 mr-2" />
-              <span className="text-xl font-semibold text-gray-900">Packgine</span>
+            <Link to="/" className="flex items-center mb-6">
+              <img 
+                src="/Berlin_Logo.png" 
+                alt="Berlin Packaging Logo" 
+                className="w-8 h-8 mr-3 rounded-full border border-berlin-gray-700" 
+              />
+              <span className="text-xl font-bold text-white">Berlin Packaging</span>
             </Link>
-            <p className="text-gray-600 mb-6">
-              Making sustainable packaging accessible to all businesses, one package at a time.
+            <p className="text-berlin-gray-300 mb-8 leading-relaxed">
+              The World's Largest Hybrid Packaging Supplier - Making sustainable packaging accessible to all businesses.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((link, index) => (
@@ -62,7 +65,7 @@ export const Footer = () => {
                   href={link.path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white hover:bg-green-50 text-gray-600 hover:text-green-600 p-2 rounded-full border border-gray-200 transition-colors"
+                  className="bg-berlin-gray-800 hover:bg-berlin-red-600 text-berlin-gray-300 hover:text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-105"
                   aria-label={link.label}
                 >
                   {link.icon}
@@ -74,15 +77,15 @@ export const Footer = () => {
           {/* Link Columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category} className="lg:col-span-1">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6">
                 {category}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="text-base text-gray-600 hover:text-green-600 transition-colors"
+                      className="text-base text-berlin-gray-300 hover:text-berlin-red-400 transition-colors duration-300 hover:underline"
                     >
                       {link.name}
                     </Link>
@@ -93,14 +96,14 @@ export const Footer = () => {
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-16 pt-8 border-t border-berlin-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">
-              &copy; {currentYear} Packgine. All rights reserved.
+            <p className="text-berlin-gray-400 text-sm">
+              &copy; {currentYear} Berlin Packaging. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0">
-              <p className="text-gray-500 text-sm">
-                Made with ♥ for a sustainable future
+              <p className="text-berlin-gray-400 text-sm">
+                Made with <span className="text-berlin-red-500">♥</span> for a sustainable future
               </p>
             </div>
           </div>

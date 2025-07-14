@@ -20,11 +20,11 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-berlin-red-500 to-berlin-red-600 rounded-lg p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Welcome back, {user.firstName}!</h1>
-            <p className="text-green-100 mt-1">
+            <p className="text-berlin-red-100 mt-1">
               Last login: {new Date(user.lastLogin).toLocaleDateString()}
             </p>
           </div>
@@ -40,11 +40,11 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
+              <p className="text-sm font-medium text-berlin-gray-600">Total Orders</p>
+              <p className="text-2xl font-bold text-berlin-gray-900">{stats.totalOrders}</p>
             </div>
             <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <Package className="h-6 w-6 text-blue-600" />
@@ -52,11 +52,11 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Favorites</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalFavorites}</p>
+              <p className="text-sm font-medium text-berlin-gray-600">Favorites</p>
+              <p className="text-2xl font-bold text-berlin-gray-900">{stats.totalFavorites}</p>
             </div>
             <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
               <Heart className="h-6 w-6 text-red-600" />
@@ -64,23 +64,23 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Inquiries</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalInquiries}</p>
+              <p className="text-sm font-medium text-berlin-gray-600">Inquiries</p>
+              <p className="text-2xl font-bold text-berlin-gray-900">{stats.totalInquiries}</p>
             </div>
-            <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <MessageSquare className="h-6 w-6 text-green-600" />
+            <div className="h-12 w-12 bg-berlin-red-100 rounded-lg flex items-center justify-center">
+              <MessageSquare className="h-6 w-6 text-berlin-red-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pending Quotes</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingQuotes}</p>
+              <p className="text-sm font-medium text-berlin-gray-600">Pending Quotes</p>
+              <p className="text-2xl font-bold text-berlin-gray-900">{stats.pendingQuotes}</p>
             </div>
             <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
               <MessageSquare className="h-6 w-6 text-yellow-600" />
@@ -92,12 +92,12 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Favorites */}
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Favorites</h3>
+            <h3 className="text-lg font-semibold text-berlin-gray-900">Recent Favorites</h3>
             <button 
               onClick={() => setActiveTab('favorites')} 
-              className="text-green-600 hover:text-green-500 text-sm font-medium"
+              className="text-berlin-red-600 hover:text-berlin-red-500 text-sm font-medium"
             >
               View all
             </button>
@@ -111,12 +111,12 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
                   className="h-10 w-10 rounded-lg object-cover"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{favorite.productId.name}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm font-medium text-berlin-gray-900">{favorite.productId.name}</p>
+                  <p className="text-sm text-berlin-gray-500">
                     {favorite.productId.pricing.currency} {favorite.productId.pricing.basePrice}
                   </p>
                 </div>
-                <button className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-1">
+                <button className="px-3 py-1 text-sm border border-berlin-gray-300 rounded-lg hover:bg-berlin-gray-50 transition-colors flex items-center space-x-1">
                     <Link 
                     to={`/products/${favorite.productId._id}`}
                         >
@@ -126,16 +126,16 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
               </div>
             ))}
             {user.favorites?.length === 0 && (
-              <p className="text-gray-500 text-sm">No favorites yet</p>
+              <p className="text-berlin-gray-500 text-sm">No favorites yet</p>
             )}
           </div>
         </div>
 
         {/* Recent Search History */}
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Searches</h3>
-            <Link to="/products" className="text-green-600 hover:text-green-500 text-sm font-medium">
+            <h3 className="text-lg font-semibold text-berlin-gray-900">Recent Searches</h3>
+            <Link to="/products" className="text-berlin-red-600 hover:text-berlin-red-500 text-sm font-medium">
               Browse products
             </Link>
           </div>
@@ -143,37 +143,37 @@ export const OverviewSection = ({ user, stats, setActiveTab }: OverviewSectionPr
             {user.analytics?.searchHistory?.slice(0, 3).map((search, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Search className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-900">{search.query}</span>
+                  <Search className="h-4 w-4 text-berlin-gray-400" />
+                  <span className="text-sm text-berlin-gray-900">{search.query}</span>
                 </div>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-berlin-gray-500">
                   {new Date(search.timestamp).toLocaleDateString()}
                 </span>
               </div>
             ))}
             {(!user.analytics?.searchHistory || user.analytics.searchHistory.length === 0) && (
-              <p className="text-gray-500 text-sm">No recent searches</p>
+              <p className="text-berlin-gray-500 text-sm">No recent searches</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-berlin-gray-200">
+        <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link 
             to="/products" 
-            className="border border-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-gray-50 transition-colors"
+            className="border border-berlin-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-berlin-gray-50 transition-colors"
           >
             <Search className="h-6 w-6" />
             <span className="text-sm">Browse Products</span>
           </Link>
-          <button className="border border-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-gray-50 transition-colors">
+          <button className="border border-berlin-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-berlin-gray-50 transition-colors">
             <Plus className="h-6 w-6" />
             <span className="text-sm">Request Quote</span>
           </button>
-          <button className="border border-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-gray-50 transition-colors">
+          <button className="border border-berlin-gray-300 rounded-lg flex flex-col items-center space-y-2 h-auto py-4 hover:bg-berlin-gray-50 transition-colors">
             <MessageSquare className="h-6 w-6" />
             <span className="text-sm">Contact Support</span>
           </button>

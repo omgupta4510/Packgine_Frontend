@@ -171,10 +171,10 @@ export const ProductsPage = () => {
 	const filteredProducts = mockProducts.filter(product => productMatchesFilters(product, filterState));
 
 	return (
-		<div className="pt-20 min-h-screen bg-gray-50">
-			<div className="bg-gradient-to-r from-green-50 to-green-100 py-12">
-				<div className="container mx-auto px-4">
-					<h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
+		<div className="pt-20 min-h-screen bg-berlin-gray-50">
+			<div className="bg-gradient-to-r from-white to-berlin-red-50 py-16">
+				<div className="berlin-container">
+					<h1 className="text-3xl md:text-4xl font-bold text-berlin-gray-900 mb-6 text-center">
 						Sustainable Packaging Products
 					</h1>
 					<div className="max-w-3xl mx-auto">
@@ -199,7 +199,7 @@ export const ProductsPage = () => {
 					</div>
 				</div>
 			</div>
-			<div className="container mx-auto px-4 py-8">
+			<div className="berlin-container py-8">
 				{showCategories ? (
 					<CategoryGrid />
 				) : null}

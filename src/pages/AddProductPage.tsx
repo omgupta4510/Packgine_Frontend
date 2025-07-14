@@ -316,21 +316,21 @@ const AddProductPage: React.FC = () => {
             key={step}
             className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
               step <= currentStep
-                ? 'bg-green-600 border-green-600 text-white'
-                : 'border-gray-300 text-gray-400'
+                ? 'bg-berlin-red-600 border-berlin-red-600 text-white'
+                : 'border-berlin-gray-300 text-berlin-gray-400'
             }`}
           >
             {step}
           </div>
         ))}
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-berlin-gray-200 rounded-full h-2">
         <div
-          className="bg-green-600 h-2 rounded-full transition-all duration-300"
+          className="bg-berlin-red-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${(currentStep / 7) * 100}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-gray-500 mt-2">
+      <div className="flex justify-between text-xs text-berlin-gray-500 mt-2">
         <span>Category</span>
         <span>Subcategory</span>
         <span>Category Filters</span>
@@ -347,7 +347,7 @@ const AddProductPage: React.FC = () => {
       case 1:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 1: Select Broader Category</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 1: Select Broader Category</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {broaderCategories.broader_categories.map((category: any) => (
                 <div
@@ -355,12 +355,12 @@ const AddProductPage: React.FC = () => {
                   onClick={() => setSelectedBroaderCategory(category.name)}
                   className={`p-6 border-2 rounded-lg cursor-pointer transition-all ${
                     selectedBroaderCategory === category.name
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-gray-300 hover:border-green-300'
+                      ? 'border-berlin-red-500 bg-berlin-red-50'
+                      : 'border-berlin-gray-300 hover:border-berlin-red-300'
                   }`}
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-                  <p className="text-gray-600 text-sm">{category.description}</p>
+                  <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">{category.name}</h3>
+                  <p className="text-berlin-gray-600 text-sm">{category.description}</p>
                 </div>
               ))}
             </div>
@@ -370,7 +370,7 @@ const AddProductPage: React.FC = () => {
       case 2:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 2: Select Subcategory</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 2: Select Subcategory</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {availableCategories.map((category) => (
                 <div
@@ -378,11 +378,11 @@ const AddProductPage: React.FC = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`p-4 border-2 rounded-lg cursor-pointer transition-all text-center ${
                     selectedCategory === category
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-gray-300 hover:border-green-300'
+                      ? 'border-berlin-red-500 bg-berlin-red-50'
+                      : 'border-berlin-gray-300 hover:border-berlin-red-300'
                   }`}
                 >
-                  <span className="text-gray-900 font-medium">{category}</span>
+                  <span className="text-berlin-gray-900 font-medium">{category}</span>
                 </div>
               ))}
             </div>
@@ -392,17 +392,17 @@ const AddProductPage: React.FC = () => {
       case 3:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 3: Category-Specific Filters</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 3: Category-Specific Filters</h2>
             {categorySpecificFiltersList.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No category-specific filters available for {selectedCategory}.</p>
-                <p className="text-sm text-gray-400 mt-2">Click Next to continue to common filters.</p>
+                <p className="text-berlin-gray-500">No category-specific filters available for {selectedCategory}.</p>
+                <p className="text-sm text-berlin-gray-400 mt-2">Click Next to continue to common filters.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {categorySpecificFiltersList.map((filter: any, index: number) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <label className="block text-lg font-medium text-gray-700 mb-4">
+                    <label className="block text-lg font-medium text-berlin-gray-700 mb-4">
                       {filter.name}
                     </label>
                     
@@ -412,7 +412,7 @@ const AddProductPage: React.FC = () => {
                         {filter.options.map((option: string) => {
                           const isSelected = selectedCategoryFilters[filter.name]?.includes(option) || false;
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-green-50 cursor-pointer">
+                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -429,7 +429,7 @@ const AddProductPage: React.FC = () => {
                                     [filter.name]: updatedSelections
                                   });
                                 }}
-                                className="w-4 h-4 text-green-600"
+                                className="w-4 h-4 text-berlin-red-600"
                               />
                               <span>{option}</span>
                             </label>
@@ -443,13 +443,13 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-6">
                         {filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <h3 className="font-medium mb-3 text-berlin-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
                               {group.options.map((option: any, optionIndex: number) => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
                                 const isSelected = selectedCategoryFilters[filter.name]?.includes(optionValue) || false;
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -466,7 +466,7 @@ const AddProductPage: React.FC = () => {
                                           [filter.name]: updatedSelections
                                         });
                                       }}
-                                      className="w-4 h-4 text-green-600"
+                                      className="w-4 h-4 text-berlin-red-600"
                                     />
                                     <span>{optionValue}</span>
                                   </label>
@@ -490,7 +490,7 @@ const AddProductPage: React.FC = () => {
                             });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="">Select {filter.name}</option>
                         {filter.options?.map((option: string) => (
@@ -504,10 +504,10 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Minimum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Minimum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Min value"
                               onChange={(e) => {
                                 const currentSelections = selectedCategoryFilters[filter.name] || [];
@@ -523,10 +523,10 @@ const AddProductPage: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Maximum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Maximum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Max value"
                               onChange={(e) => {
                                 const currentSelections = selectedCategoryFilters[filter.name] || [];
@@ -550,10 +550,10 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Minimum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Minimum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Min value"
                               onChange={(e) => {
                                 const currentSelections = selectedCategoryFilters[filter.name] || [];
@@ -569,10 +569,10 @@ const AddProductPage: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Maximum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Maximum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Max value"
                               onChange={(e) => {
                                 const currentSelections = selectedCategoryFilters[filter.name] || [];
@@ -593,7 +593,7 @@ const AddProductPage: React.FC = () => {
 
                     {/* Show selected count for current filter */}
                     {selectedCategoryFilters[filter.name] && selectedCategoryFilters[filter.name].length > 0 && (
-                      <div className="mt-3 text-sm text-green-600">
+                      <div className="mt-3 text-sm text-berlin-red-600">
                         Selected: {selectedCategoryFilters[filter.name].length} item(s)
                       </div>
                     )}
@@ -607,17 +607,17 @@ const AddProductPage: React.FC = () => {
       case 4:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 4: Common Filters</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 4: Common Filters</h2>
             {commonFiltersList.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No common filters available.</p>
-                <p className="text-sm text-gray-400 mt-2">Click Next to continue to image upload.</p>
+                <p className="text-berlin-gray-500">No common filters available.</p>
+                <p className="text-sm text-berlin-gray-400 mt-2">Click Next to continue to image upload.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {commonFiltersList.map((filter: any, index: number) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <label className="block text-lg font-medium text-gray-700 mb-4">
+                    <label className="block text-lg font-medium text-berlin-gray-700 mb-4">
                       {filter.name}
                     </label>
                     
@@ -627,7 +627,7 @@ const AddProductPage: React.FC = () => {
                         {filter.options.map((option: string) => {
                           const isSelected = selectedCommonFilters[filter.name]?.includes(option) || false;
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-green-50 cursor-pointer">
+                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -644,7 +644,7 @@ const AddProductPage: React.FC = () => {
                                     [filter.name]: updatedSelections
                                   });
                                 }}
-                                className="w-4 h-4 text-green-600"
+                                className="w-4 h-4 text-berlin-red-600"
                               />
                               <span>{option}</span>
                             </label>
@@ -658,13 +658,13 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-6">
                         {filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <h3 className="font-medium mb-3 text-berlin-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
                               {group.options.map((option: any, optionIndex: number) => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
                                 const isSelected = selectedCommonFilters[filter.name]?.includes(optionValue) || false;
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -681,7 +681,7 @@ const AddProductPage: React.FC = () => {
                                           [filter.name]: updatedSelections
                                         });
                                       }}
-                                      className="w-4 h-4 text-green-600"
+                                      className="w-4 h-4 text-berlin-red-600"
                                     />
                                     <span>{optionValue}</span>
                                   </label>
@@ -715,8 +715,8 @@ const AddProductPage: React.FC = () => {
                                   }}
                                   className={`px-4 py-2 rounded-lg border ${
                                     selectedCommonFilters[filter.name]?.some((item: string) => item === `Toggle: ${toggle}`) 
-                                      ? 'bg-green-500 text-white border-green-500' 
-                                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                      ? 'bg-berlin-red-500 text-white border-berlin-red-500' 
+                                      : 'bg-white text-berlin-gray-700 border-berlin-gray-300 hover:bg-berlin-gray-50'
                                   }`}
                                 >
                                   {toggle}
@@ -729,13 +729,13 @@ const AddProductPage: React.FC = () => {
                         {/* Location groups */}
                         {filter.groups && filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <h3 className="font-medium mb-3 text-berlin-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
                               {group.options.map((option: any, optionIndex: number) => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
                                 const isSelected = selectedCommonFilters[filter.name]?.includes(optionValue) || false;
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -752,7 +752,7 @@ const AddProductPage: React.FC = () => {
                                           [filter.name]: updatedSelections
                                         });
                                       }}
-                                      className="w-4 h-4 text-green-600"
+                                      className="w-4 h-4 text-berlin-red-600"
                                     />
                                     <span>{optionValue}</span>
                                   </label>
@@ -776,7 +776,7 @@ const AddProductPage: React.FC = () => {
                             });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="">Select {filter.name}</option>
                         {filter.options?.map((option: string) => (
@@ -790,10 +790,10 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Minimum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Minimum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Min value"
                               onChange={(e) => {
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
@@ -809,10 +809,10 @@ const AddProductPage: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Maximum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Maximum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Max value"
                               onChange={(e) => {
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
@@ -836,10 +836,10 @@ const AddProductPage: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Minimum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Minimum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Min value"
                               onChange={(e) => {
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
@@ -855,10 +855,10 @@ const AddProductPage: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Maximum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Maximum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Max value"
                               onChange={(e) => {
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
@@ -875,9 +875,9 @@ const AddProductPage: React.FC = () => {
                           </div>
                           {filter.unitOptions && (
                             <div className="w-32">
-                              <label className="block text-sm font-medium text-gray-600 mb-2">Unit</label>
+                              <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Unit</label>
                               <select 
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                                 onChange={(e) => {
                                   const currentSelections = selectedCommonFilters[filter.name] || [];
                                   const updatedSelections = currentSelections.filter((item: any) => !item.startsWith('Unit:'));
@@ -903,7 +903,7 @@ const AddProductPage: React.FC = () => {
 
                     {/* Show selected count for current filter */}
                     {selectedCommonFilters[filter.name] && selectedCommonFilters[filter.name].length > 0 && (
-                      <div className="mt-3 text-sm text-green-600">
+                      <div className="mt-3 text-sm text-berlin-red-600">
                         Selected: {selectedCommonFilters[filter.name].length} item(s)
                       </div>
                     )}
@@ -917,10 +917,10 @@ const AddProductPage: React.FC = () => {
       case 5:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 5: Upload Product Images</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 5: Upload Product Images</h2>
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                   Upload Images
                 </label>
                 <input
@@ -929,7 +929,7 @@ const AddProductPage: React.FC = () => {
                   multiple
                   onChange={handleImageUpload}
                   disabled={uploadingImage}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                 />
                 {uploadingImage && (
                   <p className="text-blue-600 mt-2">Uploading images...</p>
@@ -938,7 +938,7 @@ const AddProductPage: React.FC = () => {
 
               {uploadedImages.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">Uploaded Images:</h3>
+                  <h3 className="text-sm font-medium text-berlin-gray-700 mb-3">Uploaded Images:</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {uploadedImages.map((imageUrl, index) => (
                       <div key={index} className="relative">
@@ -966,11 +966,11 @@ const AddProductPage: React.FC = () => {
       case 6:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 6: Environmental Impact Assessment</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 6: Environmental Impact Assessment</h2>
             <div className="space-y-6">
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2 text-green-800">Calculate Your Eco Score</h3>
-                <p className="text-sm text-green-700 mb-4">
+              <div className="bg-berlin-red-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2 text-berlin-red-800">Calculate Your Eco Score</h3>
+                <p className="text-sm text-berlin-red-700 mb-4">
                   Help us understand the environmental impact of your products. This score will be displayed to buyers.
                 </p>
               </div>
@@ -991,12 +991,12 @@ const AddProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.recyclability}%</span>
                   <span>100%</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-berlin-gray-500 mt-1">
                   What percentage of your product can be recycled?
                 </p>
               </div>
@@ -1017,12 +1017,12 @@ const AddProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>High Impact</span>
                   <span className="font-medium">{ecoScoreDetails.carbonFootprint}/100</span>
                   <span>Low Impact</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-berlin-gray-500 mt-1">
                   How low is the carbon footprint of your production process?
                 </p>
               </div>
@@ -1043,12 +1043,12 @@ const AddProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.sustainableMaterials}%</span>
                   <span>100%</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-berlin-gray-500 mt-1">
                   What percentage of your materials are sustainably sourced?
                 </p>
               </div>
@@ -1069,12 +1069,12 @@ const AddProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.localSourcing}%</span>
                   <span>100%</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-berlin-gray-500 mt-1">
                   What percentage of your supply chain is local (within 500km)?
                 </p>
               </div>
@@ -1103,7 +1103,7 @@ const AddProductPage: React.FC = () => {
                             });
                           }
                         }}
-                        className="w-4 h-4 text-green-600"
+                        className="w-4 h-4 text-berlin-red-600"
                       />
                       <span className="text-sm">{cert}</span>
                     </label>
@@ -1131,21 +1131,21 @@ const AddProductPage: React.FC = () => {
                 
                 {ecoScore > 0 && (
                   <div className="flex items-center space-x-4">
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-berlin-red-600">
                       {ecoScore}/100
                     </div>
                     <div className="flex-1">
-                      <div className="bg-gray-200 rounded-full h-4">
+                      <div className="bg-berlin-gray-200 rounded-full h-4">
                         <div 
                           className={`h-4 rounded-full ${
-                            ecoScore >= 80 ? 'bg-green-500' :
+                            ecoScore >= 80 ? 'bg-berlin-red-500' :
                             ecoScore >= 60 ? 'bg-yellow-500' :
                             ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
                           }`}
                           style={{ width: `${ecoScore}%` }}
                         ></div>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-berlin-gray-600 mt-1">
                         {ecoScore >= 80 ? 'Excellent' :
                          ecoScore >= 60 ? 'Good' :
                          ecoScore >= 40 ? 'Fair' : 'Needs Improvement'} Environmental Impact
@@ -1161,41 +1161,41 @@ const AddProductPage: React.FC = () => {
       case 7:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 7: Product Details & Review</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 7: Product Details & Review</h2>
             <div className="space-y-6">
               {/* Basic Information */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Basic Information</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Product Name *
                     </label>
                     <input
                       type="text"
                       value={productInfo.name}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Description *
                     </label>
                     <textarea
                       value={productInfo.description}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                         Price ($) *
                       </label>
                       <input
@@ -1203,32 +1203,32 @@ const AddProductPage: React.FC = () => {
                         step="0.01"
                         value={productInfo.price}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                         Min Order Quantity
                       </label>
                       <input
                         type="number"
                         value={productInfo.minimumOrderQuantity}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                         Available Quantity
                       </label>
                       <input
                         type="number"
                         value={productInfo.availableQuantity}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 0 }))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -1236,8 +1236,8 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* Product Features */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Features</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Features</h3>
                 <div className="space-y-4">
                   <div className="flex gap-2">
                     <input
@@ -1245,13 +1245,13 @@ const AddProductPage: React.FC = () => {
                       placeholder="Add a feature..."
                       value={newFeature}
                       onChange={(e) => setNewFeature(e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       onKeyPress={(e) => e.key === 'Enter' && addFeature()}
                     />
                     <button
                       type="button"
                       onClick={addFeature}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
                     >
                       Add
                     </button>
@@ -1261,7 +1261,7 @@ const AddProductPage: React.FC = () => {
                       {productInfo.features.map((feature, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800"
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-berlin-red-100 text-berlin-red-800"
                         >
                           {feature}
                           <button
@@ -1279,39 +1279,39 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* Specifications */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Specifications</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Specifications</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Dimensions */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Dimensions</h4>
+                    <h4 className="font-medium text-berlin-gray-900 mb-3">Dimensions</h4>
                     <div className="grid grid-cols-3 gap-2">
                       <input
                         type="number"
                         placeholder="Height"
                         value={productInfo.height}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, height: e.target.value }))}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                       <input
                         type="number"
                         placeholder="Width"
                         value={productInfo.width}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, width: e.target.value }))}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                       <input
                         type="number"
                         placeholder="Depth"
                         value={productInfo.depth}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, depth: e.target.value }))}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                     </div>
                     <select
                       value={productInfo.dimensionUnit}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, dimensionUnit: e.target.value }))}
-                      className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="mt-2 w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     >
                       <option value="mm">mm</option>
                       <option value="cm">cm</option>
@@ -1321,19 +1321,19 @@ const AddProductPage: React.FC = () => {
 
                   {/* Weight */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Weight</h4>
+                    <h4 className="font-medium text-berlin-gray-900 mb-3">Weight</h4>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         placeholder="Weight"
                         value={productInfo.weight}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, weight: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                       <select
                         value={productInfo.weightUnit}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, weightUnit: e.target.value }))}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="g">g</option>
                         <option value="kg">kg</option>
@@ -1345,19 +1345,19 @@ const AddProductPage: React.FC = () => {
 
                   {/* Capacity */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Capacity</h4>
+                    <h4 className="font-medium text-berlin-gray-900 mb-3">Capacity</h4>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         placeholder="Capacity"
                         value={productInfo.capacity}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, capacity: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                       <select
                         value={productInfo.capacityUnit}
                         onChange={(e) => setProductInfo(prev => ({ ...prev, capacityUnit: e.target.value }))}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="ml">ml</option>
                         <option value="L">L</option>
@@ -1370,85 +1370,85 @@ const AddProductPage: React.FC = () => {
 
                   {/* Color */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Color</label>
                     <input
                       type="text"
                       placeholder="e.g., Transparent, White, Black"
                       value={productInfo.color}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, color: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* Finish */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Finish</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Finish</label>
                     <input
                       type="text"
                       placeholder="e.g., Matte, Glossy, Textured"
                       value={productInfo.finish}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, finish: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* Closure */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Closure Type</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Closure Type</label>
                     <input
                       type="text"
                       placeholder="e.g., Pump, Spray, Cap, Screw-on"
                       value={productInfo.closure}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, closure: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Lead Time */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Lead Time (Days)</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Lead Time (Days)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Standard</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Standard</label>
                     <input
                       type="number"
                       placeholder="e.g., 14"
                       value={productInfo.standardLeadTime}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, standardLeadTime: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Custom</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Custom</label>
                     <input
                       type="number"
                       placeholder="e.g., 21"
                       value={productInfo.customLeadTime}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, customLeadTime: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Rush</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Rush</label>
                     <input
                       type="number"
                       placeholder="e.g., 7"
                       value={productInfo.rushLeadTime}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, rushLeadTime: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Sustainability */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sustainability Features</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Sustainability Features</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                       Recycled Content (%)
                     </label>
                     <input
@@ -1457,7 +1457,7 @@ const AddProductPage: React.FC = () => {
                       max="100"
                       value={sustainability.recycledContent}
                       onChange={(e) => setSustainability(prev => ({ ...prev, recycledContent: parseInt(e.target.value) || 0 }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1511,8 +1511,8 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* Certifications */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Certifications</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Certifications</h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
@@ -1520,44 +1520,44 @@ const AddProductPage: React.FC = () => {
                       placeholder="Certification Name"
                       value={newCertification.name}
                       onChange={(e) => setNewCertification(prev => ({ ...prev, name: e.target.value }))}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                     <input
                       type="text"
                       placeholder="Certification Body"
                       value={newCertification.certificationBody}
                       onChange={(e) => setNewCertification(prev => ({ ...prev, certificationBody: e.target.value }))}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                     <input
                       type="date"
                       placeholder="Valid Until"
                       value={newCertification.validUntil}
                       onChange={(e) => setNewCertification(prev => ({ ...prev, validUntil: e.target.value }))}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                     <input
                       type="text"
                       placeholder="Certificate Number"
                       value={newCertification.certificateNumber}
                       onChange={(e) => setNewCertification(prev => ({ ...prev, certificateNumber: e.target.value }))}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <button
                     type="button"
                     onClick={addCertification}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
                   >
                     Add Certification
                   </button>
                   {certifications.length > 0 && (
                     <div className="space-y-2">
                       {certifications.map((cert, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={index} className="flex items-center justify-between p-3 bg-berlin-gray-50 rounded-lg">
                           <div>
                             <span className="font-medium">{cert.name}</span>
-                            {cert.certificationBody && <span className="text-sm text-gray-600 ml-2">by {cert.certificationBody}</span>}
+                            {cert.certificationBody && <span className="text-sm text-berlin-gray-600 ml-2">by {cert.certificationBody}</span>}
                           </div>
                           <button
                             type="button"
@@ -1574,8 +1574,8 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* Customization Options */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Customization Options</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Customization Options</h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <label className="flex items-center">
@@ -1609,20 +1609,20 @@ const AddProductPage: React.FC = () => {
 
                   {/* Color Options */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Color Options</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Color Options</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         placeholder="Add color option..."
                         value={newColorOption}
                         onChange={(e) => setNewColorOption(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                         onKeyPress={(e) => e.key === 'Enter' && addColorOption()}
                       />
                       <button
                         type="button"
                         onClick={addColorOption}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
                       >
                         Add
                       </button>
@@ -1650,20 +1650,20 @@ const AddProductPage: React.FC = () => {
 
                   {/* Printing Methods */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Printing Methods</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Printing Methods</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         placeholder="Add printing method..."
                         value={newPrintingMethod}
                         onChange={(e) => setNewPrintingMethod(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                         onKeyPress={(e) => e.key === 'Enter' && addPrintingMethod()}
                       />
                       <button
                         type="button"
                         onClick={addPrintingMethod}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
                       >
                         Add
                       </button>
@@ -1692,44 +1692,44 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* SEO Information */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Information</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">SEO Information</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Meta Title</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Title</label>
                     <input
                       type="text"
                       placeholder="SEO friendly title..."
                       value={productInfo.metaTitle}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, metaTitle: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Description</label>
                     <textarea
                       placeholder="SEO friendly description..."
                       value={productInfo.metaDescription}
                       onChange={(e) => setProductInfo(prev => ({ ...prev, metaDescription: e.target.value }))}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Keywords</label>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Keywords</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         placeholder="Add keyword..."
                         value={newKeyword}
                         onChange={(e) => setNewKeyword(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                         onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
                       />
                       <button
                         type="button"
                         onClick={addKeyword}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
                       >
                         Add
                       </button>
@@ -1739,7 +1739,7 @@ const AddProductPage: React.FC = () => {
                         {productInfo.keywords.map((keyword, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-berlin-gray-100 text-berlin-gray-800"
                           >
                             {keyword}
                             <button
@@ -1758,8 +1758,8 @@ const AddProductPage: React.FC = () => {
               </div>
 
               {/* Review Summary */}
-              <div className="bg-gray-50 rounded-lg p-6 mt-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Summary</h3>
+              <div className="bg-berlin-gray-50 rounded-lg p-6 mt-8">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Review Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p><strong>Category:</strong> {selectedBroaderCategory} → {selectedCategory}</p>
@@ -1871,18 +1871,18 @@ const AddProductPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-berlin-red-50 to-blue-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-8">
             <button
               onClick={() => navigate('/supplier/products')}
-              className="text-green-600 hover:text-green-700 mb-4"
+              className="text-berlin-red-600 hover:text-berlin-red-700 mb-4"
             >
               ← Back to Products
             </button>
-            <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-            <p className="text-gray-600 mt-2">Create a detailed product listing with eco-friendly specifications</p>
+            <h1 className="text-3xl font-bold text-berlin-gray-900">Add New Product</h1>
+            <p className="text-berlin-gray-600 mt-2">Create a detailed product listing with eco-friendly specifications</p>
           </div>
 
           {renderProgressBar()}
@@ -1895,7 +1895,7 @@ const AddProductPage: React.FC = () => {
             <button
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 border border-berlin-gray-300 text-berlin-gray-700 rounded-lg hover:bg-berlin-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
@@ -1904,7 +1904,7 @@ const AddProductPage: React.FC = () => {
               <button
                 onClick={handleSubmit}
                 disabled={isLoading || !canProceedFromStep(currentStep)}
-                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="px-8 py-3 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700 transition-colors disabled:opacity-50"
               >
                 {isLoading ? 'Creating Product...' : 'Create Product'}
               </button>
@@ -1912,7 +1912,7 @@ const AddProductPage: React.FC = () => {
               <button
                 onClick={handleNext}
                 disabled={!canProceedFromStep(currentStep)}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>

@@ -15,7 +15,7 @@ export const mockProducts = [
     sizeUnit: 'ml',
     endUse: ['Shampoo Conditioner', 'Body Lotion'],
     color: 'Amber',
-    supplier: 'Packgine Supplier'
+    supplier: 'Berlin Packaging Supplier'
   },
   {
     id: '2',
@@ -48,7 +48,7 @@ export const mockProducts = [
     sizeUnit: 'ml',
     endUse: ['Face Moisturizer'],
     color: 'Clear',
-    supplier: 'Packgine Supplier'
+    supplier: 'Berlin Packaging Supplier'
   },
   {
     id: '4',
@@ -65,6 +65,6 @@ export const mockProducts = [
     sizeUnit: 'ml',
     endUse: ['Eye', 'Face Serum'],
     color: 'Black',
-    supplier: 'Packgine Supplier'
+    supplier: 'Berlin Packaging Supplier'
   }
 ];

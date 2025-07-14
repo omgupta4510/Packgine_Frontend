@@ -25,7 +25,7 @@ export const ProductCard = ({
   location,
 }: ProductCardProps) => {
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-berlin-gray-200 hover:border-berlin-red-300">
       <div className="relative">
         <Link to={`/products/${id}`}>
           <img 
@@ -42,29 +42,29 @@ export const ProductCard = ({
         </div>
       </div>
       
-      <div className="p-4">
-        <div className="mb-2">
-          <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+      <div className="p-5">
+        <div className="mb-3">
+          <span className="text-xs font-semibold text-berlin-red-700 bg-berlin-red-50 px-3 py-1 rounded-full border border-berlin-red-200">
             {material}
           </span>
           {location && (
-            <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-0.5 rounded-full ml-2">
+            <span className="text-xs font-medium text-berlin-gray-600 bg-berlin-gray-50 px-3 py-1 rounded-full ml-2 border border-berlin-gray-200">
               {location}
             </span>
           )}
         </div>
         
-        <Link to={`/products/${id}`} className="block mb-1">
-          <h3 className="text-lg font-medium text-gray-800 hover:text-green-700 transition-colors">{name}</h3>
+        <Link to={`/products/${id}`} className="block mb-2">
+          <h3 className="text-lg font-semibold text-berlin-gray-800 hover:text-berlin-red-600 transition-colors">{name}</h3>
         </Link>
         
-        <p className="text-sm text-gray-600 mb-3">By {supplier}</p>
+        <p className="text-sm text-berlin-gray-600 mb-3 font-medium">By {supplier}</p>
         
         {minOrderQuantity && (
-          <p className="text-xs text-gray-500 mb-3">Minimum order: {minOrderQuantity} units</p>
+          <p className="text-xs text-berlin-gray-500 mb-4">Minimum order: {minOrderQuantity.toLocaleString()} units</p>
         )}
         
-        <div className="flex space-x-2">
+        <div className="flex space-x-3">
           <Button variant="secondary" size="sm" className="flex-1">Sample</Button>
           <Button variant="primary" size="sm" className="flex-1">Quote</Button>
         </div>

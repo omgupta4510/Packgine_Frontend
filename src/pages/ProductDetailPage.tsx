@@ -236,10 +236,10 @@ export const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="pt-20 min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="pt-20 min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading product details...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-berlin-red-500 mx-auto"></div>
+          <p className="mt-4 text-berlin-gray-600">Loading product details...</p>
         </div>
       </div>
     );
@@ -247,10 +247,10 @@ export const ProductDetailPage = () => {
 
   if (error || !product) {
     return (
-      <div className="pt-20 min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="pt-20 min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600 mb-6">{error || 'The product you are looking for does not exist.'}</p>
+          <h1 className="text-2xl font-bold text-berlin-gray-900 mb-4">Product Not Found</h1>
+          <p className="text-berlin-gray-600 mb-6">{error || 'The product you are looking for does not exist.'}</p>
           <Button onClick={() => window.history.back()}>Go Back</Button>
         </div>
       </div>
@@ -259,16 +259,16 @@ export const ProductDetailPage = () => {
 
 // console.log(product.commonFilters[0].Location[0]);
   return (
-    <div className="pt-20 min-h-screen bg-gray-50">
+    <div className="pt-20 min-h-screen bg-berlin-gray-50">
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-berlin-gray-200">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center text-sm text-gray-600">
-            <a href="/" className="hover:text-green-600">Home</a>
+          <div className="flex items-center text-sm text-berlin-gray-600">
+            <a href="/" className="hover:text-berlin-red-600">Home</a>
             <ChevronRight className="h-4 w-4 mx-1" />
-            <a href="/products" className="hover:text-green-600">Products</a>
+            <a href="/products" className="hover:text-berlin-red-600">Products</a>
             <ChevronRight className="h-4 w-4 mx-1" />
-            <span className="text-gray-800">{product.name}</span>
+            <span className="text-berlin-gray-800">{product.name}</span>
           </div>
         </div>
       </div>
@@ -278,7 +278,7 @@ export const ProductDetailPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             {/* Product Images */}
             <div>
-              <div className="relative mb-4 bg-gray-50 rounded-lg overflow-hidden group">
+              <div className="relative mb-4 bg-berlin-gray-50 rounded-lg overflow-hidden group">
                 <img 
                   src={product.images[selectedImage] || product.primaryImage || '/Images/image1.png'} 
                   alt={product.name}
@@ -292,13 +292,13 @@ export const ProductDetailPage = () => {
                       onClick={() => setSelectedImage(selectedImage > 0 ? selectedImage - 1 : product.images.length - 1)}
                       className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
-                      <ChevronLeft className="h-5 w-5 text-gray-700" />
+                      <ChevronLeft className="h-5 w-5 text-berlin-gray-700" />
                     </button>
                     <button
                       onClick={() => setSelectedImage(selectedImage < product.images.length - 1 ? selectedImage + 1 : 0)}
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
-                      <ChevronRight className="h-5 w-5 text-gray-700" />
+                      <ChevronRight className="h-5 w-5 text-berlin-gray-700" />
                     </button>
                   </>
                 )}
@@ -316,7 +316,7 @@ export const ProductDetailPage = () => {
                   <button
                     key={index}
                     className={`relative border-2 rounded-md overflow-hidden flex-shrink-0 ${
-                      selectedImage === index ? 'border-green-500' : 'border-gray-200 hover:border-gray-300'
+                      selectedImage === index ? 'border-berlin-red-500' : 'border-berlin-gray-200 hover:border-berlin-gray-300'
                     }`}
                     onClick={() => setSelectedImage(index)}
                   >
@@ -327,7 +327,7 @@ export const ProductDetailPage = () => {
                     />
                   </button>
                 )) : (
-                  <div className="text-gray-500 text-sm">No additional images</div>
+                  <div className="text-berlin-gray-500 text-sm">No additional images</div>
                 )}
               </div>
             </div>
@@ -336,11 +336,11 @@ export const ProductDetailPage = () => {
             <div>
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-berlin-gray-900 mb-2">
                     {product.name}
                   </h1>
-                  <p className="text-lg text-gray-600 mb-3">
-                    By <a href="#" className="text-green-600 hover:underline">{product.supplier.companyName}</a>
+                  <p className="text-lg text-berlin-gray-600 mb-3">
+                    By <a href="#" className="text-berlin-red-600 hover:underline">{product.supplier.companyName}</a>
                   </p>
                 </div>
                 <SustainabilityScore score={product.ecoScore} size="lg" />
@@ -348,18 +348,18 @@ export const ProductDetailPage = () => {
 
               <div className="mb-6">
                 {getMaterials(product).map((material, index) => (
-                  <div key={index} className="inline-flex items-center bg-green-50 text-green-800 py-1 px-2 rounded text-sm mr-2 mb-2">
+                  <div key={index} className="inline-flex items-center bg-berlin-red-50 text-berlin-red-800 py-1 px-2 rounded text-sm mr-2 mb-2">
                     <Leaf className="h-4 w-4 mr-1" />
                     {material}
                   </div>
                 ))}
-                <div className="inline-flex items-center bg-green-50 text-green-800 py-1 px-2 rounded text-sm mr-2 mb-2">
+                <div className="inline-flex items-center bg-berlin-red-50 text-berlin-red-800 py-1 px-2 rounded text-sm mr-2 mb-2">
                   <Leaf className="h-4 w-4 mr-1" />
                   Made in {getLocation(product)}
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-6">
+              <p className="text-berlin-gray-700 mb-6">
                 {product.description}
               </p>
 
@@ -368,24 +368,24 @@ export const ProductDetailPage = () => {
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                   {product.features?.map((feature: string, index: number) => (
                     <li key={index} className="flex items-start">
-                      <ThumbsUp className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
+                      <ThumbsUp className="h-5 w-5 text-berlin-red-500 mr-2 flex-shrink-0" />
+                      <span className="text-berlin-gray-700">{feature}</span>
                     </li>
-                  )) || <li className="text-gray-500">No features listed</li>}
+                  )) || <li className="text-berlin-gray-500">No features listed</li>}
                 </ul>
               </div>
 
-              <div className="border-t border-gray-200 pt-6 mb-6">
+              <div className="border-t border-berlin-gray-200 pt-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
-                    <Package className="h-5 w-5 text-gray-500 mr-2" />
-                    <span className="text-gray-700">Minimum Order: <strong>{product.specifications.minimumOrderQuantity.toLocaleString()} units</strong></span>
+                    <Package className="h-5 w-5 text-berlin-gray-500 mr-2" />
+                    <span className="text-berlin-gray-700">Minimum Order: <strong>{product.specifications.minimumOrderQuantity.toLocaleString()} units</strong></span>
                   </div>
                   <div className="text-right">
-                    <span className="text-lg font-bold text-green-600">
+                    <span className="text-lg font-bold text-berlin-red-600">
                       ${product.pricing.basePrice.toFixed(2)}
                     </span>
-                    <span className="text-sm text-gray-500 ml-1">per piece</span>
+                    <span className="text-sm text-berlin-gray-500 ml-1">per piece</span>
                   </div>
                 </div>
                 
@@ -415,7 +415,7 @@ export const ProductDetailPage = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-berlin-gray-50 p-4 rounded-lg">
                 <div className="flex items-center mb-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
@@ -424,16 +424,16 @@ export const ProductDetailPage = () => {
                         className={`h-4 w-4 ${
                           i < Math.floor(product.averageRating) 
                             ? 'text-yellow-400 fill-yellow-400' 
-                            : 'text-gray-300'
+                            : 'text-berlin-gray-300'
                         }`} 
                       />
                     ))}
                   </div>
-                  <span className="ml-2 text-sm text-gray-600">
+                  <span className="ml-2 text-sm text-berlin-gray-600">
                     {product.averageRating.toFixed(1)} ({product.totalReviews} reviews)
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 flex items-center">
+                <p className="text-sm text-berlin-gray-600 flex items-center">
                   <Info className="h-4 w-4 mr-1 text-blue-500" />
                   Verified supplier with {product.totalReviews}+ successful transactions
                 </p>
@@ -442,13 +442,13 @@ export const ProductDetailPage = () => {
           </div>
 
           {/* Tabs Navigation */}
-          <div className="border-t border-gray-200">
-            <div className="flex border-b border-gray-200">
+          <div className="border-t border-berlin-gray-200">
+            <div className="flex border-b border-berlin-gray-200">
               <button
                 className={`px-6 py-3 text-sm font-medium ${
                   activeTab === 'overview'
-                    ? 'border-b-2 border-green-500 text-green-600'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'border-b-2 border-berlin-red-500 text-berlin-red-600'
+                    : 'text-berlin-gray-600 hover:text-berlin-gray-800'
                 }`}
                 onClick={() => setActiveTab('overview')}
               >
@@ -457,8 +457,8 @@ export const ProductDetailPage = () => {
               <button
                 className={`px-6 py-3 text-sm font-medium ${
                   activeTab === 'specs'
-                    ? 'border-b-2 border-green-500 text-green-600'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'border-b-2 border-berlin-red-500 text-berlin-red-600'
+                    : 'text-berlin-gray-600 hover:text-berlin-gray-800'
                 }`}
                 onClick={() => setActiveTab('specs')}
               >
@@ -467,8 +467,8 @@ export const ProductDetailPage = () => {
               <button
                 className={`px-6 py-3 text-sm font-medium ${
                   activeTab === 'sustainability'
-                    ? 'border-b-2 border-green-500 text-green-600'
-                    : 'text-gray-600 hover:text-gray-800'
+                    ? 'border-b-2 border-berlin-red-500 text-berlin-red-600'
+                    : 'text-berlin-gray-600 hover:text-berlin-gray-800'
                 }`}
                 onClick={() => setActiveTab('sustainability')}
               >
@@ -481,42 +481,42 @@ export const ProductDetailPage = () => {
               {activeTab === 'overview' && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Product Overview</h2>
-                  <p className="text-gray-700 mb-6">
+                  <p className="text-berlin-gray-700 mb-6">
                     {product.description}
                   </p>
                   
                   <h3 className="text-lg font-semibold mb-3">About the Supplier</h3>
-                  <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <div className="bg-berlin-gray-50 p-4 rounded-lg mb-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600">Company Name</p>
+                        <p className="text-sm text-berlin-gray-600">Company Name</p>
                         <p className="font-medium">{product.supplier.companyName}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Location</p>
+                        <p className="text-sm text-berlin-gray-600">Location</p>
                         <p className="font-medium">{getLocation(product)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Contact</p>
+                        <p className="text-sm text-berlin-gray-600">Contact</p>
                         <p className="font-medium">{product.supplier.contactInfo?.email || 'Contact via platform'}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Rating</p>
+                        <p className="text-sm text-berlin-gray-600">Rating</p>
                         <p className="font-medium">{product.supplier.averageRating?.toFixed(1) || 'N/A'}/5</p>
                       </div>
                     </div>
                     {product.supplier.companyDescription && (
                       <div className="mt-4">
-                        <p className="text-sm text-gray-600">About</p>
-                        <p className="text-sm text-gray-700">{product.supplier.companyDescription}</p>
+                        <p className="text-sm text-berlin-gray-600">About</p>
+                        <p className="text-sm text-berlin-gray-700">{product.supplier.companyDescription}</p>
                       </div>
                     )}
                     {product.supplier.certifications && product.supplier.certifications.length > 0 && (
                       <div className="mt-4">
-                        <p className="text-sm text-gray-600">Certifications</p>
+                        <p className="text-sm text-berlin-gray-600">Certifications</p>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {product.supplier.certifications.map((cert: string, index: number) => (
-                            <span key={index} className="bg-green-50 text-green-700 px-2 py-1 text-xs rounded-full">
+                            <span key={index} className="bg-berlin-red-50 text-berlin-red-700 px-2 py-1 text-xs rounded-full">
                               {cert}
                             </span>
                           ))}
@@ -531,13 +531,13 @@ export const ProductDetailPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Technical Specifications</h2>
                   
-                  <div className="overflow-hidden bg-white shadow-sm rounded-lg border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <tbody className="divide-y divide-gray-200">
+                  <div className="overflow-hidden bg-white shadow-sm rounded-lg border border-berlin-gray-200">
+                    <table className="min-w-full divide-y divide-berlin-gray-200">
+                      <tbody className="divide-y divide-berlin-gray-200">
                         {product.specifications.dimensions && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 w-1/3">Dimensions</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50 w-1/3">Dimensions</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">
                               {product.specifications.dimensions.height && product.specifications.dimensions.width && product.specifications.dimensions.depth
                                 ? `${product.specifications.dimensions.height}x${product.specifications.dimensions.width}x${product.specifications.dimensions.depth} ${product.specifications.dimensions.unit || 'mm'}`
                                 : 'Contact supplier for dimensions'
@@ -546,62 +546,62 @@ export const ProductDetailPage = () => {
                           </tr>
                         )}
                         <tr>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Material</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Material</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">
                             {getMaterials(product).join(', ') || 'Material not specified'}
                           </td>
                         </tr>
                         {product.specifications.capacity && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Capacity</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.capacity.value} {product.specifications.capacity.unit}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Capacity</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.capacity.value} {product.specifications.capacity.unit}</td>
                           </tr>
                         )}
                         {product.specifications.weight && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Weight</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.weight.value} {product.specifications.weight.unit}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Weight</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.weight.value} {product.specifications.weight.unit}</td>
                           </tr>
                         )}
                         {product.specifications.color && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Color</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.color}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Color</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.color}</td>
                           </tr>
                         )}
                         {product.specifications.finish && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Finish</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.finish}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Finish</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.finish}</td>
                           </tr>
                         )}
                         {product.specifications.closure && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Closure</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.closure}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Closure</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.closure}</td>
                           </tr>
                         )}
                         <tr>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Minimum Order Quantity</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.minimumOrderQuantity.toLocaleString()} units</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Minimum Order Quantity</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.minimumOrderQuantity.toLocaleString()} units</td>
                         </tr>
                         <tr>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Price per Piece</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            <span className="font-semibold text-green-600">${product.pricing.basePrice.toFixed(2)}</span>
-                            <span className="text-gray-500 ml-1">({product.pricing.currency})</span>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Price per Piece</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">
+                            <span className="font-semibold text-berlin-red-600">${product.pricing.basePrice.toFixed(2)}</span>
+                            <span className="text-berlin-gray-500 ml-1">({product.pricing.currency})</span>
                           </td>
                         </tr>
                         {product.specifications.availableQuantity && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Available Quantity</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.specifications.availableQuantity.toLocaleString()} units</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Available Quantity</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.availableQuantity.toLocaleString()} units</td>
                           </tr>
                         )}
                         {product.leadTime && (
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">Lead Time</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Lead Time</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">
                               {product.leadTime.standard && `Standard: ${product.leadTime.standard} days`}
                               {product.leadTime.custom && ` | Custom: ${product.leadTime.custom} days`}
                               {product.leadTime.rush && ` | Rush: ${product.leadTime.rush} days`}
@@ -617,14 +617,14 @@ export const ProductDetailPage = () => {
                       <h3 className="text-lg font-semibold mt-6 mb-3">Certifications</h3>
                       <div className="flex flex-wrap gap-3">
                         {product.certifications.map((cert: any, index: number) => (
-                          <div key={index} className="bg-gray-50 p-3 rounded-lg flex items-center">
-                            <div className="bg-green-100 p-2 rounded-full mr-3">
-                              <Leaf className="h-5 w-5 text-green-600" />
+                          <div key={index} className="bg-berlin-gray-50 p-3 rounded-lg flex items-center">
+                            <div className="bg-berlin-red-100 p-2 rounded-full mr-3">
+                              <Leaf className="h-5 w-5 text-berlin-red-600" />
                             </div>
                             <div>
                               <span className="font-medium">{cert.name}</span>
                               {cert.certificationBody && (
-                                <p className="text-xs text-gray-600">{cert.certificationBody}</p>
+                                <p className="text-xs text-berlin-gray-600">{cert.certificationBody}</p>
                               )}
                             </div>
                           </div>
@@ -640,23 +640,23 @@ export const ProductDetailPage = () => {
                   <h2 className="text-xl font-semibold mb-4">Sustainability Profile</h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                    <div className="bg-berlin-red-50 p-4 rounded-lg border border-berlin-red-100">
                       <div className="flex items-center mb-2">
-                        <Recycle className="h-6 w-6 text-green-600 mr-2" />
-                        <h3 className="text-lg font-medium text-gray-900">End of Life</h3>
+                        <Recycle className="h-6 w-6 text-berlin-red-600 mr-2" />
+                        <h3 className="text-lg font-medium text-berlin-gray-900">End of Life</h3>
                       </div>
-                      <p className="text-sm text-gray-700 mb-2">This product is:</p>
+                      <p className="text-sm text-berlin-gray-700 mb-2">This product is:</p>
                       <ul className="space-y-1">
                         <li className="flex items-center text-sm">
-                          <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-berlin-red-500 mr-2"></div>
                           {product.sustainability.biodegradable ? 'Biodegradable' : 'Not Biodegradable'}
                         </li>
                         <li className="flex items-center text-sm">
-                          <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-berlin-red-500 mr-2"></div>
                           {product.sustainability.compostable ? 'Compostable' : 'Not Compostable'}
                         </li>
                         <li className="flex items-center text-sm">
-                          <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                          <div className="w-3 h-3 rounded-full bg-berlin-red-500 mr-2"></div>
                           {product.sustainability.refillable ? 'Refillable' : 'Single Use'}
                         </li>
                       </ul>
@@ -665,51 +665,51 @@ export const ProductDetailPage = () => {
                     <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                       <div className="flex items-center mb-2">
                         <Droplets className="h-6 w-6 text-blue-600 mr-2" />
-                        <h3 className="text-lg font-medium text-gray-900">Eco Score</h3>
+                        <h3 className="text-lg font-medium text-berlin-gray-900">Eco Score</h3>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600">{product.ecoScore}/100</div>
-                        <p className="text-sm text-gray-600 mt-1">Sustainability Rating</p>
+                        <div className="text-3xl font-bold text-berlin-red-600">{product.ecoScore}/100</div>
+                        <p className="text-sm text-berlin-gray-600 mt-1">Sustainability Rating</p>
                       </div>
                     </div>
                     
                     <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
                       <div className="flex items-center mb-2">
                         <Leaf className="h-6 w-6 text-yellow-600 mr-2" />
-                        <h3 className="text-lg font-medium text-gray-900">Material Composition</h3>
+                        <h3 className="text-lg font-medium text-berlin-gray-900">Material Composition</h3>
                       </div>
                       <div className="relative pt-1">
-                        <p className="text-sm text-gray-700 mb-1">Recycled Content</p>
-                        <div className="overflow-hidden h-6 mb-2 text-xs flex rounded-full bg-gray-200">
+                        <p className="text-sm text-berlin-gray-700 mb-1">Recycled Content</p>
+                        <div className="overflow-hidden h-6 mb-2 text-xs flex rounded-full bg-berlin-gray-200">
                           <div
                             style={{ width: `${product.sustainability.recycledContent || 0}%` }}
-                            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+                            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-berlin-red-500"
                           >
                             {product.sustainability.recycledContent || 0}%
                           </div>
                         </div>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-berlin-gray-600">
                           This product contains {product.sustainability.recycledContent || 0}% recycled materials.
                         </p>
                       </div>
                     </div>
                   </div>
                   
-                  {/* <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  {/* <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
                     <h3 className="text-lg font-semibold mb-3">Environmental Impact</h3>
-                    <p className="text-gray-700 mb-4">
+                    <p className="text-berlin-gray-700 mb-4">
                       This product contributes to environmental sustainability through:
                     </p>
-                    <ul className="space-y-2 text-sm text-gray-700">
+                    <ul className="space-y-2 text-sm text-berlin-gray-700">
                       {product.sustainability.sustainableSourcing && (
                         <li className="flex items-start">
-                          <Leaf className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                          <Leaf className="h-5 w-5 text-berlin-red-500 mr-2 flex-shrink-0" />
                           <span>Sustainable sourcing practices</span>
                         </li>
                       )}
                       {product.sustainability.carbonNeutral && (
                         <li className="flex items-start">
-                          <Leaf className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                          <Leaf className="h-5 w-5 text-berlin-red-500 mr-2 flex-shrink-0" />
                           <span>Carbon neutral manufacturing</span>
                         </li>
                       )}
@@ -730,7 +730,7 @@ export const ProductDetailPage = () => {
 
       {/* Success Message */}
       {quoteSuccess && (
-        <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg z-50">
+        <div className="fixed top-4 right-4 bg-berlin-red-100 border border-berlin-red-400 text-berlin-red-700 px-4 py-3 rounded-lg shadow-lg z-50">
           <div className="flex items-center">
             <MessageSquare className="h-5 w-5 mr-2" />
             <p className="font-medium">Quote request sent successfully!</p>
@@ -743,8 +743,8 @@ export const ProductDetailPage = () => {
       {showQuoteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Quote</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Request Quote</h3>
+            <p className="text-berlin-gray-600 mb-6">
               Your quote request for "{product?.name}" will be sent to our sales team. 
               They will contact you with pricing details and availability.
             </p>

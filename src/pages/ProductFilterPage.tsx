@@ -442,21 +442,21 @@ const ProductFilterPage = () => {
   };
 
   return (
-    <div className="flex bg-gray-50 my-10 min-h-screen">
+    <div className="flex bg-berlin-gray-50 my-10 min-h-screen">
       {/* Sidebar */}
       <aside
         className="w-64 bg-white border-r px-4 py-6 mt-8 rounded-xl shadow-lg ml-2 sticky top-8 transition-all duration-300 max-h-[80vh] overflow-y-auto hide-scrollbar"
       >
         <div className="flex items-center mb-4">
-          <svg className="w-5 h-5 text-green-500 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
-          <h2 className="text-lg font-bold text-gray-900 tracking-tight">Filters</h2>
+          <svg className="w-5 h-5 text-berlin-red-500 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
+          <h2 className="text-lg font-bold text-berlin-gray-900 tracking-tight">Filters</h2>
         </div>
         <div className="space-y-4">
           {filtersToShow.map((filter: any, idx: number) => (
             <div key={filter.name} className="mb-1">
               <details className="group" open={openFilterIndexes.includes(idx)}>
                 <summary
-                  className="flex items-center justify-between cursor-pointer select-none py-1 px-1 rounded hover:bg-green-50 transition text-xs font-semibold text-gray-800"
+                  className="flex items-center justify-between cursor-pointer select-none py-1 px-1 rounded hover:bg-berlin-red-50 transition text-xs font-semibold text-berlin-gray-800"
                   onClick={e => {
                     e.preventDefault();
                     setOpenFilterIndexes(prev =>
@@ -483,11 +483,11 @@ const ProductFilterPage = () => {
                         count = filterState[filter.name].length;
                       }
                       return count > 0 ? (
-                        <span className="ml-1 text-green-600 text-xs font-semibold">({count})</span>
+                        <span className="ml-1 text-berlin-red-600 text-xs font-semibold">({count})</span>
                       ) : null;
                     })()}
                   </span>
-                  <svg className="w-3 h-3 ml-2 text-green-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
+                  <svg className="w-3 h-3 ml-2 text-berlin-red-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
                 </summary>
                 {openFilterIndexes.includes(idx) && (
                   <div className="mt-1 space-y-1">
@@ -495,8 +495,8 @@ const ProductFilterPage = () => {
                     {filter.type === 'checkbox-group' && filter.options && filter.name !== 'Color' && filter.options.map((opt: string) => (
                       <button
                         key={opt}
-                        className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
-                        style={{ boxShadow: '0 1px 2px 0 rgba(60, 180, 80, 0.04)' }}
+                        className={`flex items-center gap-2 px-2 py-1 rounded-md bg-berlin-gray-50 hover:bg-berlin-red-50 border border-transparent hover:border-berlin-red-200 text-berlin-red-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-berlin-red-50 border-berlin-red-300' : ''}`}
+                        style={{ boxShadow: '0 1px 2px 0 rgba(220, 38, 38, 0.04)' }}
                         onClick={() => {
                           const prev = Array.isArray(filterState[filter.name.toLowerCase()]) ? filterState[filter.name.toLowerCase()] : [];
                           handleFilterChange(
@@ -506,8 +506,8 @@ const ProductFilterPage = () => {
                         }}
                         type="button"
                       >
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-green-50 group-hover:bg-green-100">
-                          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-berlin-red-50 group-hover:bg-berlin-red-100">
+                          <svg className="w-4 h-4 text-berlin-red-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
                             {Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) && (
                               <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -520,13 +520,13 @@ const ProductFilterPage = () => {
                     {/* Grouped checkbox-group UI (not for Color) */}
                     {filter.type === 'checkbox-group' && filter.groups && filter.name !== 'Color' && filter.groups.map((group: any) => (
                       <div key={group.groupName} className="mt-1">
-                        <div className="font-semibold text-gray-700 mb-1 mt-1 text-xs pl-1">{group.groupName}</div>
+                        <div className="font-semibold text-berlin-gray-700 mb-1 mt-1 text-xs pl-1">{group.groupName}</div>
                         <div className="grid grid-cols-2 gap-1">
                           {group.options.map((opt: string) => (
                             <button
                               key={opt}
-                              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-gray-50 hover:bg-green-50 border border-transparent hover:border-green-200 text-green-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-green-50 border-green-300' : ''}`}
-                              style={{ boxShadow: '0 1px 2px 0 rgba(60, 180, 80, 0.04)' }}
+                              className={`flex items-center gap-2 px-2 py-1 rounded-md bg-berlin-gray-50 hover:bg-berlin-red-50 border border-transparent hover:border-berlin-red-200 text-berlin-red-700 font-medium transition group w-full text-left text-xs ${Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) ? 'bg-berlin-red-50 border-berlin-red-300' : ''}`}
+                              style={{ boxShadow: '0 1px 2px 0 rgba(220, 38, 38, 0.04)' }}
                               onClick={() => {
                                 const prev = Array.isArray(filterState[filter.name.toLowerCase()]) ? filterState[filter.name.toLowerCase()] : [];
                                 handleFilterChange(
@@ -535,8 +535,8 @@ const ProductFilterPage = () => {
                                 );
                               }}
                             >
-                              <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-green-50 group-hover:bg-green-100">
-                                <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-berlin-red-50 group-hover:bg-berlin-red-100">
+                                <svg className="w-4 h-4 text-berlin-red-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                   <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="2" fill="none" />
                                   {Array.isArray(filterState[filter.name.toLowerCase()]) && filterState[filter.name.toLowerCase()].includes(opt) && (
                                     <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -551,7 +551,7 @@ const ProductFilterPage = () => {
                     ))}
                     {filter.type === 'dropdown' && filter.options && (
                       <select
-                        className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-green-400 focus:border-green-400 text-green-700 bg-gray-50 text-xs"
+                        className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 text-berlin-red-700 bg-berlin-gray-50 text-xs"
                         value={filterState[filter.name] || ''}
                         onChange={e => handleFilterChange(filter.name, e.target.value)}
                       >
@@ -565,7 +565,7 @@ const ProductFilterPage = () => {
                       <div className="flex items-center space-x-1">
                         <input
                           type="number"
-                          className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                          className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                           placeholder="Min"
                           value={filterState[`${filter.name.toLowerCase()}_min`] || ''}
                           onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_min`, e.target.value)}
@@ -573,7 +573,7 @@ const ProductFilterPage = () => {
                         <span>-</span>
                         <input
                           type="number"
-                          className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                          className="border rounded px-1 py-1 w-20 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                           placeholder="Max"
                           value={filterState[`${filter.name.toLowerCase()}_max`] || ''}
                           onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_max`, e.target.value)}
@@ -584,7 +584,7 @@ const ProductFilterPage = () => {
                       <div>
                         <input
                           type="text"
-                          className="border rounded px-2 py-1 w-full mb-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                          className="border rounded px-2 py-1 w-full mb-1 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                           placeholder={`Exact ${filter.name.toLowerCase()}`}
                           value={filterState[filter.name.toLowerCase()] || ''}
                           onChange={e => handleFilterChange(filter.name.toLowerCase(), e.target.value)}
@@ -592,7 +592,7 @@ const ProductFilterPage = () => {
                         <div className="flex items-center space-x-1 mb-1">
                           <input
                             type="number"
-                            className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                            className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                             placeholder="Min"
                             value={filterState[`${filter.name.toLowerCase()}_min`] || ''}
                             onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_min`, e.target.value)}
@@ -600,7 +600,7 @@ const ProductFilterPage = () => {
                           <span>-</span>
                           <input
                             type="number"
-                            className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                            className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                             placeholder="Max"
                             value={filterState[`${filter.name.toLowerCase()}_max`] || ''}
                             onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_max`, e.target.value)}
@@ -608,7 +608,7 @@ const ProductFilterPage = () => {
                         </div>
                         {filter.unitOptions && (
                           <select
-                            className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                            className="border rounded px-1 py-1 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                             value={filterState[`${filter.name.toLowerCase()}_unit`] || filter.unitOptions[0]}
                             onChange={e => handleFilterChange(`${filter.name.toLowerCase()}_unit`, e.target.value)}
                           >
@@ -625,18 +625,18 @@ const ProductFilterPage = () => {
                           const compositeKey = `${normalizeKey(filter.name)}_${normalizeKey(field.label)}`;
                           return (
                             <div key={field.label} className="flex items-center space-x-1">
-                              <label className="w-20 text-xs text-gray-700">{field.label}{field.unit ? ` (${field.unit})` : ''}:</label>
+                              <label className="w-20 text-xs text-berlin-gray-700">{field.label}{field.unit ? ` (${field.unit})` : ''}:</label>
                               {field.type === 'range' ? (
                                 <input
                                   type="number"
-                                  className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  className="border rounded px-1 py-1 w-16 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                                   placeholder={field.label}
                                   value={filterState[compositeKey] || ''}
                                   onChange={e => handleFilterChange(compositeKey, e.target.value)}
                                 />
                               ) : field.type === 'dropdown' ? (
                                 <select
-                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                                   value={filterState[compositeKey] || ''}
                                   onChange={e => handleFilterChange(compositeKey, e.target.value)}
                                 >
@@ -648,7 +648,7 @@ const ProductFilterPage = () => {
                               ) : (
                                 <input
                                   type="text"
-                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-green-400 focus:border-green-400 bg-gray-50 text-xs"
+                                  className="border rounded px-1 py-1 focus:ring-2 focus:ring-berlin-red-400 focus:border-berlin-red-400 bg-berlin-gray-50 text-xs"
                                   placeholder={field.label}
                                   value={filterState[compositeKey] || ''}
                                   onChange={e => handleFilterChange(compositeKey, e.target.value)}
@@ -667,7 +667,7 @@ const ProductFilterPage = () => {
                           {filter.toggleOptions.map((opt: string) => (
                             <button
                               key={opt}
-                              className={`px-2 py-1 rounded-full text-xs font-semibold border transition ${filterState.locationToggle === opt || (!filterState.locationToggle && filter.defaultToggle === opt) ? 'bg-green-100 text-green-700 border-green-400' : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                              className={`px-2 py-1 rounded-full text-xs font-semibold border transition ${filterState.locationToggle === opt || (!filterState.locationToggle && filter.defaultToggle === opt) ? 'bg-berlin-red-100 text-berlin-red-700 border-berlin-red-400' : 'bg-berlin-gray-100 text-berlin-gray-600 border-berlin-gray-200'}`}
                               onClick={() => handleFilterChange('locationToggle', opt)}
                               type="button"
                             >
@@ -678,12 +678,12 @@ const ProductFilterPage = () => {
                         {/* Country Groups */}
                         {filter.groups.map((group: any) => (
                           <div key={group.groupName} className="mb-2">
-                            <div className="font-semibold text-gray-700 mb-1 mt-1 text-xs pl-1">{group.groupName}</div>
+                            <div className="font-semibold text-berlin-gray-700 mb-1 mt-1 text-xs pl-1">{group.groupName}</div>
                             <div className="grid grid-cols-2 gap-1">
                               {group.options.map((country: any) => (
                                 <button
                                   key={country.code}
-                                  className={`flex items-center gap-2 px-2 py-1 rounded-full border text-xs font-medium transition w-full text-left ${Array.isArray(filterState.locationcountries) && filterState.locationcountries.includes(country.code) ? 'bg-green-50 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-700'}`}
+                                  className={`flex items-center gap-2 px-2 py-1 rounded-full border text-xs font-medium transition w-full text-left ${Array.isArray(filterState.locationcountries) && filterState.locationcountries.includes(country.code) ? 'bg-berlin-red-50 border-berlin-red-400 text-berlin-red-700' : 'bg-white border-berlin-gray-300 text-berlin-gray-700'}`}
                                   onClick={() => {
                                     const prev = Array.isArray(filterState.locationcountries) ? filterState.locationcountries : [];
                                     handleFilterChange(
@@ -714,8 +714,8 @@ const ProductFilterPage = () => {
                             key={color}
                             className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium transition w-full text-left shadow-sm
                               ${Array.isArray(filterState[filter.name]) && filterState[filter.name].includes(color)
-                                ? 'ring-2 ring-green-400 border-green-400 bg-green-50 text-green-700'
-                                : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}
+                                ? 'ring-2 ring-berlin-red-400 border-berlin-red-400 bg-berlin-red-50 text-berlin-red-700'
+                                : 'border-berlin-gray-300 bg-white text-berlin-gray-700 hover:bg-berlin-gray-50'}
                             `}
                             style={{ boxShadow: '0 1px 2px 0 rgba(60, 180, 80, 0.04)' }}
                             onClick={() => {
@@ -728,7 +728,7 @@ const ProductFilterPage = () => {
                             type="button"
                           >
                             <span
-                              className="inline-block w-5 h-5 rounded-full border border-gray-200 mr-2"
+                              className="inline-block w-5 h-5 rounded-full border border-berlin-gray-200 mr-2"
                               style={{ backgroundColor: getColorHex(color) }}
                             ></span>
                             <span>{color}</span>
@@ -740,13 +740,13 @@ const ProductFilterPage = () => {
                 )}
               </details>
               {/* Divider between filters, except last */}
-              {idx !== filtersToShow.length - 1 && <hr className="my-3 border-gray-100" />}
+              {idx !== filtersToShow.length - 1 && <hr className="my-3 border-berlin-gray-100" />}
             </div>
           ))}
         </div>
         {/* Action buttons */}
         <div className="flex items-center gap-3 mt-6">
-          <button className="text-green-600 hover:underline text-xs font-medium" onClick={() => {
+          <button className="text-berlin-red-600 hover:underline text-xs font-medium" onClick={() => {
             setFilterState({});
             setCurrentPage(1);
           }}>
@@ -757,10 +757,10 @@ const ProductFilterPage = () => {
       {/* Main Content */}
       <main className="flex-1 px-8 py-8">
         <div className="mt-8">
-          <div className="flex items-center mb-4 text-sm text-gray-500 space-x-2">
-            <Link to="/products" className="hover:text-green-600">All Products</Link>
+          <div className="flex items-center mb-4 text-sm text-berlin-gray-500 space-x-2">
+            <Link to="/products" className="hover:text-berlin-red-600">All Products</Link>
             <span>&gt;</span>
-            <span className="text-green-700 font-semibold capitalize">
+            <span className="text-berlin-red-700 font-semibold capitalize">
               {filterValue?.replace(/-/g, ' ')}
             </span>
           </div>
@@ -779,11 +779,11 @@ const ProductFilterPage = () => {
       return value.map((v: string) => (
         <span
           key={key + v}
-          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+          className="flex items-center bg-berlin-red-50 text-berlin-red-700 px-3 py-1 rounded-full text-sm font-medium border border-berlin-red-200"
         >
           {v}
           <button
-            className="ml-2 text-green-500 hover:text-green-700"
+            className="ml-2 text-berlin-red-500 hover:text-berlin-red-700"
             onClick={() => {
               // Remove this value from the filter
               const newArr = value.filter((item: string) => item !== v);
@@ -807,11 +807,11 @@ const ProductFilterPage = () => {
       return (
         <span
           key={key}
-          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+          className="flex items-center bg-berlin-red-50 text-berlin-red-700 px-3 py-1 rounded-full text-sm font-medium border border-berlin-red-200"
         >
           {filter.name}: {value}
           <button
-            className="ml-2 text-green-500 hover:text-green-700"
+            className="ml-2 text-berlin-red-500 hover:text-berlin-red-700"
             onClick={() => handleFilterChange(key, '')}
             aria-label={`Remove ${filter.name}`}
             type="button"
@@ -827,11 +827,11 @@ const ProductFilterPage = () => {
       return filterState.locationcountries.map((code: string) => (
         <span
           key={'locationcountries' + code}
-          className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+          className="flex items-center bg-berlin-red-50 text-berlin-red-700 px-3 py-1 rounded-full text-sm font-medium border border-berlin-red-200"
         >
           {countryCodeToName[code.toLowerCase()] || code}
           <button
-            className="ml-2 text-green-500 hover:text-green-700"
+            className="ml-2 text-berlin-red-500 hover:text-berlin-red-700"
             onClick={() => {
               const newArr = filterState.locationcountries.filter((item: string) => item !== code);
               handleFilterChange('locationcountries', newArr);
@@ -853,7 +853,7 @@ const ProductFilterPage = () => {
           {loading && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="loader mb-4" />
-              <p className="text-gray-600">Loading Prodcuts...</p>
+              <p className="text-berlin-gray-600">Loading Prodcuts...</p>
             </div>
           )}
 
@@ -893,13 +893,13 @@ const ProductFilterPage = () => {
                   if (filteredProducts.length === 0) {
                     return (
                       <div className="col-span-full text-center py-12">
-                        <div className="text-gray-400 mb-4">
+                        <div className="text-berlin-gray-400 mb-4">
                           <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8l-4 4m0 0l-4-4m4 4V3"></path>
                           </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No suppliers found</h3>
-                        <p className="text-gray-600 mb-4">
+                        <h3 className="text-lg font-medium text-berlin-gray-900 mb-2">No suppliers found</h3>
+                        <p className="text-berlin-gray-600 mb-4">
                           {suppliers.length === 0 
                             ? "No suppliers have registered yet."
                             : "No suppliers match your selected filters. Try adjusting your filters."
@@ -907,7 +907,7 @@ const ProductFilterPage = () => {
                         </p>
                         {filterState && Object.keys(filterState).length > 0 && (
                           <button 
-                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                            className="bg-berlin-red-600 text-white px-4 py-2 rounded hover:bg-berlin-red-700"
                             onClick={() => {
                               setFilterState({});
                               setCurrentPage(1);
@@ -923,14 +923,14 @@ const ProductFilterPage = () => {
                   return paginatedProducts.map(product => (
                     <button
                       key={product.id}
-                      className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col text-left hover:shadow-lg transition cursor-pointer"
+                      className="bg-white rounded-lg shadow border border-berlin-gray-100 p-4 flex flex-col text-left hover:shadow-lg transition cursor-pointer"
                       onClick={() => window.location.href = `/products/${product.id}`}
                       style={{ outline: 'none', border: 'none' }}
                     >
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="w-full h-40 object-contain mb-3 bg-gray-50 rounded"
+                        className="w-full h-40 object-contain mb-3 bg-berlin-gray-50 rounded"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = '/placeholder-image.png';
@@ -940,7 +940,7 @@ const ProductFilterPage = () => {
                       
                       {/* Material and Shape - only show if both have values */}
                       {(product.material || product.shape) && (
-                        <div className="text-xs text-gray-500 mb-2">
+                        <div className="text-xs text-berlin-gray-500 mb-2">
                           {[product.material, product.shape].filter(Boolean).join(' • ')}
                         </div>
                       )}
@@ -950,17 +950,17 @@ const ProductFilterPage = () => {
                         <div className="mb-2">
                           <div className="flex items-center space-x-2">
                             <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                              product.ecoScore >= 80 ? 'bg-green-100 text-green-800' :
+                              product.ecoScore >= 80 ? 'bg-berlin-red-100 text-berlin-red-800' :
                               product.ecoScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
                               product.ecoScore >= 40 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
                             }`}>
                               🌱 Eco Score: {product.ecoScore}/100
                             </div>
                           </div>
-                          <div className="mt-1 bg-gray-200 rounded-full h-1.5">
+                          <div className="mt-1 bg-berlin-gray-200 rounded-full h-1.5">
                             <div 
                               className={`h-1.5 rounded-full ${
-                                product.ecoScore >= 80 ? 'bg-green-500' :
+                                product.ecoScore >= 80 ? 'bg-berlin-red-500' :
                                 product.ecoScore >= 60 ? 'bg-yellow-500' :
                                 product.ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
                               }`}
@@ -972,7 +972,7 @@ const ProductFilterPage = () => {
                       
                       <div className="flex flex-wrap gap-1 mb-2">
                         {product.sustainability && (
-                          <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+                          <span className="bg-berlin-red-50 text-berlin-red-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
                         )}
                         {product.location && (
                           <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>
@@ -1021,7 +1021,7 @@ const ProductFilterPage = () => {
 
                 return (
                   <div className="flex items-center justify-between mt-8">
-                    <div className="text-sm text-gray-700">
+                    <div className="text-sm text-berlin-gray-700">
                       Showing {((currentPage - 1) * productsPerPage) + 1} to {Math.min(currentPage * productsPerPage, filteredProducts.length)} of {filteredProducts.length} products
                     </div>
                     
@@ -1032,8 +1032,8 @@ const ProductFilterPage = () => {
                         disabled={currentPage === 1}
                         className={`px-3 py-2 rounded-md text-sm font-medium ${
                           currentPage === 1
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                            ? 'bg-berlin-gray-100 text-berlin-gray-400 cursor-not-allowed'
+                            : 'bg-white text-berlin-gray-700 border border-berlin-gray-300 hover:bg-berlin-gray-50'
                         }`}
                       >
                         Previous
@@ -1048,7 +1048,7 @@ const ProductFilterPage = () => {
                         if (!shouldShow) {
                           // Show ellipsis for gaps
                           if (page === currentPage - 3 || page === currentPage + 3) {
-                            return <span key={page} className="px-2 text-gray-400">...</span>;
+                            return <span key={page} className="px-2 text-berlin-gray-400">...</span>;
                           }
                           return null;
                         }
@@ -1059,8 +1059,8 @@ const ProductFilterPage = () => {
                             onClick={() => setCurrentPage(page)}
                             className={`px-3 py-2 rounded-md text-sm font-medium ${
                               currentPage === page
-                                ? 'bg-green-600 text-white'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                ? 'bg-berlin-red-600 text-white'
+                                : 'bg-white text-berlin-gray-700 border border-berlin-gray-300 hover:bg-berlin-gray-50'
                             }`}
                           >
                             {page}
@@ -1074,8 +1074,8 @@ const ProductFilterPage = () => {
                         disabled={currentPage === totalPages}
                         className={`px-3 py-2 rounded-md text-sm font-medium ${
                           currentPage === totalPages
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                            ? 'bg-berlin-gray-100 text-berlin-gray-400 cursor-not-allowed'
+                            : 'bg-white text-berlin-gray-700 border border-berlin-gray-300 hover:bg-berlin-gray-50'
                         }`}
                       >
                         Next

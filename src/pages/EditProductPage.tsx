@@ -527,7 +527,7 @@ const EditProductPage: React.FC = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -536,10 +536,10 @@ const EditProductPage: React.FC = () => {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Product</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h2 className="text-2xl font-bold text-berlin-gray-900 mb-4">Error Loading Product</h2>
+          <p className="text-berlin-gray-600 mb-4">{error}</p>
           <button
             onClick={() => navigate('/supplier/dashboard')}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
@@ -642,30 +642,30 @@ const EditProductPage: React.FC = () => {
       case 1:
         return (
           <div className="space-y-10 my-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit Product Information</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Edit Product Information</h2>
             
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Product Name *</label>
                 <input
                   type="text"
                   value={productInfo.name}
                   onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter product name"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price (USD) *</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Price (USD) *</label>
                 <input
                   type="number"
                   step="0.01"
                   value={productInfo.price}
                   onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="0.00"
                   required
                 />
@@ -673,12 +673,12 @@ const EditProductPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+              <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Description *</label>
               <textarea
                 value={productInfo.description}
                 onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Describe your product..."
                 required
               />
@@ -687,11 +687,11 @@ const EditProductPage: React.FC = () => {
             {/* Categories */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Broader Category *</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Broader Category *</label>
                 <select
                   value={selectedBroaderCategory}
                   onChange={(e) => setSelectedBroaderCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Select broader category</option>
@@ -704,11 +704,11 @@ const EditProductPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Specific Category *</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Specific Category *</label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!selectedBroaderCategory}
                   required
                 >
@@ -725,23 +725,23 @@ const EditProductPage: React.FC = () => {
             {/* Quantity Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Order Quantity</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Minimum Order Quantity</label>
                 <input
                   type="number"
                   value={productInfo.minimumOrderQuantity}
                   onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   min="1"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Available Quantity</label>
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Available Quantity</label>
                 <input
                   type="number"
                   value={productInfo.availableQuantity}
                   onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 100 }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   min="1"
                 />
               </div>
@@ -749,13 +749,13 @@ const EditProductPage: React.FC = () => {
 
             {/* Features */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Product Features</label>
+              <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Product Features</label>
               <div className="flex gap-2 mb-3">
                 <input
                   type="text"
                   value={newFeature}
                   onChange={(e) => setNewFeature(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Add a product feature"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
                 />
@@ -788,17 +788,17 @@ const EditProductPage: React.FC = () => {
       case 2:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 2: Category-Specific Filters</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 2: Category-Specific Filters</h2>
             {categorySpecificFiltersList.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No category-specific filters available for "{selectedCategory}".</p>
-                <p className="text-sm text-gray-400 mt-2">Click Next to continue to common filters.</p>
+                <p className="text-berlin-gray-500">No category-specific filters available for "{selectedCategory}".</p>
+                <p className="text-sm text-berlin-gray-400 mt-2">Click Next to continue to common filters.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {categorySpecificFiltersList.map((filter: any, index: number) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <label className="block text-lg font-medium text-gray-700 mb-4">
+                    <label className="block text-lg font-medium text-berlin-gray-700 mb-4">
                       {filter.name}
                     </label>
                     
@@ -810,7 +810,7 @@ const EditProductPage: React.FC = () => {
                           const isSelected = currentSelections.includes(option);
                           console.log(`Category filter ${filter.name} - option ${option}: ${isSelected}`, currentSelections);
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-green-50 cursor-pointer">
+                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -827,7 +827,7 @@ const EditProductPage: React.FC = () => {
                                     [filter.name]: updatedSelections
                                   });
                                 }}
-                                className="w-4 h-4 text-green-600"
+                                className="w-4 h-4 text-berlin-red-600"
                               />
                               <span>{option}</span>
                             </label>
@@ -848,7 +848,7 @@ const EditProductPage: React.FC = () => {
                             });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="">Select {filter.name}</option>
                         {filter.options?.map((option: string) => (
@@ -858,7 +858,7 @@ const EditProductPage: React.FC = () => {
                     )}
 
                     {selectedCategoryFilters[filter.name] && selectedCategoryFilters[filter.name].length > 0 && (
-                      <div className="mt-3 text-sm text-green-600">
+                      <div className="mt-3 text-sm text-berlin-red-600">
                         Selected: {selectedCategoryFilters[filter.name].length} item(s)
                       </div>
                     )}
@@ -872,17 +872,17 @@ const EditProductPage: React.FC = () => {
       case 3:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 3: Common Filters</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 3: Common Filters</h2>
             {commonFiltersList.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No common filters available.</p>
-                <p className="text-sm text-gray-400 mt-2">Click Next to continue to image upload.</p>
+                <p className="text-berlin-gray-500">No common filters available.</p>
+                <p className="text-sm text-berlin-gray-400 mt-2">Click Next to continue to image upload.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {commonFiltersList.map((filter: any, index: number) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <label className="block text-lg font-medium text-gray-700 mb-4">
+                    <label className="block text-lg font-medium text-berlin-gray-700 mb-4">
                       {filter.name}
                     </label>
                     
@@ -894,7 +894,7 @@ const EditProductPage: React.FC = () => {
                           const isSelected = currentSelections.includes(option);
                           console.log(`Common filter ${filter.name} - option ${option}: ${isSelected}`, currentSelections);
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-green-50 cursor-pointer">
+                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -911,7 +911,7 @@ const EditProductPage: React.FC = () => {
                                     [filter.name]: updatedSelections
                                   });
                                 }}
-                                className="w-4 h-4 text-green-600"
+                                className="w-4 h-4 text-berlin-red-600"
                               />
                               <span>{option}</span>
                             </label>
@@ -925,7 +925,7 @@ const EditProductPage: React.FC = () => {
                       <div className="space-y-6">
                         {filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <h3 className="font-medium mb-3 text-berlin-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
                               {group.options.map((option: any, optionIndex: number) => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
@@ -933,7 +933,7 @@ const EditProductPage: React.FC = () => {
                                 const isSelected = currentSelections.includes(optionValue);
                                 console.log(`Common grouped filter ${filter.name} - option ${optionValue}: ${isSelected}`, currentSelections);
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -950,7 +950,7 @@ const EditProductPage: React.FC = () => {
                                           [filter.name]: updatedSelections
                                         });
                                       }}
-                                      className="w-4 h-4 text-green-600"
+                                      className="w-4 h-4 text-berlin-red-600"
                                     />
                                     <span>{optionValue}</span>
                                   </label>
@@ -984,8 +984,8 @@ const EditProductPage: React.FC = () => {
                                   }}
                                   className={`px-4 py-2 rounded-lg border ${
                                     selectedCommonFilters[filter.name]?.some((item: string) => item === `Toggle: ${toggle}`) 
-                                      ? 'bg-green-500 text-white border-green-500' 
-                                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                      ? 'bg-berlin-red-500 text-white border-berlin-red-500' 
+                                      : 'bg-white text-berlin-gray-700 border-berlin-gray-300 hover:bg-berlin-gray-50'
                                   }`}
                                 >
                                   {toggle}
@@ -998,7 +998,7 @@ const EditProductPage: React.FC = () => {
                         {/* Location groups */}
                         {filter.groups && filter.groups.map((group: any, groupIndex: number) => (
                           <div key={groupIndex}>
-                            <h3 className="font-medium mb-3 text-gray-800">{group.groupName}</h3>
+                            <h3 className="font-medium mb-3 text-berlin-gray-800">{group.groupName}</h3>
                             <div className="space-y-2">
                               {group.options.map((option: any, optionIndex: number) => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
@@ -1006,7 +1006,7 @@ const EditProductPage: React.FC = () => {
                                 const isSelected = currentSelections.includes(optionValue);
                                 console.log(`Location filter ${filter.name} - option ${optionValue}: ${isSelected}`, currentSelections);
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-green-50 cursor-pointer">
+                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -1023,7 +1023,7 @@ const EditProductPage: React.FC = () => {
                                           [filter.name]: updatedSelections
                                         });
                                       }}
-                                      className="w-4 h-4 text-green-600"
+                                      className="w-4 h-4 text-berlin-red-600"
                                     />
                                     <span>{optionValue}</span>
                                   </label>
@@ -1047,7 +1047,7 @@ const EditProductPage: React.FC = () => {
                             });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
                         <option value="">Select {filter.name}</option>
                         {filter.options?.map((option: string) => (
@@ -1061,10 +1061,10 @@ const EditProductPage: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Minimum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Minimum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Min value"
                               value={selectedCommonFilters[filter.name]?.find((item: string) => item.startsWith('Min:'))?.replace('Min: ', '') || ''}
                               onChange={(e) => {
@@ -1081,10 +1081,10 @@ const EditProductPage: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-600 mb-2">Maximum</label>
+                            <label className="block text-sm font-medium text-berlin-gray-600 mb-2">Maximum</label>
                             <input 
                               type="number" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg"
                               placeholder="Max value"
                               value={selectedCommonFilters[filter.name]?.find((item: string) => item.startsWith('Max:'))?.replace('Max: ', '') || ''}
                               onChange={(e) => {
@@ -1105,7 +1105,7 @@ const EditProductPage: React.FC = () => {
                     )}
 
                     {selectedCommonFilters[filter.name] && selectedCommonFilters[filter.name].length > 0 && (
-                      <div className="mt-3 text-sm text-green-600">
+                      <div className="mt-3 text-sm text-berlin-red-600">
                         Selected: {selectedCommonFilters[filter.name].length} item(s)
                       </div>
                     )}
@@ -1119,10 +1119,10 @@ const EditProductPage: React.FC = () => {
       case 4:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 4: Upload Product Images</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 4: Upload Product Images</h2>
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
                   Upload Images
                 </label>
                 <input
@@ -1131,7 +1131,7 @@ const EditProductPage: React.FC = () => {
                   multiple
                   onChange={handleImageUpload}
                   disabled={uploadingImage}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                 />
                 {uploadingImage && (
                   <p className="text-blue-600 mt-2">Uploading images...</p>
@@ -1140,7 +1140,7 @@ const EditProductPage: React.FC = () => {
 
               {uploadedImages.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">Uploaded Images:</h3>
+                  <h3 className="text-sm font-medium text-berlin-gray-700 mb-3">Uploaded Images:</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {uploadedImages.map((imageUrl, index) => (
                       <div key={index} className="relative">
@@ -1168,11 +1168,11 @@ const EditProductPage: React.FC = () => {
       case 5:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 5: Environmental Impact Assessment</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 5: Environmental Impact Assessment</h2>
             <div className="space-y-6">
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2 text-green-800">Update Your Eco Score</h3>
-                <p className="text-sm text-green-700 mb-4">
+              <div className="bg-berlin-red-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2 text-berlin-red-800">Update Your Eco Score</h3>
+                <p className="text-sm text-berlin-red-700 mb-4">
                   Help us understand the environmental impact of your products. This score will be displayed to buyers.
                 </p>
               </div>
@@ -1193,12 +1193,12 @@ const EditProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.recyclability}%</span>
                   <span>100%</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-berlin-gray-500 mt-1">
                   What percentage of your product can be recycled?
                 </p>
               </div>
@@ -1219,7 +1219,7 @@ const EditProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>High Impact</span>
                   <span className="font-medium">{ecoScoreDetails.carbonFootprint}/100</span>
                   <span>Low Impact</span>
@@ -1242,7 +1242,7 @@ const EditProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.sustainableMaterials}%</span>
                   <span>100%</span>
@@ -1265,7 +1265,7 @@ const EditProductPage: React.FC = () => {
                   })}
                   className="w-full mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-berlin-gray-600">
                   <span>0%</span>
                   <span className="font-medium">{ecoScoreDetails.localSourcing}%</span>
                   <span>100%</span>
@@ -1292,21 +1292,21 @@ const EditProductPage: React.FC = () => {
                 
                 {ecoScore > 0 && (
                   <div className="flex items-center space-x-4">
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-berlin-red-600">
                       {ecoScore}/100
                     </div>
                     <div className="flex-1">
-                      <div className="bg-gray-200 rounded-full h-4">
+                      <div className="bg-berlin-gray-200 rounded-full h-4">
                         <div 
                           className={`h-4 rounded-full ${
-                            ecoScore >= 80 ? 'bg-green-500' :
+                            ecoScore >= 80 ? 'bg-berlin-red-500' :
                             ecoScore >= 60 ? 'bg-yellow-500' :
                             ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
                           }`}
                           style={{ width: `${ecoScore}%` }}
                         ></div>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-berlin-gray-600 mt-1">
                         {ecoScore >= 80 ? 'Excellent' :
                          ecoScore >= 60 ? 'Good' :
                          ecoScore >= 40 ? 'Fair' : 'Needs Improvement'} Environmental Impact
@@ -1322,10 +1322,10 @@ const EditProductPage: React.FC = () => {
       case 6:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Step 6: Review & Update</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 6: Review & Update</h2>
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Summary</h3>
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <p><strong>Name:</strong> {productInfo.name}</p>
@@ -1354,19 +1354,19 @@ const EditProductPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 my-10">
+    <div className="min-h-screen bg-berlin-gray-50 my-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/supplier/dashboard')}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+              className="flex items-center gap-2 text-berlin-gray-600 hover:text-berlin-gray-800"
             >
               ← Back to Products
             </button>
-            <div className="h-6 w-px bg-gray-300" />
-            <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
+            <div className="h-6 w-px bg-berlin-gray-300" />
+            <h1 className="text-3xl font-bold text-berlin-gray-900">Edit Product</h1>
           </div>
 
           {/* Action buttons */}
@@ -1395,14 +1395,14 @@ const EditProductPage: React.FC = () => {
               <div
                 key={step}
                 className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                  step <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
+                  step <= currentStep ? 'bg-blue-600 text-white' : 'bg-berlin-gray-300 text-berlin-gray-600'
                 }`}
               >
                 {step}
               </div>
             ))}
           </div>
-          <div className="mt-2 h-2 bg-gray-200 rounded-full">
+          <div className="mt-2 h-2 bg-berlin-gray-200 rounded-full">
             <div
               className="h-full bg-blue-600 rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / 6) * 100}%` }}
@@ -1415,11 +1415,11 @@ const EditProductPage: React.FC = () => {
           {renderStepContent()}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-between mt-8 pt-6 border-t border-berlin-gray-200">
             <button
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+              className="px-4 py-2 text-berlin-gray-600 border border-berlin-gray-300 rounded-md hover:bg-berlin-gray-50 disabled:opacity-50"
             >
               Previous
             </button>

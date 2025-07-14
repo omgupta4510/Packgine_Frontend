@@ -50,10 +50,10 @@ export const BrowseCategories = () => {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-berlin-gray-900 mb-4">
             Browse By Category
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-berlin-gray-600 max-w-3xl mx-auto">
             Explore our wide range of sustainable packaging solutions by category.
           </p>
         </div>

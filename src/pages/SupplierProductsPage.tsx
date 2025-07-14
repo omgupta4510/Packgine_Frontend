@@ -65,10 +65,10 @@ const SupplierProductsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-berlin-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your products...</p>
+          <p className="mt-4 text-berlin-gray-600">Loading your products...</p>
         </div>
       </div>
     );
@@ -76,14 +76,14 @@ const SupplierProductsPage: React.FC = () => {
   console.log(products);
   
   return (
-    <div className="min-h-screen bg-gray-50 my-10">
+    <div className="min-h-screen bg-berlin-gray-50 my-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center mb-4">
             <button
               onClick={() => navigate('/supplier/dashboard')}
-              className="flex items-center text-gray-600 hover:text-gray-800 mr-4"
+              className="flex items-center text-berlin-gray-600 hover:text-berlin-gray-800 mr-4"
             >
               <ArrowLeft className="h-5 w-5 mr-1" />
               Back to Dashboard
@@ -91,8 +91,8 @@ const SupplierProductsPage: React.FC = () => {
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Manage Products</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-3xl font-bold text-berlin-gray-900">Manage Products</h1>
+              <p className="text-berlin-gray-600 mt-2">
                 Manage your product listings ({products.length} total)
               </p>
             </div>
@@ -115,9 +115,9 @@ const SupplierProductsPage: React.FC = () => {
         {/* Products Grid */}
         {products.length === 0 ? (
           <div className="text-center py-12">
-            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No products yet</h3>
-            <p className="text-gray-600 mb-6">Start by adding your first product to showcase your offerings.</p>
+            <Package className="w-16 h-16 text-berlin-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-berlin-gray-900 mb-2">No products yet</h3>
+            <p className="text-berlin-gray-600 mb-6">Start by adding your first product to showcase your offerings.</p>
             <button
               onClick={() => navigate('/supplier/products/add')}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -130,7 +130,7 @@ const SupplierProductsPage: React.FC = () => {
             {products.map((product) => (
               <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Product Image */}
-                <div className="aspect-video bg-gray-200 relative">
+                <div className="aspect-video bg-berlin-gray-200 relative">
                   {product.primaryImage ? (
                     <img
                       src={product.primaryImage}
@@ -139,7 +139,7 @@ const SupplierProductsPage: React.FC = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-12 h-12 text-gray-400" />
+                      <Package className="w-12 h-12 text-berlin-gray-400" />
                     </div>
                   )}
                   <div className="absolute top-2 right-2 bg-white rounded-full px-2 py-1 text-sm font-semibold">
@@ -149,13 +149,13 @@ const SupplierProductsPage: React.FC = () => {
 
                 {/* Product Details */}
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                  <h3 className="text-xl font-semibold text-berlin-gray-900 mb-2">{product.name}</h3>
+                  <p className="text-berlin-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
                   
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-bold text-green-600">{formatPrice(product.pricing?.basePrice || 0)}</span>
+                    <span className="text-2xl font-bold text-berlin-red-600">{formatPrice(product.pricing?.basePrice || 0)}</span>
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                      <span className="text-sm text-berlin-gray-500 bg-berlin-gray-100 px-2 py-1 rounded">
                         {product.category || 'Unknown'}
                       </span>
                       <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(product.status)}`}>
@@ -164,7 +164,7 @@ const SupplierProductsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
+                  <div className="flex items-center justify-between mb-4 text-sm text-berlin-gray-500">
                     <span className="flex items-center gap-1">
                       <Package className="w-4 h-4" />
                       Stock: {product.specifications?.availableQuantity || 'N/A'}
@@ -179,7 +179,7 @@ const SupplierProductsPage: React.FC = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => navigate(`/products/${product._id}`)}
-                      className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-1 text-sm"
+                      className="flex-1 bg-berlin-gray-100 text-berlin-gray-700 py-2 px-3 rounded-lg hover:bg-berlin-gray-200 transition-colors flex items-center justify-center gap-1 text-sm"
                     >
                       <Eye className="w-4 h-4" />
                       View

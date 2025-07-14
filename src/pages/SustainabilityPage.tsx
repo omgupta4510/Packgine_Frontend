@@ -41,10 +41,10 @@ const SustainabilityPage = () => {
 
   // Set page title
   useEffect(() => {
-    document.title = 'Sustainable Bot | Packgine';
+    document.title = 'Sustainable Bot | Berlin Packaging';
     
     return () => {
-      document.title = 'Packgine';
+      document.title = 'Berlin Packaging';
     };
   }, []);
 
@@ -66,13 +66,13 @@ const SustainabilityPage = () => {
       {/* Content with blur effect for non-authenticated users */}
       <div className={`${!isAuthenticated ? 'filter blur-sm pointer-events-none' : ''}`}>
       {/* Header with Logo */}
-      <div className="bg-white border-b border-gray-200 pt-20">
+      <div className="bg-white border-b border-berlin-gray-200 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center">
             {/* Berlin Logo */}
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full border-4 shadow-xl overflow-hidden bg-white">
+                <div className="w-24 h-24 rounded-full border-4 shadow-xl overflow-hidden bg-white border-berlin-red-200">
                   <img 
                     src="/Berlin_Logo.png" 
                     alt="Berlin Logo" 
@@ -85,29 +85,29 @@ const SustainabilityPage = () => {
                       if (fallback) fallback.style.display = 'flex';
                     }}
                   />
-                  <div className="w-full h-full bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-2xl" style={{display: 'none'}}>
+                  <div className="w-full h-full bg-berlin-red-500 rounded-full flex items-center justify-center text-white font-bold text-2xl" style={{display: 'none'}}>
                     B
                   </div>
                 </div>
               </div>
             </div>
             
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-berlin-gray-900 mb-2">
               🌱 Sustainability Packaging Chatbot
             </h1>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-berlin-gray-600 text-lg max-w-2xl mx-auto">
               Expert advice on LCA, ESG reporting, packaging sustainability, and materiality analysis
             </p>
 
             {/* Tab Navigation */}
             <div className="flex justify-center mt-8">
-              <div className="bg-gray-100 p-1 rounded-lg flex">
+              <div className="bg-berlin-gray-100 p-1 rounded-lg flex">
                 <button
                   onClick={() => setActiveTab('chat')}
                   className={`px-6 py-2 rounded-md transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'chat'
-                      ? 'bg-green-600 text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-berlin-red-600 text-white shadow-sm'
+                      : 'text-berlin-gray-600 hover:text-berlin-gray-900'
                   }`}
                 >
                   <Bot className="w-4 h-4" />
@@ -117,8 +117,8 @@ const SustainabilityPage = () => {
                   onClick={() => setActiveTab('esg')}
                   className={`px-6 py-2 rounded-md transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'esg'
-                      ? 'bg-green-600 text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-berlin-red-600 text-white shadow-sm'
+                      : 'text-berlin-gray-600 hover:text-berlin-gray-900'
                   }`}
                 >
                   📊 ESG Analysis
@@ -136,7 +136,7 @@ const SustainabilityPage = () => {
             <ChatBot ref={chatBotRef} />
             {/* Sample Questions for Chat */}
             <div className="mt-8">
-              <h3 className="text-sm font-medium text-gray-700 mb-4 text-center">Try asking about:</h3>
+              <h3 className="text-sm font-medium text-berlin-gray-700 mb-4 text-center">Try asking about:</h3>
               <div className="grid md:grid-cols-2 gap-3">
                 {[
                   "Carbon footprint of biodegradable packaging",
@@ -149,9 +149,9 @@ const SustainabilityPage = () => {
                   <button
                     key={index}
                     onClick={() => handleQuestionClick(question)}
-                    className="text-left p-4 text-sm text-gray-600 bg-white hover:bg-gray-50 rounded-xl border border-gray-200 hover:border-green-300 transition-all duration-200 hover:shadow-sm group"
+                    className="text-left p-4 text-sm text-berlin-gray-600 bg-white hover:bg-berlin-gray-50 rounded-xl border border-berlin-gray-200 hover:border-berlin-red-300 transition-all duration-200 hover:shadow-sm group"
                   >
-                    <MessageCircle className="w-4 h-4 inline mr-2 text-green-600 group-hover:text-green-700" />
+                    <MessageCircle className="w-4 h-4 inline mr-2 text-berlin-red-600 group-hover:text-berlin-red-700" />
                     {question}
                   </button>
                 ))}
@@ -168,8 +168,8 @@ const SustainabilityPage = () => {
       {!isAuthenticated && (
         <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
           <div className="bg-white bg-opacity-95 rounded-xl p-8 max-w-md text-center pointer-events-auto shadow-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Login Required</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-4">Login Required</h2>
+            <p className="text-berlin-gray-600 mb-6">
               Please login to access our Sustainability Chatbot.
             </p>
             
@@ -177,7 +177,7 @@ const SustainabilityPage = () => {
             <div className="space-y-3 mb-6">
               <a 
                 href="/login"
-                className="block w-full bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors font-medium"
+                className="block w-full bg-berlin-red-600 text-white px-6 py-3 rounded-md hover:bg-berlin-red-700 transition-colors font-medium"
               >
                 Login as User
               </a>

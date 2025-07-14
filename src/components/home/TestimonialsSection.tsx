@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Quote } from 'lucide-react';
 
 const testimonials = [
@@ -60,26 +60,26 @@ export const TestimonialsSection = () => {
   }, [currentIndex]);
 
   return (
-    <section className="py-20 bg-white overflow-hidden">
+    <section className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-berlin-gray-900 mb-6">
             What Our Customers Say
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-berlin-gray-600 max-w-3xl mx-auto font-medium">
             Hear from the brands that have transformed their packaging through our marketplace.
           </p>
         </div>
 
         <div className="relative max-w-5xl mx-auto">
-          <div className="relative overflow-hidden rounded-xl bg-green-50 p-8 md:p-12">
-            <Quote className="absolute text-green-200 w-24 h-24 -top-4 -left-4 opacity-30" />
+          <div className="relative overflow-hidden rounded-2xl bg-berlin-red-50 p-8 md:p-12 border border-berlin-red-200">
+            <Quote className="absolute text-berlin-red-200 w-24 h-24 -top-4 -left-4 opacity-40" />
             
             <div className="relative z-10">
               <div 
                 className={`transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}
               >
-                <blockquote className="text-xl md:text-2xl text-gray-800 mb-8">
+                <blockquote className="text-xl md:text-2xl text-berlin-gray-800 mb-8 font-medium leading-relaxed">
                   "{testimonials[currentIndex].quote}"
                 </blockquote>
                 
@@ -87,11 +87,11 @@ export const TestimonialsSection = () => {
                   <img 
                     src={testimonials[currentIndex].image} 
                     alt={testimonials[currentIndex].author}
-                    className="w-14 h-14 rounded-full object-cover mr-4"
+                    className="w-16 h-16 rounded-full object-cover mr-4 border-2 border-berlin-red-200"
                   />
                   <div>
-                    <p className="font-semibold text-gray-900">{testimonials[currentIndex].author}</p>
-                    <p className="text-gray-600">{testimonials[currentIndex].title}</p>
+                    <p className="font-bold text-berlin-gray-900">{testimonials[currentIndex].author}</p>
+                    <p className="text-berlin-gray-600 font-medium">{testimonials[currentIndex].title}</p>
                   </div>
                 </div>
               </div>
@@ -99,12 +99,12 @@ export const TestimonialsSection = () => {
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className="flex justify-center mt-8 space-x-3">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 className={`w-3 h-3 rounded-full transition-colors ${
-                  index === currentIndex ? 'bg-green-500' : 'bg-gray-300'
+                  index === currentIndex ? 'bg-berlin-red-500' : 'bg-berlin-gray-300'
                 }`}
                 onClick={() => setCurrentIndex(index)}
                 aria-label={`Go to testimonial ${index + 1}`}
@@ -114,7 +114,7 @@ export const TestimonialsSection = () => {
 
           <button
             onClick={prevTestimonial}
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-green-600 focus:outline-none z-20"
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-lg text-berlin-gray-600 hover:text-berlin-red-600 focus:outline-none z-20 transition-colors border border-berlin-gray-200"
             aria-label="Previous testimonial"
           >
             <ArrowLeft size={20} />
@@ -122,7 +122,7 @@ export const TestimonialsSection = () => {
           
           <button
             onClick={nextTestimonial}
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-green-600 focus:outline-none z-20"
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-lg text-berlin-gray-600 hover:text-berlin-red-600 focus:outline-none z-20 transition-colors border border-berlin-gray-200"
             aria-label="Next testimonial"
           >
             <ArrowRight size={20} />

@@ -1,3 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-berlin-gray-200;
+  }
+  
+  body {
+    @apply text-berlin-gray-800 bg-white;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-berlin-gray-900;
+    font-weight: 600;
+  }
+}
+
+@layer components {
+  .berlin-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .berlin-section {
+    @apply py-16 md:py-24;
+  }
+  
+  .berlin-card {
+    @apply bg-white rounded-xl shadow-lg border border-berlin-gray-200 hover:shadow-xl transition-all duration-300;
+  }
+  
+  .berlin-input {
+    @apply w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-berlin-red-500 outline-none transition-colors;
+  }
+  
+  .berlin-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-berlin-red-100 text-berlin-red-800;
+  }
+}
+
+/* Smooth scrolling and professional animations */
+html {
+  scroll-behavior: smooth;
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

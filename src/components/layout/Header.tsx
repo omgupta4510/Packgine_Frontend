@@ -87,15 +87,19 @@ export const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-white shadow-lg py-3 border-b border-berlin-gray-200' : 'bg-white/95 backdrop-blur-sm py-4'
       }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <Leaf className="w-8 h-8 text-green-500 mr-2" />
-            <span className="text-xl font-semibold text-gray-900">Packgine</span>
+            <img 
+              src="/Berlin_Logo.png" 
+              alt="Berlin Packaging Logo" 
+              className="w-8 h-8 mr-2 rounded-full border border-berlin-gray-300" 
+            />
+            <span className="text-xl font-bold text-berlin-gray-900">Berlin Packaging</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -105,10 +109,10 @@ export const Header = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) => 
-                  `text-sm font-medium transition-colors ${
+                  `text-sm font-semibold transition-colors hover:text-berlin-red-600 ${
                     isActive 
-                      ? 'text-green-700 border-b-2 border-green-500' 
-                      : 'text-gray-600 hover:text-green-700'
+                      ? 'text-berlin-red-600 border-b-2 border-berlin-red-500' 
+                      : 'text-berlin-gray-700'
                   }`
                 }
               >
@@ -147,7 +151,7 @@ export const Header = () => {
                   <User className="w-4 h-4" />
                   Dashboard
                 </Button>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-berlin-gray-600 font-medium">
                   Welcome, {userData?.firstName || 'User'}!
                 </span>
                 <Button 
@@ -172,7 +176,7 @@ export const Header = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-gray-500 hover:text-gray-700"
+            className="md:hidden text-berlin-gray-600 hover:text-berlin-red-600 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -182,18 +186,18 @@ export const Header = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg border-t">
-          <div className="container mx-auto px-4 py-3">
+        <div className="md:hidden bg-white shadow-xl border-t border-berlin-gray-200">
+          <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-3 mb-4">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) => 
-                    `py-2 px-3 rounded-md transition-colors ${
+                    `py-3 px-4 rounded-lg transition-colors font-medium ${
                       isActive 
-                        ? 'bg-green-50 text-green-700' 
-                        : 'text-gray-600 hover:bg-gray-50'
+                        ? 'bg-berlin-red-50 text-berlin-red-600 border border-berlin-red-200' 
+                        : 'text-berlin-gray-700 hover:bg-berlin-gray-50'
                     }`
                   }
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -227,7 +231,7 @@ export const Header = () => {
               ) : userAuthenticated ? (
                 // User is logged in
                 <>
-                  <span className="text-sm text-gray-600 px-3 py-2">
+                  <span className="text-sm text-berlin-gray-600 px-4 py-2 font-medium">
                     Welcome, {userData?.firstName || 'User'}!
                   </span>
                   <Button variant="outline" size="sm" href="/dashboard" className="flex items-center gap-2">
@@ -259,7 +263,7 @@ export const Header = () => {
 
       {/* Search bar - on scrolled state */}
       {/* {isScrolled && (
-        <div className="bg-green-50 py-3 border-t border-green-100">
+        <div className="bg-berlin-red-50 py-3 border-t border-berlin-red-100">
           <div className="container mx-auto px-4">
             <SearchBar />
           </div>

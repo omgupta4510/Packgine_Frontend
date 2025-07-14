@@ -238,12 +238,12 @@ Please provide a detailed, specific analysis based on the actual data and inform
         
         formattedContent.push(
           <div key={index} className="mt-8 mb-6 first:mt-0">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div className="bg-white border border-berlin-gray-200 rounded-lg p-6 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">{getHeaderIcon(headerText)}</span>
-                <h3 className="text-2xl font-bold text-gray-900 tracking-tight">{headerText}</h3>
+                <h3 className="text-2xl font-bold text-berlin-gray-900 tracking-tight">{headerText}</h3>
               </div>
-              <div className="border-b border-gray-200 w-full"></div>
+              <div className="border-b border-berlin-gray-200 w-full"></div>
             </div>
           </div>
         );
@@ -258,7 +258,7 @@ Please provide a detailed, specific analysis based on the actual data and inform
         
         const getScoreColor = (score: number) => {
           if (score >= 9) return { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', scoreText: 'text-emerald-600' };
-          if (score >= 7) return { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', scoreText: 'text-green-600' };
+          if (score >= 7) return { bg: 'bg-berlin-red-50', border: 'border-berlin-red-200', text: 'text-berlin-red-700', scoreText: 'text-berlin-red-600' };
           if (score >= 5) return { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', scoreText: 'text-yellow-600' };
           if (score >= 3) return { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', scoreText: 'text-orange-600' };
           return { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', scoreText: 'text-red-600' };
@@ -277,7 +277,7 @@ Please provide a detailed, specific analysis based on the actual data and inform
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">Assessment Score</div>
+                  <div className="text-sm font-medium text-berlin-gray-500 uppercase tracking-wide">Assessment Score</div>
                   <div className={`text-lg font-semibold ${colors.text}`}>
                     {score >= 8 ? 'Excellent' : score >= 6 ? 'Good' : score >= 4 ? 'Fair' : 'Needs Improvement'}
                   </div>
@@ -350,12 +350,12 @@ Please provide a detailed, specific analysis based on the actual data and inform
                     <span className="text-4xl font-bold">{grade}</span>
                   </div>
                   <div className="text-left">
-                    <div className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">Overall ESG Rating</div>
+                    <div className="text-sm font-medium text-berlin-gray-500 uppercase tracking-wide mb-1">Overall ESG Rating</div>
                     <div className={`text-2xl font-bold ${gradeInfo.color} mb-2`}>{gradeInfo.label}</div>
-                    <div className="text-gray-600 text-sm">{gradeInfo.description}</div>
+                    <div className="text-berlin-gray-600 text-sm">{gradeInfo.description}</div>
                   </div>
                 </div>
-                <div className="bg-white bg-opacity-70 rounded-md p-4 text-gray-700 text-sm leading-relaxed">
+                <div className="bg-white bg-opacity-70 rounded-md p-4 text-berlin-gray-700 text-sm leading-relaxed">
                   {description}
                 </div>
               </div>
@@ -369,10 +369,10 @@ Please provide a detailed, specific analysis based on the actual data and inform
       if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('• ')) {
         const listText = trimmedLine.replace(/^[-•] /, '');
         formattedContent.push(
-          <div key={index} className="bg-white border border-gray-100 rounded-md p-4 my-2 shadow-sm">
+          <div key={index} className="bg-white border border-berlin-gray-100 rounded-md p-4 my-2 shadow-sm">
             <div className="flex items-start gap-3">
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-              <p className="text-gray-700 text-sm leading-relaxed">{listText}</p>
+              <p className="text-berlin-gray-700 text-sm leading-relaxed">{listText}</p>
             </div>
           </div>
         );
@@ -385,12 +385,12 @@ Please provide a detailed, specific analysis based on the actual data and inform
         if (numberMatch) {
           const [, number, text] = numberMatch;
           formattedContent.push(
-            <div key={index} className="bg-white border border-gray-100 rounded-md p-4 my-2 shadow-sm">
+            <div key={index} className="bg-white border border-berlin-gray-100 rounded-md p-4 my-2 shadow-sm">
               <div className="flex items-start gap-4">
                 <span className="bg-blue-600 text-white rounded-md w-7 h-7 flex items-center justify-center text-sm font-semibold flex-shrink-0">
                   {number}
                 </span>
-                <p className="text-gray-700 text-sm leading-relaxed pt-1">{text}</p>
+                <p className="text-berlin-gray-700 text-sm leading-relaxed pt-1">{text}</p>
               </div>
             </div>
           );
@@ -400,12 +400,12 @@ Please provide a detailed, specific analysis based on the actual data and inform
       
       // Regular paragraphs with professional styling
       const formattedLine = trimmedLine
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em class="italic text-gray-700">$1</em>');
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-berlin-gray-900">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em class="italic text-berlin-gray-700">$1</em>');
         
       formattedContent.push(
         <div key={index} className="my-3">
-          <p className="text-gray-700 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedLine }} />
+          <p className="text-berlin-gray-700 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedLine }} />
         </div>
       );
     });
@@ -423,15 +423,15 @@ Please provide a detailed, specific analysis based on the actual data and inform
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
+    <div className="bg-white rounded-2xl border border-berlin-gray-200 shadow-lg p-8">
       <div className="text-center mb-8">
-        <BarChart3 className="w-16 h-16 text-green-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">AI-Powered ESG Report Analysis</h2>
-        <p className="text-gray-600">Upload your PDF report for comprehensive AI-driven ESG analysis and insights</p>
+        <BarChart3 className="w-16 h-16 text-berlin-red-600 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-berlin-gray-900 mb-2">AI-Powered ESG Report Analysis</h2>
+        <p className="text-berlin-gray-600">Upload your PDF report for comprehensive AI-driven ESG analysis and insights</p>
       </div>
 
       {!uploadedFile && !analysisResult && !error ? (
-        <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-green-400 transition-colors">
+        <div className="border-2 border-dashed border-berlin-gray-300 rounded-xl p-12 text-center hover:border-berlin-red-400 transition-colors">
           <input
             ref={fileInputRef}
             type="file"
@@ -439,16 +439,16 @@ Please provide a detailed, specific analysis based on the actual data and inform
             onChange={handleFileUpload}
             className="hidden"
           />
-          <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload ESG Report</h3>
-          <p className="text-gray-600 mb-4">Drop your PDF file here or click to browse</p>
+          <Upload className="w-12 h-12 text-berlin-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">Upload ESG Report</h3>
+          <p className="text-berlin-gray-600 mb-4">Drop your PDF file here or click to browse</p>
           <Button
             onClick={() => fileInputRef.current?.click()}
-            className="bg-green-600 hover:bg-green-700 mx-auto"
+            className="bg-berlin-red-600 hover:bg-berlin-red-700 mx-auto"
           >
             Choose PDF File
           </Button>
-          <div className="mt-4 text-xs text-gray-500">
+          <div className="mt-4 text-xs text-berlin-gray-500">
             <p>Supported format: PDF • Max size: 200MB</p>
             <p>AI will analyze environmental, social, and governance metrics</p>
           </div>
@@ -468,26 +468,26 @@ Please provide a detailed, specific analysis based on the actual data and inform
         </div>
       ) : isLoading ? (
         <div className="text-center py-12">
-          <div className="inline-flex items-center gap-3 text-green-600 mb-4">
-            <div className="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="inline-flex items-center gap-3 text-berlin-red-600 mb-4">
+            <div className="w-8 h-8 border-2 border-berlin-red-600 border-t-transparent rounded-full animate-spin"></div>
             <span className="text-lg font-medium">Analyzing ESG Report with AI...</span>
           </div>
-          <div className="space-y-2 text-gray-500 max-w-md mx-auto">
+          <div className="space-y-2 text-berlin-gray-500 max-w-md mx-auto">
             <p>📄 Extracting text from PDF document</p>
             <p>🤖 AI analyzing environmental metrics</p>
             <p>📊 Evaluating social and governance factors</p>
             <p>📈 Generating specific insights and recommendations</p>
           </div>
-          <p className="text-sm text-gray-400 mt-4">This process may take 30-90 seconds depending on document size</p>
+          <p className="text-sm text-berlin-gray-400 mt-4">This process may take 30-90 seconds depending on document size</p>
         </div>
       ) : analysisResult ? (
         <div className="space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-between pb-4 border-b border-berlin-gray-200">
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+              <CheckCircle className="w-6 h-6 text-berlin-red-600" />
               <div>
-                <span className="font-medium text-gray-900">{uploadedFile?.name}</span>
-                <p className="text-sm text-gray-500">AI Analysis Complete</p>
+                <span className="font-medium text-berlin-gray-900">{uploadedFile?.name}</span>
+                <p className="text-sm text-berlin-gray-500">AI Analysis Complete</p>
               </div>
             </div>
             <Button
@@ -499,7 +499,7 @@ Please provide a detailed, specific analysis based on the actual data and inform
             </Button>
           </div>
           
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="bg-white rounded-lg border border-berlin-gray-200 shadow-sm">
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-lg p-6 text-white">
               <div className="flex items-center gap-4">
                 <div className="bg-white bg-opacity-20 p-3 rounded-lg">
@@ -513,35 +513,35 @@ Please provide a detailed, specific analysis based on the actual data and inform
                 </div>
               </div>
             </div>
-            <div className="p-8 bg-gray-50">
+            <div className="p-8 bg-berlin-gray-50">
               <div className="max-w-none">
                 {formatContent(analysisResult)}
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <div className="bg-white rounded-lg border border-berlin-gray-200 p-6 shadow-sm">
             <div className="flex items-start gap-4">
               <div className="bg-blue-100 p-2 rounded-lg">
                 <span className="text-blue-600 text-lg">💡</span>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 text-lg mb-3">Analysis Methodology</h4>
-                <div className="text-sm text-gray-700 leading-relaxed space-y-2">
+                <h4 className="font-semibold text-berlin-gray-900 text-lg mb-3">Analysis Methodology</h4>
+                <div className="text-sm text-berlin-gray-700 leading-relaxed space-y-2">
                   <p>
                     This comprehensive ESG analysis was generated using advanced artificial intelligence trained on industry-leading sustainability frameworks:
                   </p>
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-gray-50 p-3 rounded-md">
-                      <div className="font-medium text-gray-900 mb-1">Frameworks</div>
-                      <div className="text-xs text-gray-600">GRI, SASB, TCFD Standards</div>
+                    <div className="bg-berlin-gray-50 p-3 rounded-md">
+                      <div className="font-medium text-berlin-gray-900 mb-1">Frameworks</div>
+                      <div className="text-xs text-berlin-gray-600">GRI, SASB, TCFD Standards</div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-md">
-                      <div className="font-medium text-gray-900 mb-1">Benchmarking</div>
-                      <div className="text-xs text-gray-600">Industry best practices</div>
+                    <div className="bg-berlin-gray-50 p-3 rounded-md">
+                      <div className="font-medium text-berlin-gray-900 mb-1">Benchmarking</div>
+                      <div className="text-xs text-berlin-gray-600">Industry best practices</div>
                     </div>
                   </div>
-                  <p className="mt-3 text-xs text-gray-600">
+                  <p className="mt-3 text-xs text-berlin-gray-600">
                     The AI model evaluated your report content against established ESG criteria to provide data-driven insights and actionable recommendations for improvement.
                   </p>
                 </div>

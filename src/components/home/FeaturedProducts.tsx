@@ -105,14 +105,14 @@ export const FeaturedProducts = () => {
   });
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-berlin-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-berlin-gray-900 mb-4">
               Featured Products
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl">
+            <p className="text-xl text-berlin-gray-600 max-w-2xl">
               Discover our most popular sustainable packaging options chosen by eco-conscious brands.
             </p>
           </div>
@@ -129,8 +129,8 @@ export const FeaturedProducts = () => {
               key={item.id}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === item.id
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-green-50'
+                  ? 'bg-berlin-red-500 text-white'
+                  : 'bg-white text-berlin-gray-700 hover:bg-berlin-red-50'
               }`}
               onClick={() => setFilter(item.id)}
             >

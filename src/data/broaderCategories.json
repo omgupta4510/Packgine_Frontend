@@ -1,22 +1,23 @@
 {
   "broader_categories": [
     {
-      "name": "Base Packaging",
+      "name": "Primary Packaging",
       "categories": [
         "Bottle",
         "Jar",
         "Tube",
-        "Tottle",
-        "Folding Carton",
-        "Lipstick"
+        "Dispensers",
+        "Closures",
+        "Cap",
+        "Dropper"
       ]
     },
     {
-      "name": "Closure",
+      "name": "Beauty",
       "categories": [
-        "Cap",
-        "Dropper",
-        "Other Closure"
+        "Makeup",
+        "Cosmetics",
+        "Nail Care"
       ]
     },
     {
@@ -38,17 +39,11 @@
     },
     {
       "name": "Sustainability",
-      "filters": [
-        {
-          "name": "Sustainability",
-          "type": "checkbox-group",
-          "options": [
-            "Recycled Content",
-            "Recycle Ready",
-            "Bio Based Material",
-            "Refill Ready"
-          ]
-        }
+      "categories": [
+        "Recycled Content",
+        "Recycle Ready",
+        "Bio Based Material",
+        "Refill Ready"
       ]
     }
   ]

@@ -281,7 +281,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg h-[70vh] flex flex-col relative">
+    <div className="bg-white rounded-2xl border border-berlin-gray-200 shadow-lg h-[70vh] flex flex-col relative">
       {/* Messages Container */}
       <div 
         ref={chatContainerRef}
@@ -298,7 +298,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
               <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-md ${
                 message.role === 'user' 
                   ? 'bg-gradient-to-br from-blue-600 to-blue-700' 
-                  : 'bg-gradient-to-br from-green-600 to-emerald-600'
+                  : 'bg-gradient-to-br from-berlin-red-600 to-emerald-600'
               }`}>
                 {message.role === 'user' ? (
                   <User className="w-5 h-5 text-white" />
@@ -312,7 +312,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
                 <div className={`inline-block ${
                   message.role === 'user' 
                     ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl rounded-tr-md px-5 py-3 shadow-md' 
-                    : 'bg-gray-50 text-gray-800 rounded-2xl rounded-tl-md px-5 py-3 border border-gray-100'
+                    : 'bg-berlin-gray-50 text-berlin-gray-800 rounded-2xl rounded-tl-md px-5 py-3 border border-berlin-gray-100'
                 }`}>
                   <div className="text-sm leading-relaxed">
                     {message.role === 'user' ? (
@@ -322,7 +322,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
                     )}
                   </div>
                 </div>
-                <div className={`text-xs text-gray-400 mt-2 ${message.role === 'user' ? 'text-right' : ''}`}>
+                <div className={`text-xs text-berlin-gray-400 mt-2 ${message.role === 'user' ? 'text-right' : ''}`}>
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
@@ -334,17 +334,17 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
         {isTyping && (
           <div className="group message-item typing-message">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-berlin-red-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 max-w-[80%]">
-                <div className="bg-gray-50 text-gray-800 rounded-2xl rounded-tl-md px-5 py-3 border border-gray-100 inline-block">
+                <div className="bg-berlin-gray-50 text-berlin-gray-800 rounded-2xl rounded-tl-md px-5 py-3 border border-berlin-gray-100 inline-block">
                   <div className="text-sm leading-relaxed">
                     {formatContent(typingMessage)}
-                    <span className="inline-block w-2 h-4 bg-green-600 ml-1 animate-pulse"></span>
+                    <span className="inline-block w-2 h-4 bg-berlin-red-600 ml-1 animate-pulse"></span>
                   </div>
                 </div>
-                <div className="text-xs text-gray-400 mt-2">
+                <div className="text-xs text-berlin-gray-400 mt-2">
                   Typing...
                 </div>
               </div>
@@ -355,16 +355,16 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
         {isLoading && !isTyping && (
           <div className="group">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-berlin-red-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
-                <div className="bg-gray-50 rounded-2xl rounded-tl-md px-5 py-3 border border-gray-100 inline-block">
-                  <div className="flex items-center gap-3 text-gray-500">
+                <div className="bg-berlin-gray-50 rounded-2xl rounded-tl-md px-5 py-3 border border-berlin-gray-100 inline-block">
+                  <div className="flex items-center gap-3 text-berlin-gray-500">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-berlin-red-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-berlin-red-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-berlin-red-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                     <span className="text-sm">Thinking...</span>
                   </div>
@@ -376,7 +376,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-100 p-6 bg-gray-50 rounded-b-2xl">
+      <div className="border-t border-berlin-gray-100 p-6 bg-berlin-gray-50 rounded-b-2xl">
         <div className="flex items-end gap-3">
           <div className="flex-1">
             <textarea
@@ -384,7 +384,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask about sustainability, packaging, LCA, ESG reporting..."
-              className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none transition-all bg-white shadow-sm"
+              className="w-full p-4 border border-berlin-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-berlin-red-500 focus:border-berlin-red-500 resize-none transition-all bg-white shadow-sm"
               rows={1}
               style={{ minHeight: '52px', maxHeight: '120px' }}
               onInput={(e) => {
@@ -399,7 +399,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
             <button
               onClick={clearChat}
               disabled={isLoading}
-              className="p-3 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-xl transition-all disabled:opacity-50"
+              className="p-3 text-berlin-gray-500 hover:text-berlin-gray-700 hover:bg-berlin-gray-200 rounded-xl transition-all disabled:opacity-50"
               title="Clear conversation"
             >
               <Trash2 className="w-5 h-5" />
@@ -409,8 +409,8 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
               disabled={isLoading || !inputMessage.trim()}
               className={`p-3 transition-all rounded-xl ${
                 inputMessage.trim() 
-                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-md hover:shadow-lg' 
-                  : 'bg-gray-300 cursor-not-allowed'
+                  ? 'bg-gradient-to-r from-berlin-red-600 to-emerald-600 hover:from-berlin-red-700 hover:to-emerald-700 shadow-md hover:shadow-lg' 
+                  : 'bg-berlin-gray-300 cursor-not-allowed'
               } disabled:opacity-50`}
             >
               {isLoading ? (
@@ -422,10 +422,10 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
           </div>
         </div>
         <div className="flex items-center justify-between mt-3">
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-berlin-gray-500">
             Press Enter to send, Shift+Enter for new line
           </span>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 text-xs text-berlin-gray-500">
             <Sparkles className="w-3 h-3" />
             <span>Powered by AI</span>
           </div>

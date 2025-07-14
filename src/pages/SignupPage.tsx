@@ -83,17 +83,17 @@ export const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-berlin-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex justify-center items-center mb-5">
-          <span className="text-2xl font-bold text-green-600">EcoPack</span>
+          <span className="text-2xl font-bold text-berlin-red-600">Berlin Packaging</span>
         </Link>
-        <h2 className="text-center text-3xl font-bold text-gray-900">
+        <h2 className="text-center text-3xl font-bold text-berlin-gray-900">
           Create your account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-berlin-gray-600">
           Already have an account?{' '}
-          <Link to="/login" className="text-green-600 hover:text-green-500 font-medium">
+          <Link to="/login" className="text-berlin-red-600 hover:text-berlin-red-500 font-medium">
             Sign in
           </Link>
         </p>
@@ -112,12 +112,12 @@ export const SignupPage = () => {
             {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="firstName" className="block text-sm font-medium text-berlin-gray-700">
                   First name
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-berlin-gray-400" />
                   </div>
                   <input
                     id="firstName"
@@ -126,19 +126,19 @@ export const SignupPage = () => {
                     required
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="First name"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="lastName" className="block text-sm font-medium text-berlin-gray-700">
                   Last name
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-berlin-gray-400" />
                   </div>
                   <input
                     id="lastName"
@@ -147,7 +147,7 @@ export const SignupPage = () => {
                     required
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="Last name"
                   />
                 </div>
@@ -155,12 +155,12 @@ export const SignupPage = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-berlin-gray-700">
                 Email address
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-berlin-gray-400" />
                 </div>
                 <input
                   id="email"
@@ -170,19 +170,19 @@ export const SignupPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="phone" className="block text-sm font-medium text-berlin-gray-700">
                 Phone number
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400" />
+                  <Phone className="h-5 w-5 text-berlin-gray-400" />
                 </div>
                 <input
                   id="phone"
@@ -190,23 +190,23 @@ export const SignupPage = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                   placeholder="Enter your phone number"
                 />
               </div>
             </div>
 
             {/* Company Information */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Company Information (Optional)</h3>
+            <div className="border-t border-berlin-gray-200 pt-6">
+              <h3 className="text-lg font-medium text-berlin-gray-900 mb-4">Company Information (Optional)</h3>
               
               <div>
-                <label htmlFor="companyName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="companyName" className="block text-sm font-medium text-berlin-gray-700">
                   Company name
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Building2 className="h-5 w-5 text-gray-400" />
+                    <Building2 className="h-5 w-5 text-berlin-gray-400" />
                   </div>
                   <input
                     id="companyName"
@@ -214,7 +214,7 @@ export const SignupPage = () => {
                     type="text"
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="Enter company name"
                   />
                 </div>
@@ -222,7 +222,7 @@ export const SignupPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
-                  <label htmlFor="companyType" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="companyType" className="block text-sm font-medium text-berlin-gray-700">
                     Company type
                   </label>
                   <select
@@ -230,7 +230,7 @@ export const SignupPage = () => {
                     name="companyType"
                     value={formData.companyType}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                   >
                     <option value="individual">Individual</option>
                     <option value="startup">Startup</option>
@@ -241,7 +241,7 @@ export const SignupPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="industry" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="industry" className="block text-sm font-medium text-berlin-gray-700">
                     Industry
                   </label>
                   <input
@@ -250,7 +250,7 @@ export const SignupPage = () => {
                     type="text"
                     value={formData.industry}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="e.g., Food & Beverage, Cosmetics"
                   />
                 </div>
@@ -258,17 +258,17 @@ export const SignupPage = () => {
             </div>
 
             {/* Location */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Location</h3>
+            <div className="border-t border-berlin-gray-200 pt-6">
+              <h3 className="text-lg font-medium text-berlin-gray-900 mb-4">Location</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="address.country" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="address.country" className="block text-sm font-medium text-berlin-gray-700">
                     Country
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <MapPin className="h-5 w-5 text-gray-400" />
+                      <MapPin className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="address.country"
@@ -276,14 +276,14 @@ export const SignupPage = () => {
                       type="text"
                       value={formData.address.country}
                       onChange={handleChange}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                       placeholder="Country"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="address.state" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="address.state" className="block text-sm font-medium text-berlin-gray-700">
                     State/Province
                   </label>
                   <input
@@ -292,13 +292,13 @@ export const SignupPage = () => {
                     type="text"
                     value={formData.address.state}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="State/Province"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="address.city" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="address.city" className="block text-sm font-medium text-berlin-gray-700">
                     City
                   </label>
                   <input
@@ -307,7 +307,7 @@ export const SignupPage = () => {
                     type="text"
                     value={formData.address.city}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                     placeholder="City"
                   />
                 </div>
@@ -315,17 +315,17 @@ export const SignupPage = () => {
             </div>
 
             {/* Password */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Password</h3>
+            <div className="border-t border-berlin-gray-200 pt-6">
+              <h3 className="text-lg font-medium text-berlin-gray-900 mb-4">Password</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="password" className="block text-sm font-medium text-berlin-gray-700">
                     Password
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="password"
@@ -334,19 +334,19 @@ export const SignupPage = () => {
                       required
                       value={formData.password}
                       onChange={handleChange}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                       placeholder="Create a password"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-berlin-gray-700">
                     Confirm password
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-berlin-gray-400" />
                     </div>
                     <input
                       id="confirmPassword"
@@ -355,7 +355,7 @@ export const SignupPage = () => {
                       required
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-berlin-gray-300 rounded-md shadow-sm placeholder-berlin-gray-400 focus:outline-none focus:ring-berlin-red-500 focus:border-berlin-red-500"
                       placeholder="Confirm your password"
                     />
                   </div>
@@ -366,7 +366,7 @@ export const SignupPage = () => {
             <div className="pt-6">
               <button 
                 type="submit" 
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-berlin-red-600 hover:bg-berlin-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-berlin-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading}
               >
                 {loading ? 'Creating account...' : 'Create account'}
@@ -378,18 +378,18 @@ export const SignupPage = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className="w-full border-t border-berlin-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white text-berlin-gray-500">Or continue with</span>
               </div>
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <button className="w-full inline-flex justify-center py-2 px-4 border border-berlin-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-berlin-gray-500 hover:bg-berlin-gray-50">
                 Google
               </button>
-              <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <button className="w-full inline-flex justify-center py-2 px-4 border border-berlin-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-berlin-gray-500 hover:bg-berlin-gray-50">
                 Apple
               </button>
             </div>

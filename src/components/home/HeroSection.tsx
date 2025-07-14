@@ -23,7 +23,7 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-green-50 to-white pt-20">
+    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-white via-berlin-gray-50 to-berlin-red-50 pt-20">
       <div 
         className="absolute inset-0 bg-[url('https://images.pexels.com/photos/3735218/pexels-photo-3735218.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')] bg-cover bg-center opacity-10"
         aria-hidden="true"
@@ -31,13 +31,13 @@ export const HeroSection = () => {
       
       <div className="container mx-auto px-4 py-16 z-10">
         <div ref={heroRef} className="max-w-4xl mx-auto text-center transition-all duration-300">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-berlin-gray-900 mb-6 leading-tight">
             <span className="block">Sustainable Packaging</span>
-            <span className="text-green-600">for a Better Tomorrow</span>
+            <span className="text-berlin-red-600">for a Better Tomorrow</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto">
-            Search, sample, quote, and buy eco-friendly packaging directly from vetted suppliers — all in one place.
+          <p className="text-xl md:text-2xl text-berlin-gray-700 mb-8 max-w-3xl mx-auto font-medium">
+            "Search, Sample and Quote" Sustainable Packaging
           </p>
           
           <div className="mb-10">
@@ -56,22 +56,22 @@ export const HeroSection = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto py-8 border-t border-b border-gray-200">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto py-8 border-t border-b border-berlin-gray-200">
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-600">500+</p>
-              <p className="text-gray-600">Suppliers</p>
+              <p className="text-3xl font-bold text-berlin-red-600">500+</p>
+              <p className="text-berlin-gray-600 font-medium">Suppliers</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-600">10K+</p>
-              <p className="text-gray-600">Products</p>
+              <p className="text-3xl font-bold text-berlin-red-600">10K+</p>
+              <p className="text-berlin-gray-600 font-medium">Products</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-600">98%</p>
-              <p className="text-gray-600">Satisfaction</p>
+              <p className="text-3xl font-bold text-berlin-red-600">98%</p>
+              <p className="text-berlin-gray-600 font-medium">Satisfaction</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-600">50M+</p>
-              <p className="text-gray-600">Plastic Saved</p>
+              <p className="text-3xl font-bold text-berlin-red-600">50M+</p>
+              <p className="text-berlin-gray-600 font-medium">Plastic Saved</p>
             </div>
           </div>
         </div>

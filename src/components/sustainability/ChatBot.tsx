@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Send, Bot, User, Trash2, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Trash2, Sparkles, Pause, Play } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { openaiService, ChatMessage } from '../../services/openaiService';
 
@@ -20,6 +20,8 @@ const ChatBot = forwardRef<ChatBotRef>((_, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [typingMessage, setTypingMessage] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
+  const [pendingResponse, setPendingResponse] = useState('');
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -86,6 +88,8 @@ const ChatBot = forwardRef<ChatBotRef>((_, ref) => {
   const typeMessage = (fullMessage: string, messageIndex: number) => {
     setIsTyping(true);
     setTypingMessage('');
+    setIsPaused(false);
+    setPendingResponse(fullMessage);
     
     let currentIndex = 0;
     const typingSpeed = 10; // milliseconds per character - much faster!
@@ -121,6 +125,7 @@ const ChatBot = forwardRef<ChatBotRef>((_, ref) => {
         }
         setIsTyping(false);
         setTypingMessage('');
+        setPendingResponse('');
         
         // Add the complete message to the messages array
         const assistantMessage: Message = {
@@ -134,6 +139,69 @@ const ChatBot = forwardRef<ChatBotRef>((_, ref) => {
         setTimeout(() => scrollToMessage(messageIndex), 200);
       }
     }, typingSpeed);
+  };
+
+  const pauseTyping = () => {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+    }
+    setIsPaused(true);
+    setIsTyping(false);
+    
+    // Don't add the partial message to the messages array yet
+    // Keep it in typingMessage state for resume
+    // pendingResponse already contains the full message
+  };
+
+  const resumeTyping = () => {
+    if (pendingResponse && isPaused) {
+      setIsPaused(false);
+      setIsTyping(true);
+      
+      // Continue typing from where we left off
+      let currentIndex = typingMessage.length; // Start from where we paused
+      const typingSpeed = 10;
+      
+      typingIntervalRef.current = setInterval(() => {
+        if (currentIndex < pendingResponse.length) {
+          setTypingMessage(pendingResponse.slice(0, currentIndex + 1));
+          currentIndex++;
+          
+          // Keep the typing message in view
+          setTimeout(() => {
+            if (chatContainerRef.current) {
+              const typingElement = chatContainerRef.current.querySelector('.typing-message');
+              if (typingElement) {
+                const containerRect = chatContainerRef.current.getBoundingClientRect();
+                const typingRect = typingElement.getBoundingClientRect();
+                
+                if (typingRect.bottom > containerRect.bottom) {
+                  chatContainerRef.current.scrollTop += 30;
+                }
+              }
+            }
+          }, 10);
+        } else {
+          // Typing complete
+          if (typingIntervalRef.current) {
+            clearInterval(typingIntervalRef.current);
+          }
+          setIsTyping(false);
+          
+          // Add the complete message to the messages array
+          const assistantMessage: Message = {
+            role: 'assistant',
+            content: pendingResponse,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+          
+          // Clear states
+          setTypingMessage('');
+          setPendingResponse('');
+        }
+      }, typingSpeed);
+    }
   };
 
   // Initialize with welcome message
@@ -177,6 +245,21 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
+    // If there's an ongoing typing animation, pause it first
+    if (isTyping) {
+      pauseTyping();
+    }
+
+    // If paused, add the partial message to messages before sending new one
+    if (isPaused && typingMessage) {
+      const partialMessage: Message = {
+        role: 'assistant',
+        content: typingMessage,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, partialMessage]);
+    }
+
     const userMessage: Message = {
       role: 'user',
       content: inputMessage,
@@ -186,6 +269,9 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
+    setIsPaused(false);
+    setPendingResponse('');
+    setTypingMessage('');
 
     try {
       const response = await askOpenAI([...messages, userMessage]);
@@ -215,6 +301,8 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
     }
     setIsTyping(false);
     setTypingMessage('');
+    setIsPaused(false);
+    setPendingResponse('');
     
     setMessages([
       {
@@ -315,6 +403,26 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
             </div>
           </div>
         )}
+
+        {/* Paused Message Display */}
+        {isPaused && typingMessage && (
+          <div className="group message-item typing-message">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-berlin-red-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 max-w-[80%]">
+                <div className="bg-berlin-gray-50 text-berlin-gray-800 rounded-2xl rounded-tl-md px-5 py-3 border border-berlin-gray-100 inline-block">
+                  <div className="text-sm leading-relaxed">
+                    {formatContent(typingMessage)}
+                    <span className="inline-block w-2 h-4 bg-orange-500 ml-1"></span>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+          </div>
+        )}
         
         {isLoading && !isTyping && (
           <div className="group">
@@ -341,13 +449,20 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
 
       {/* Input Area */}
       <div className="border-t border-berlin-gray-100 p-6 bg-berlin-gray-50 rounded-b-2xl">
+        
         <div className="flex items-end gap-3">
           <div className="flex-1">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask about sustainability, packaging, LCA, ESG reporting..."
+              placeholder={
+                isTyping 
+                  ? "Bot is typing... Use pause button to interrupt" 
+                  : isPaused 
+                    ? "Resume bot response or enter new message"
+                    : "Ask about sustainability, packaging, LCA, ESG reporting..."
+              }
               className="w-full p-4 border border-berlin-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-berlin-red-500 focus:border-berlin-red-500 resize-none transition-all bg-white shadow-sm"
               rows={1}
               style={{ minHeight: '52px', maxHeight: '120px' }}
@@ -368,6 +483,22 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
             >
               <Trash2 className="w-5 h-5" />
             </button>
+            
+            {/* Pause/Resume Button - only show when typing or paused */}
+            {(isTyping || isPaused) && (
+              <Button
+                onClick={isTyping ? pauseTyping : resumeTyping}
+                className="p-3 transition-all rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-md hover:shadow-lg"
+              >
+                {isTyping ? (
+                  <Pause className="w-5 h-5" />
+                ) : (
+                  <Play className="w-5 h-5" />
+                )}
+              </Button>
+            )}
+            
+            {/* Send Button */}
             <Button
               onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim()}

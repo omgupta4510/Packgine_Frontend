@@ -80,7 +80,7 @@ export const Header = () => {
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
     { name: 'Suppliers', path: '/become-supplier' },
-    { name: 'Chatbot', path: '/sustainability' },
+    { name: 'Ask B', path: '/sustainability' },
     { name: 'About Us', path: '/about' },
   ];
 

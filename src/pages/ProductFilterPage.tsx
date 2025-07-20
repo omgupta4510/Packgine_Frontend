@@ -267,12 +267,36 @@ const ProductFilterPage = () => {
     // Initialize merged filters object
     const mergedFilters: { [key: string]: any[] } = {};
     
-    // Helper to merge filter arrays - handle the new schema structure
-    function mergeFilterArray(filterArray: any[], arrayName: string) {
-      console.log(`Processing ${arrayName}:`, filterArray);
+    // Helper to merge filter arrays - handle both old and new schema structures
+    function mergeFilterArray(filterData: any, arrayName: string) {
+      console.log(`Processing ${arrayName}:`, filterData);
       
-      if (Array.isArray(filterArray)) {
-        filterArray.forEach((filterItem, index) => {
+      if (!filterData) return;
+      
+      // Handle new format where filterData is an object with filter names as keys
+      if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+        console.log(`${arrayName} is object format:`, filterData);
+        Object.entries(filterData).forEach(([filterName, filterValues]) => {
+          console.log(`Filter: ${filterName}, Values:`, filterValues);
+          
+          if (!mergedFilters[filterName]) {
+            mergedFilters[filterName] = [];
+          }
+          
+          if (Array.isArray(filterValues)) {
+            // If it's already an array, spread it
+            mergedFilters[filterName].push(...filterValues);
+          } else if (filterValues !== null && filterValues !== undefined) {
+            // If it's a single value, push it
+            mergedFilters[filterName].push(filterValues);
+          }
+        });
+        return;
+      }
+      
+      // Handle old format where filterData is an array of objects
+      if (Array.isArray(filterData)) {
+        filterData.forEach((filterItem, index) => {
           console.log(`${arrayName}[${index}]:`, filterItem);
           
           if (filterItem && typeof filterItem === 'object' && !Array.isArray(filterItem)) {
@@ -298,8 +322,8 @@ const ProductFilterPage = () => {
     }
     
     // Process categoryFilters and commonFilters
-    mergeFilterArray(product.categoryFilters || [], 'categoryFilters');
-    mergeFilterArray(product.commonFilters || [], 'commonFilters');
+    mergeFilterArray(product.categoryFilters, 'categoryFilters');
+    mergeFilterArray(product.commonFilters, 'commonFilters');
     
     // Add default/legacy fields for compatibility - only if actual values exist
     if (product.specifications?.material && product.specifications.material.trim() !== '') {
@@ -950,7 +974,7 @@ const ProductFilterPage = () => {
                         <div className="mb-2">
                           <div className="flex items-center space-x-2">
                             <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                              product.ecoScore >= 80 ? 'bg-berlin-red-100 text-berlin-red-800' :
+                              product.ecoScore >= 80 ? 'bg-green-100 text-green-800' :
                               product.ecoScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
                               product.ecoScore >= 40 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
                             }`}>
@@ -960,7 +984,7 @@ const ProductFilterPage = () => {
                           <div className="mt-1 bg-berlin-gray-200 rounded-full h-1.5">
                             <div 
                               className={`h-1.5 rounded-full ${
-                                product.ecoScore >= 80 ? 'bg-berlin-red-500' :
+                                product.ecoScore >= 80 ? 'bg-green-500' :
                                 product.ecoScore >= 60 ? 'bg-yellow-500' :
                                 product.ecoScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
                               }`}
@@ -972,7 +996,7 @@ const ProductFilterPage = () => {
                       
                       <div className="flex flex-wrap gap-1 mb-2">
                         {product.sustainability && (
-                          <span className="bg-berlin-red-50 text-berlin-red-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
+                          <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">{product.sustainability}</span>
                         )}
                         {product.location && (
                           <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">{product.location}</span>

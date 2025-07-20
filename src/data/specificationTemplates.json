@@ -1,0 +1,69 @@
+{
+  "templates": {
+    "Bottle": [
+      { "name": "Neck Finish", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Thread Pattern", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Drop Test Height", "category": "technical", "unit": "m", "isRequired": false },
+      { "name": "UV Protection", "category": "material", "unit": "", "isRequired": false },
+      { "name": "Barrier Properties", "category": "material", "unit": "", "isRequired": false },
+      { "name": "Hot Fill Temperature", "category": "technical", "unit": "°C", "isRequired": false }
+    ],
+    "Jar": [
+      { "name": "Mouth Opening", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Seal Type", "category": "technical", "unit": "", "isRequired": true },
+      { "name": "Tamper Evidence", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Heat Resistance", "category": "technical", "unit": "°C", "isRequired": false },
+      { "name": "Oxygen Permeability", "category": "material", "unit": "cc/m²/day", "isRequired": false }
+    ],
+    "Tube": [
+      { "name": "Tube Diameter", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Wall Thickness", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Crimp Type", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Barrier Layers", "category": "material", "unit": "", "isRequired": false },
+      { "name": "Squeeze Force", "category": "technical", "unit": "N", "isRequired": false }
+    ],
+    "Dispensers": [
+      { "name": "Pump Output", "category": "technical", "unit": "ml/stroke", "isRequired": true },
+      { "name": "Dip Tube Length", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Prime Strokes", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Spray Pattern", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Chemical Compatibility", "category": "material", "unit": "", "isRequired": true }
+    ],
+    "Closures": [
+      { "name": "Thread Size", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Torque Specification", "category": "technical", "unit": "in-lbs", "isRequired": false },
+      { "name": "Liner Material", "category": "material", "unit": "", "isRequired": true },
+      { "name": "Child Resistance", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Vent Features", "category": "technical", "unit": "", "isRequired": false }
+    ],
+    "Cap": [
+      { "name": "Thread Size", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Torque Specification", "category": "technical", "unit": "in-lbs", "isRequired": false },
+      { "name": "Liner Material", "category": "material", "unit": "", "isRequired": true },
+      { "name": "Child Resistance", "category": "technical", "unit": "", "isRequired": false },
+      { "name": "Tamper Evidence", "category": "technical", "unit": "", "isRequired": false }
+    ],
+    "Dropper": [
+      { "name": "Drop Volume", "category": "technical", "unit": "ml", "isRequired": true },
+      { "name": "Tip Material", "category": "material", "unit": "", "isRequired": true },
+      { "name": "Pipette Length", "category": "physical", "unit": "mm", "isRequired": true },
+      { "name": "Chemical Resistance", "category": "material", "unit": "", "isRequired": false },
+      { "name": "Graduation Marks", "category": "technical", "unit": "", "isRequired": false }
+    ],
+    "Pouches": [
+      { "name": "Gusset Type", "category": "physical", "unit": "", "isRequired": false },
+      { "name": "Barrier Structure", "category": "material", "unit": "", "isRequired": true },
+      { "name": "Seal Strength", "category": "technical", "unit": "N/15mm", "isRequired": false },
+      { "name": "Puncture Resistance", "category": "technical", "unit": "J", "isRequired": false },
+      { "name": "Oxygen Transmission Rate", "category": "material", "unit": "cc/m²/day", "isRequired": false }
+    ]
+  },
+  "commonSpecs": [
+    { "name": "Food Contact Approved", "category": "material", "unit": "", "isRequired": false },
+    { "name": "FDA Status", "category": "material", "unit": "", "isRequired": false },
+    { "name": "EU Compliance", "category": "material", "unit": "", "isRequired": false },
+    { "name": "Recyclability Code", "category": "material", "unit": "", "isRequired": false },
+    { "name": "Storage Temperature", "category": "technical", "unit": "°C", "isRequired": false },
+    { "name": "Shelf Life", "category": "technical", "unit": "months", "isRequired": false }
+  ]
+}

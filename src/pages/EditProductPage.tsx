@@ -96,6 +96,8 @@ const EditProductPage: React.FC = () => {
   const [commonFiltersList, setCommonFiltersList] = useState<any[]>([]);
   const [selectedCategoryFilters, setSelectedCategoryFilters] = useState<{ [key: string]: any }>({});
   const [selectedCommonFilters, setSelectedCommonFilters] = useState<{ [key: string]: any }>({});
+  const [tempCategoryFilters, setTempCategoryFilters] = useState<{ [key: string]: any }>({});
+  const [tempCommonFilters, setTempCommonFilters] = useState<{ [key: string]: any }>({});
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [ecoScore, setEcoScore] = useState<number>(0);
   const [ecoScoreDetails, setEcoScoreDetails] = useState({
@@ -196,6 +198,9 @@ const EditProductPage: React.FC = () => {
 
         const product: Product = await response.json();
         console.log('Loaded product:', product);
+        console.log('TEMP DEBUG - Product name:', product.name);
+        console.log('TEMP DEBUG - Product description:', product.description);
+        console.log('TEMP DEBUG - Product pricing:', product.pricing);
         console.log('Product categoryFilters:', product.categoryFilters);
         console.log('Product commonFilters:', product.commonFilters);
 
@@ -210,6 +215,12 @@ const EditProductPage: React.FC = () => {
           sustainableMaterials: 0,
           localSourcing: 0,
           certifications: []
+        });
+        
+        console.log('Loaded eco score details:', {
+          ecoScore: product.ecoScore || 0,
+          ecoScoreDetails: product.ecoScoreDetails || {},
+          certifications: product.certifications || []
         });
 
         setProductInfo({
@@ -238,6 +249,12 @@ const EditProductPage: React.FC = () => {
           keywords: product.seo?.keywords || []
         });
 
+        console.log('TEMP DEBUG - Product info set to:', {
+          name: product.name || '',
+          description: product.description || '',
+          price: product.pricing?.basePrice?.toString() || ''
+        });
+
         setSustainability(product.sustainability || {
           recycledContent: 0,
           biodegradable: false,
@@ -256,12 +273,38 @@ const EditProductPage: React.FC = () => {
           customSizes: false
         });
 
-        // Set filter data - ensure we have the filters first
-        setSelectedCategoryFilters(product.categoryFilters || {});
-        setSelectedCommonFilters(product.commonFilters || {});
+        // Store the filter data temporarily to apply after filters are loaded
+        const tempCatFilters = product.categoryFilters || {};
+        const tempComFilters = product.commonFilters || {};
         
-        console.log('Set categoryFilters to:', product.categoryFilters || {});
-        console.log('Set commonFilters to:', product.commonFilters || {});
+        // Fix malformed filter data structure
+        let normalizedCatFilters = {};
+        let normalizedComFilters = {};
+
+        // Handle category filters - check if data is nested under numeric keys
+        if (tempCatFilters && typeof tempCatFilters === 'object') {
+          // Check if data is under numeric keys (like "0": {...})
+          const firstKey = Object.keys(tempCatFilters)[0];
+          if (firstKey && !isNaN(Number(firstKey)) && typeof tempCatFilters[firstKey] === 'object') {
+            normalizedCatFilters = tempCatFilters[firstKey] || {};
+          } else {
+            // Data is in correct format
+            normalizedCatFilters = tempCatFilters;
+          }
+        }
+
+        // Handle common filters - same logic
+        if (tempComFilters && typeof tempComFilters === 'object') {
+          const firstKey = Object.keys(tempComFilters)[0];
+          if (firstKey && !isNaN(Number(firstKey)) && typeof tempComFilters[firstKey] === 'object') {
+            normalizedComFilters = tempComFilters[firstKey] || {};
+          } else {
+            normalizedComFilters = tempComFilters;
+          }
+        }
+
+        setTempCategoryFilters(normalizedCatFilters);
+        setTempCommonFilters(normalizedComFilters);
 
       } catch (err: any) {
         console.error('Error loading product:', err);
@@ -282,57 +325,208 @@ const EditProductPage: React.FC = () => {
     }
   }, [selectedBroaderCategory]);
 
-  // Update filters when category changes
+  // Update filters when category changes and apply saved filter data
   useEffect(() => {
     if (selectedCategory) {
       // Get category-specific filters
       const categoryFilter = categorySpecificFilters.categories.find((cf: any) => cf.category === selectedCategory);
-      setCategorySpecificFiltersList(categoryFilter?.filters || []);
+      let categoryFiltersList = categoryFilter?.filters || [];
       
       // Get common filters - always load them
-      setCommonFiltersList(commonFilters.filters || []);
+      let commonFiltersList = commonFilters.filters || [];
       
-      console.log('Category filters loaded:', categoryFilter?.filters || []);
-      console.log('Common filters loaded:', commonFilters.filters || []);
+      // Dynamically add missing saved values to filter options
+      if (Object.keys(tempCategoryFilters).length > 0) {
+        categoryFiltersList = categoryFiltersList.map((filter: any) => {
+          const savedValues = tempCategoryFilters[filter.name];
+          if (savedValues && Array.isArray(savedValues)) {
+            // Add any saved values that aren't in the current options
+            const currentOptions = filter.options || [];
+            const missingValues = savedValues.filter(value => !currentOptions.includes(value));
+            if (missingValues.length > 0) {
+              console.log(`Adding missing values to category filter ${filter.name}:`, missingValues);
+              logMissingValuesForJSON('category', filter.name, missingValues);
+              return {
+                ...filter,
+                options: [...currentOptions, ...missingValues]
+              };
+            }
+          }
+          return filter;
+        });
+      }
+
+      if (Object.keys(tempCommonFilters).length > 0) {
+        commonFiltersList = commonFiltersList.map((filter: any) => {
+          const savedValues = tempCommonFilters[filter.name];
+          if (savedValues && Array.isArray(savedValues)) {
+            if (filter.groups) {
+              // Handle grouped filters (like Material, Location)
+              const updatedGroups = [...filter.groups];
+              
+              // Check if any saved values are missing from all groups
+              const allExistingOptions = filter.groups.flatMap((g: any) => {
+                if (!g.options) return [];
+                // Handle both string arrays and object arrays
+                return Array.isArray(g.options) ? g.options.map((option: any) => 
+                  typeof option === 'string' ? option : option.name || option.code || option
+                ) : [];
+              });
+              const missingValues = savedValues.filter(value => 
+                !allExistingOptions.includes(value) && 
+                !value.startsWith('Toggle:') // Exclude toggle values
+              );
+              
+              if (missingValues.length > 0) {
+                console.log(`Adding missing values to ${filter.name}:`, missingValues);
+                logMissingValuesForJSON('common', filter.name, missingValues);
+                
+                // For location filters, add to appropriate region or create "Other" group
+                if (filter.name === 'Location' || filter.name.toLowerCase().includes('location')) {
+                  let otherGroup = updatedGroups.find(g => g.groupName === 'Other' || g.groupName === 'Others');
+                  if (!otherGroup) {
+                    // Create "Other" group if it doesn't exist
+                    otherGroup = { groupName: 'Other', options: [] };
+                    updatedGroups.push(otherGroup);
+                  }
+                  otherGroup.options = [...(otherGroup.options || []), ...missingValues];
+                } else {
+                  // For other grouped filters, add to first group or create general group
+                  if (updatedGroups.length > 0) {
+                    updatedGroups[0].options = [...(updatedGroups[0].options || []), ...missingValues];
+                  } else {
+                    updatedGroups.push({ groupName: 'Other', options: missingValues });
+                  }
+                }
+              }
+              
+              return { ...filter, groups: updatedGroups };
+            } else if (filter.options) {
+              // Handle regular options
+              const currentOptions = filter.options || [];
+              const missingValues = savedValues.filter(value => 
+                !currentOptions.includes(value) &&
+                !value.startsWith('Toggle:') // Exclude toggle values
+              );
+              if (missingValues.length > 0) {
+                console.log(`Adding missing values to ${filter.name}:`, missingValues);
+                logMissingValuesForJSON('common', filter.name, missingValues);
+                return {
+                  ...filter,
+                  options: [...currentOptions, ...missingValues]
+                };
+              }
+            }
+          }
+          return filter;
+        });
+      }
+      
+      setCategorySpecificFiltersList(categoryFiltersList);
+      setCommonFiltersList(commonFiltersList);
+
+      // Apply saved filter data if available
+      if (Object.keys(tempCategoryFilters).length > 0 || Object.keys(tempCommonFilters).length > 0) {
+        console.log('Applying saved filter data:', { tempCategoryFilters, tempCommonFilters });
+        setSelectedCategoryFilters(tempCategoryFilters);
+        setSelectedCommonFilters(tempCommonFilters);
+        
+        // Clear the temporary data after a short delay to ensure state is updated
+        setTimeout(() => {
+          setTempCategoryFilters({});
+          setTempCommonFilters({});
+        }, 100);
+      }
     }
   }, [selectedCategory]);
 
   // Load filters immediately when component mounts, regardless of loading state
   useEffect(() => {
-    // Always load common filters
-    setCommonFiltersList(commonFilters.filters || []);
-    console.log('Initial common filters loaded:', commonFilters.filters || []);
-  }, []);
+    // Always load common filters with dynamic value addition
+    let commonFiltersList = commonFilters.filters || [];
+    
+    // If we have temporary common filter data, add missing values
+    if (Object.keys(tempCommonFilters).length > 0) {
+      commonFiltersList = commonFiltersList.map((filter: any) => {
+        const savedValues = tempCommonFilters[filter.name];
+        if (savedValues && Array.isArray(savedValues)) {
+          if (filter.groups) {
+            // Handle grouped filters (like Material, Location)
+            const updatedGroups = [...filter.groups];
+            
+            // Check if any saved values are missing from all groups
+            const allExistingOptions = filter.groups.flatMap((g: any) => {
+              if (!g.options) return [];
+              // Handle both string arrays and object arrays
+              return Array.isArray(g.options) ? g.options.map((option: any) => 
+                typeof option === 'string' ? option : option.name || option.code || option
+              ) : [];
+            });
+            const missingValues = savedValues.filter(value => 
+              !allExistingOptions.includes(value) &&
+              !value.startsWith('Toggle:') // Exclude toggle values
+            );
+            
+            if (missingValues.length > 0) {
+              console.log(`Adding missing values to initial ${filter.name}:`, missingValues);
+              logMissingValuesForJSON('common', filter.name, missingValues);
+              
+              // For location filters, add to appropriate region or create "Other" group
+              if (filter.name === 'Location' || filter.name.toLowerCase().includes('location')) {
+                let otherGroup = updatedGroups.find(g => g.groupName === 'Other' || g.groupName === 'Others');
+                if (!otherGroup) {
+                  // Create "Other" group if it doesn't exist
+                  otherGroup = { groupName: 'Other', options: [] };
+                  updatedGroups.push(otherGroup);
+                }
+                otherGroup.options = [...(otherGroup.options || []), ...missingValues];
+              } else {
+                // For other grouped filters, add to first group or create general group
+                if (updatedGroups.length > 0) {
+                  updatedGroups[0].options = [...(updatedGroups[0].options || []), ...missingValues];
+                } else {
+                  updatedGroups.push({ groupName: 'Other', options: missingValues });
+                }
+              }
+            }
+            
+            return { ...filter, groups: updatedGroups };
+          } else if (filter.options) {
+            // Handle regular options
+            const currentOptions = filter.options || [];
+            const missingValues = savedValues.filter(value => 
+              !currentOptions.includes(value) &&
+              !value.startsWith('Toggle:') // Exclude toggle values
+            );
+            if (missingValues.length > 0) {
+              console.log(`Adding missing values to initial ${filter.name}:`, missingValues);
+              logMissingValuesForJSON('common', filter.name, missingValues);
+              return {
+                ...filter,
+                options: [...currentOptions, ...missingValues]
+              };
+            }
+          }
+        }
+        return filter;
+      });
+    }
+    
+    setCommonFiltersList(commonFiltersList);
+  }, [tempCommonFilters]);
 
-  // Ensure filters are re-applied after product data is loaded and filters are available
+  // Re-apply saved filter selections after filters are loaded and product data is available
   useEffect(() => {
+    // Only run this after product is loaded and filters are available
     if (!loading && selectedCategory && (categorySpecificFiltersList.length > 0 || commonFiltersList.length > 0)) {
-      // Re-trigger filter data setting to ensure everything is properly filled
-      console.log('Re-applying filter data after filters are loaded');
-      console.log('Current selectedCategoryFilters:', selectedCategoryFilters);
-      console.log('Current selectedCommonFilters:', selectedCommonFilters);
-      
-      // Force a re-render by updating the state again
-      setTimeout(() => {
-        setSelectedCategoryFilters(prev => ({ ...prev }));
-        setSelectedCommonFilters(prev => ({ ...prev }));
-      }, 100);
+      console.log('Filters loaded - current selections:', {
+        categoryFilters: selectedCategoryFilters,
+        commonFilters: selectedCommonFilters,
+        categorySpecificFiltersCount: categorySpecificFiltersList.length,
+        commonFiltersCount: commonFiltersList.length
+      });
     }
-  }, [loading, selectedCategory, categorySpecificFiltersList.length, commonFiltersList.length]);
-
-  // Ensure filters are loaded after product data is set
-  useEffect(() => {
-    if (!loading && selectedCategory) {
-      // Re-load filters to ensure they're available for pre-filling
-      const categoryFilter = categorySpecificFilters.categories.find((cf: any) => cf.category === selectedCategory);
-      setCategorySpecificFiltersList(categoryFilter?.filters || []);
-      setCommonFiltersList(commonFilters.filters || []);
-      
-      console.log('Post-load filter refresh for category:', selectedCategory);
-      console.log('Current selectedCategoryFilters:', selectedCategoryFilters);
-      console.log('Current selectedCommonFilters:', selectedCommonFilters);
-    }
-  }, [loading, selectedCategory, selectedCategoryFilters, selectedCommonFilters]);
+  }, [loading, selectedCategory, categorySpecificFiltersList.length, commonFiltersList.length, selectedCategoryFilters, selectedCommonFilters]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -390,7 +584,7 @@ const EditProductPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < 6) {
+    if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -551,6 +745,18 @@ const EditProductPage: React.FC = () => {
     );
   }
 
+  // Helper function to detect and add missing values to JSON files (for dynamic enhancement)
+  const logMissingValuesForJSON = (filterType: 'category' | 'common', filterName: string, missingValues: string[]) => {
+    if (missingValues.length > 0) {
+      console.group(`🔍 MISSING VALUES DETECTED`);
+      console.log(`Filter Type: ${filterType}`);
+      console.log(`Filter Name: ${filterName}`);
+      console.log(`Missing Values:`, missingValues);
+      console.log(`📝 Consider adding these to the ${filterType === 'category' ? 'categorySpecificFilters' : 'commonFilters'}.json file`);
+      console.groupEnd();
+    }
+  };
+
   // Helper functions for managing arrays (same as AddProductPage)
   const addFeature = () => {
     if (newFeature.trim() && !productInfo.features.includes(newFeature.trim())) {
@@ -641,145 +847,314 @@ const EditProductPage: React.FC = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-10 my-10">
-            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Edit Product Information</h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 1: Basic Product Information</h2>
             
             {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Product Name *</label>
-                <input
-                  type="text"
-                  value={productInfo.name}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter product name"
-                  required
-                />
-              </div>
+            <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Basic Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Product Name *</label>
+                  <input
+                    type="text"
+                    value={productInfo.name}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    placeholder="Enter product name"
+                    required
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Price (USD) *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={productInfo.price}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Description *</label>
+                  <textarea
+                    value={productInfo.description}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
+                    rows={4}
+                    className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    placeholder="Describe your product..."
+                    required
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Description *</label>
-              <textarea
-                value={productInfo.description}
-                onChange={(e) => setProductInfo(prev => ({ ...prev, description: e.target.value }))}
-                rows={4}
-                className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Describe your product..."
-                required
-              />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Price ($) *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={productInfo.price}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, price: e.target.value }))}
+                      className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Min Order Quantity</label>
+                    <input
+                      type="number"
+                      value={productInfo.minimumOrderQuantity}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
+                      className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      min="1"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Available Quantity</label>
+                    <input
+                      type="number"
+                      value={productInfo.availableQuantity}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 0 }))}
+                      className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Categories */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Broader Category *</label>
-                <select
-                  value={selectedBroaderCategory}
-                  onChange={(e) => setSelectedBroaderCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Select broader category</option>
-                  {broaderCategories.broader_categories.map((category: any) => (
-                    <option key={category.name} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Categories</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Broader Category *</label>
+                  <select
+                    value={selectedBroaderCategory}
+                    onChange={(e) => setSelectedBroaderCategory(e.target.value)}
+                    className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select broader category</option>
+                    {broaderCategories.broader_categories.map((category: any) => (
+                      <option key={category.name} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Specific Category *</label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={!selectedBroaderCategory}
-                  required
-                >
-                  <option value="">Select specific category</option>
-                  {availableCategories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Specific Category *</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-4 py-3 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    disabled={!selectedBroaderCategory}
+                    required
+                  >
+                    <option value="">Select specific category</option>
+                    {availableCategories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
-            {/* Quantity Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Minimum Order Quantity</label>
-                <input
-                  type="number"
-                  value={productInfo.minimumOrderQuantity}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, minimumOrderQuantity: parseInt(e.target.value) || 1 }))}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  min="1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Available Quantity</label>
-                <input
-                  type="number"
-                  value={productInfo.availableQuantity}
-                  onChange={(e) => setProductInfo(prev => ({ ...prev, availableQuantity: parseInt(e.target.value) || 100 }))}
-                  className="w-full px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  min="1"
-                />
+            {/* Product Features */}
+            <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Features</h3>
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add a feature..."
+                    value={newFeature}
+                    onChange={(e) => setNewFeature(e.target.value)}
+                    className="flex-1 px-4 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                  />
+                  <button
+                    type="button"
+                    onClick={addFeature}
+                    className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                  >
+                    Add
+                  </button>
+                </div>
+                {productInfo.features.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {productInfo.features.map((feature, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-berlin-red-100 text-berlin-red-800"
+                      >
+                        {feature}
+                        <button
+                          type="button"
+                          onClick={() => removeFeature(index)}
+                          className="ml-2 hover:text-red-600"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Features */}
-            <div>
-              <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Product Features</label>
-              <div className="flex gap-2 mb-3">
-                <input
-                  type="text"
-                  value={newFeature}
-                  onChange={(e) => setNewFeature(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Add a product feature"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                />
-                <button
-                  type="button"
-                  onClick={addFeature}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {productInfo.features.map((feature, index) => (
-                  <span key={index} className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                    {feature}
-                    <button
-                      type="button"
-                      onClick={() => removeFeature(index)}
-                      className="text-blue-600 hover:text-blue-800"
+            {/* Product Specifications */}
+            <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Specifications</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Dimensions */}
+                <div>
+                  <h5 className="font-medium text-berlin-gray-900 mb-3">Dimensions</h5>
+                  <div className="grid grid-cols-3 gap-2">
+                    <input
+                      type="number"
+                      placeholder="Height"
+                      value={productInfo.height}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, height: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Width"
+                      value={productInfo.width}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, width: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Depth"
+                      value={productInfo.depth}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, depth: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                  </div>
+                  <select
+                    value={productInfo.dimensionUnit}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, dimensionUnit: e.target.value }))}
+                    className="mt-2 w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                  >
+                    <option value="mm">mm</option>
+                    <option value="cm">cm</option>
+                    <option value="inch">inch</option>
+                  </select>
+                </div>
+
+                {/* Weight */}
+                <div>
+                  <h5 className="font-medium text-berlin-gray-900 mb-3">Weight</h5>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      placeholder="Weight"
+                      value={productInfo.weight}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, weight: e.target.value }))}
+                      className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <select
+                      value={productInfo.weightUnit}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, weightUnit: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      <option value="g">g</option>
+                      <option value="kg">kg</option>
+                      <option value="oz">oz</option>
+                      <option value="lb">lb</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Capacity */}
+                <div>
+                  <h5 className="font-medium text-berlin-gray-900 mb-3">Capacity</h5>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      placeholder="Capacity"
+                      value={productInfo.capacity}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, capacity: e.target.value }))}
+                      className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <select
+                      value={productInfo.capacityUnit}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, capacityUnit: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    >
+                      <option value="ml">ml</option>
+                      <option value="L">L</option>
+                      <option value="oz">oz</option>
+                      <option value="gal">gal</option>
+                      <option value="cc">cc</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Basic Properties */}
+                <div>
+                  <h5 className="font-medium text-berlin-gray-900 mb-3">Basic Properties</h5>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      placeholder="Color (e.g., Transparent, White)"
+                      value={productInfo.color}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, color: e.target.value }))}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Finish (e.g., Matte, Glossy)"
+                      value={productInfo.finish}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, finish: e.target.value }))}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Closure (e.g., Pump, Spray, Cap)"
+                      value={productInfo.closure}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, closure: e.target.value }))}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Lead Time */}
+            <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+              <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Lead Time (Days)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Standard</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 14"
+                    value={productInfo.standardLeadTime}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, standardLeadTime: e.target.value }))}
+                    className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Custom</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 21"
+                    value={productInfo.customLeadTime}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, customLeadTime: e.target.value }))}
+                    className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Rush</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 7"
+                    value={productInfo.rushLeadTime}
+                    onChange={(e) => setProductInfo(prev => ({ ...prev, rushLeadTime: e.target.value }))}
+                    className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -808,9 +1183,10 @@ const EditProductPage: React.FC = () => {
                         {filter.options.map((option: string) => {
                           const currentSelections = selectedCategoryFilters[filter.name] || [];
                           const isSelected = currentSelections.includes(option);
-                          console.log(`Category filter ${filter.name} - option ${option}: ${isSelected}`, currentSelections);
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
+                            <label key={option} className={`flex items-center space-x-3 p-3 border rounded cursor-pointer transition-colors ${
+                              isSelected ? 'bg-berlin-red-50 border-berlin-red-200' : 'hover:bg-berlin-red-50'
+                            }`}>
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -829,7 +1205,7 @@ const EditProductPage: React.FC = () => {
                                 }}
                                 className="w-4 h-4 text-berlin-red-600"
                               />
-                              <span>{option}</span>
+                              <span className={isSelected ? 'font-medium text-berlin-red-900' : ''}>{option}</span>
                             </label>
                           );
                         })}
@@ -892,20 +1268,24 @@ const EditProductPage: React.FC = () => {
                         {filter.options.map((option: string) => {
                           const currentSelections = selectedCommonFilters[filter.name] || [];
                           const isSelected = currentSelections.includes(option);
-                          console.log(`Common filter ${filter.name} - option ${option}: ${isSelected}`, currentSelections);
                           return (
-                            <label key={option} className="flex items-center space-x-3 p-3 border rounded hover:bg-berlin-red-50 cursor-pointer">
+                            <label key={option} className={`flex items-center space-x-3 p-3 border rounded cursor-pointer transition-colors ${
+                              isSelected ? 'bg-berlin-red-50 border-berlin-red-200' : 'hover:bg-berlin-red-50'
+                            }`}>
                               <input
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={(e) => {
+                                  console.log(`Filter change for ${filter.name}: ${option}, checked: ${e.target.checked}`);
                                   const currentSelections = selectedCommonFilters[filter.name] || [];
+                                  console.log(`Current selections for ${filter.name}:`, currentSelections);
                                   let updatedSelections;
                                   if (e.target.checked) {
                                     updatedSelections = [...currentSelections, option];
                                   } else {
                                     updatedSelections = currentSelections.filter((item: any) => item !== option);
                                   }
+                                  console.log(`Updated selections for ${filter.name}:`, updatedSelections);
                                   setSelectedCommonFilters({
                                     ...selectedCommonFilters,
                                     [filter.name]: updatedSelections
@@ -913,7 +1293,7 @@ const EditProductPage: React.FC = () => {
                                 }}
                                 className="w-4 h-4 text-berlin-red-600"
                               />
-                              <span>{option}</span>
+                              <span className={isSelected ? 'font-medium text-berlin-red-900' : ''}>{option}</span>
                             </label>
                           );
                         })}
@@ -931,9 +1311,10 @@ const EditProductPage: React.FC = () => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
                                 const isSelected = currentSelections.includes(optionValue);
-                                console.log(`Common grouped filter ${filter.name} - option ${optionValue}: ${isSelected}`, currentSelections);
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
+                                  <label key={optionIndex} className={`flex items-center space-x-3 p-2 border rounded cursor-pointer transition-colors ${
+                                    isSelected ? 'bg-berlin-red-50 border-berlin-red-200' : 'hover:bg-berlin-red-50'
+                                  }`}>
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -952,7 +1333,7 @@ const EditProductPage: React.FC = () => {
                                       }}
                                       className="w-4 h-4 text-berlin-red-600"
                                     />
-                                    <span>{optionValue}</span>
+                                    <span className={isSelected ? 'font-medium text-berlin-red-900' : ''}>{optionValue}</span>
                                   </label>
                                 );
                               })}
@@ -1004,9 +1385,10 @@ const EditProductPage: React.FC = () => {
                                 const optionValue = typeof option === 'string' ? option : option.name;
                                 const currentSelections = selectedCommonFilters[filter.name] || [];
                                 const isSelected = currentSelections.includes(optionValue);
-                                console.log(`Location filter ${filter.name} - option ${optionValue}: ${isSelected}`, currentSelections);
                                 return (
-                                  <label key={optionIndex} className="flex items-center space-x-3 p-2 border rounded hover:bg-berlin-red-50 cursor-pointer">
+                                  <label key={optionIndex} className={`flex items-center space-x-3 p-2 border rounded cursor-pointer transition-colors ${
+                                    isSelected ? 'bg-berlin-red-50 border-berlin-red-200' : 'hover:bg-berlin-red-50'
+                                  }`}>
                                     <input
                                       type="checkbox"
                                       checked={isSelected}
@@ -1025,7 +1407,7 @@ const EditProductPage: React.FC = () => {
                                       }}
                                       className="w-4 h-4 text-berlin-red-600"
                                     />
-                                    <span>{optionValue}</span>
+                                    <span className={isSelected ? 'font-medium text-berlin-red-900' : ''}>{optionValue}</span>
                                   </label>
                                 );
                               })}
@@ -1119,7 +1501,7 @@ const EditProductPage: React.FC = () => {
       case 4:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 4: Upload Product Images</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 4: Product Images</h2>
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
@@ -1175,6 +1557,11 @@ const EditProductPage: React.FC = () => {
                 <p className="text-sm text-berlin-red-700 mb-4">
                   Help us understand the environmental impact of your products. This score will be displayed to buyers.
                 </p>
+                {ecoScore > 0 && (
+                  <div className="text-sm text-berlin-red-600 mb-2">
+                    Current Eco Score: <span className="font-bold">{ecoScore}/100</span>
+                  </div>
+                )}
               </div>
 
               {/* Recyclability */}
@@ -1277,14 +1664,30 @@ const EditProductPage: React.FC = () => {
                 <button
                   className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 mb-3"
                   onClick={() => {
+                    console.log('Calculating eco score with details:', {
+                      recyclability: ecoScoreDetails.recyclability,
+                      carbonFootprint: ecoScoreDetails.carbonFootprint,
+                      sustainableMaterials: ecoScoreDetails.sustainableMaterials,
+                      localSourcing: ecoScoreDetails.localSourcing,
+                      certificationsCount: certifications.length
+                    });
+                    
                     const calculatedScore = Math.round(
                       (ecoScoreDetails.recyclability * 0.25) +
                       (ecoScoreDetails.carbonFootprint * 0.25) +
                       (ecoScoreDetails.sustainableMaterials * 0.25) +
                       (ecoScoreDetails.localSourcing * 0.15) +
-                      (ecoScoreDetails.certifications.length * 1.25)
+                      (certifications.length * 1.25)
                     );
+                    
+                    console.log('Calculated eco score:', calculatedScore);
                     setEcoScore(Math.min(calculatedScore, 100));
+                    
+                    // Update ecoScoreDetails certifications to match the actual certifications
+                    setEcoScoreDetails(prev => ({
+                      ...prev,
+                      certifications: certifications.map(cert => cert.name)
+                    }));
                   }}
                 >
                   Calculate Eco Score
@@ -1322,7 +1725,316 @@ const EditProductPage: React.FC = () => {
       case 6:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 6: Review & Update</h2>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 6: Sustainability & Certifications</h2>
+            <div className="space-y-6">
+              {/* Sustainability */}
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Sustainability Features</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
+                      Recycled Content (%)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={sustainability.recycledContent}
+                      onChange={(e) => setSustainability(prev => ({ ...prev, recycledContent: parseInt(e.target.value) || 0 }))}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.biodegradable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, biodegradable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Biodegradable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.compostable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, compostable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Compostable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.refillable}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, refillable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Refillable
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.sustainableSourcing}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, sustainableSourcing: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Sustainable Sourcing
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={sustainability.carbonNeutral}
+                        onChange={(e) => setSustainability(prev => ({ ...prev, carbonNeutral: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Carbon Neutral
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Certifications */}
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Certifications</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Certification Name"
+                      value={newCertification.name}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, name: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Certification Body"
+                      value={newCertification.certificationBody}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, certificationBody: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="date"
+                      placeholder="Valid Until"
+                      value={newCertification.validUntil}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, validUntil: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Certificate Number"
+                      value={newCertification.certificateNumber}
+                      onChange={(e) => setNewCertification(prev => ({ ...prev, certificateNumber: e.target.value }))}
+                      className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addCertification}
+                    className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                  >
+                    Add Certification
+                  </button>
+                  {certifications.length > 0 && (
+                    <div className="space-y-2">
+                      {certifications.map((cert, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-berlin-gray-50 rounded-lg">
+                          <div>
+                            <span className="font-medium">{cert.name}</span>
+                            {cert.certificationBody && <span className="text-sm text-berlin-gray-600 ml-2">by {cert.certificationBody}</span>}
+                            {cert.validUntil && <span className="text-sm text-berlin-gray-600 ml-2">valid until {cert.validUntil}</span>}
+                            {cert.certificateNumber && <span className="text-sm text-berlin-gray-600 ml-2">#{cert.certificateNumber}</span>}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeCertification(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Customization Options */}
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Customization Options</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.printingAvailable}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, printingAvailable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Printing Available
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.labelingAvailable}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, labelingAvailable: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Labeling Available
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={customization.customSizes}
+                        onChange={(e) => setCustomization(prev => ({ ...prev, customSizes: e.target.checked }))}
+                        className="mr-2"
+                      />
+                      Custom Sizes
+                    </label>
+                  </div>
+
+                  {/* Color Options */}
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Color Options</label>
+                    <div className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        value={newColorOption}
+                        onChange={(e) => setNewColorOption(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        placeholder="Add color option"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColorOption())}
+                      />
+                      <button
+                        type="button"
+                        onClick={addColorOption}
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {customization.colorOptions.map((color, index) => (
+                        <span key={index} className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                          {color}
+                          <button
+                            type="button"
+                            onClick={() => removeColorOption(index)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Printing Methods */}
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Printing Methods</label>
+                    <div className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        value={newPrintingMethod}
+                        onChange={(e) => setNewPrintingMethod(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        placeholder="Add printing method"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addPrintingMethod())}
+                      />
+                      <button
+                        type="button"
+                        onClick={addPrintingMethod}
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {customization.printingMethods.map((method, index) => (
+                        <span key={index} className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                          {method}
+                          <button
+                            type="button"
+                            onClick={() => removePrintingMethod(index)}
+                            className="text-green-600 hover:text-green-800"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SEO Settings */}
+              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
+                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">SEO Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Title</label>
+                    <input
+                      type="text"
+                      value={productInfo.metaTitle}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaTitle: e.target.value }))}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      placeholder="Enter meta title for SEO"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Description</label>
+                    <textarea
+                      value={productInfo.metaDescription}
+                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaDescription: e.target.value }))}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      placeholder="Enter meta description for SEO"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">SEO Keywords</label>
+                    <div className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        value={newKeyword}
+                        onChange={(e) => setNewKeyword(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        placeholder="Add SEO keyword"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addKeyword())}
+                      />
+                      <button
+                        type="button"
+                        onClick={addKeyword}
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {productInfo.keywords.map((keyword, index) => (
+                        <span key={index} className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                          {keyword}
+                          <button
+                            type="button"
+                            onClick={() => removeKeyword(index)}
+                            className="text-purple-600 hover:text-purple-800"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 7:
+        return (
+          <div>
+            <h2 className="text-2xl font-bold text-berlin-gray-900 mb-6">Step 7: Review & Update</h2>
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
                 <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Summary</h3>
@@ -1332,16 +2044,37 @@ const EditProductPage: React.FC = () => {
                     <p><strong>Category:</strong> {selectedBroaderCategory} / {selectedCategory}</p>
                     <p><strong>Price:</strong> ${productInfo.price}</p>
                     <p><strong>Min Order:</strong> {productInfo.minimumOrderQuantity}</p>
-                  </div>
-                  <div>
                     <p><strong>Available Quantity:</strong> {productInfo.availableQuantity}</p>
                     <p><strong>Features:</strong> {productInfo.features.length} items</p>
+                  </div>
+                  <div>
                     <p><strong>Images:</strong> {uploadedImages.length} uploaded</p>
                     <p><strong>Eco Score:</strong> {ecoScore}/100</p>
+                    <p><strong>Certifications:</strong> {certifications.length} added</p>
+                    <p><strong>Category Filters:</strong> {Object.keys(selectedCategoryFilters).length} selected</p>
+                    <p><strong>Common Filters:</strong> {Object.keys(selectedCommonFilters).length} selected</p>
+                    <p><strong>Sustainability Features:</strong> {Object.values(sustainability).filter(v => typeof v === 'boolean' && v).length} enabled</p>
                   </div>
                 </div>
                 <div className="mt-4">
                   <p><strong>Description:</strong> {productInfo.description}</p>
+                </div>
+                {/* Specifications Summary */}
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium mb-2">Specifications:</h4>
+                    {productInfo.height && <p>Height: {productInfo.height} {productInfo.dimensionUnit}</p>}
+                    {productInfo.width && <p>Width: {productInfo.width} {productInfo.dimensionUnit}</p>}
+                    {productInfo.depth && <p>Depth: {productInfo.depth} {productInfo.dimensionUnit}</p>}
+                    {productInfo.weight && <p>Weight: {productInfo.weight} {productInfo.weightUnit}</p>}
+                    {productInfo.capacity && <p>Capacity: {productInfo.capacity} {productInfo.capacityUnit}</p>}
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">Lead Times:</h4>
+                    {productInfo.standardLeadTime && <p>Standard: {productInfo.standardLeadTime} days</p>}
+                    {productInfo.customLeadTime && <p>Custom: {productInfo.customLeadTime} days</p>}
+                    {productInfo.rushLeadTime && <p>Rush: {productInfo.rushLeadTime} days</p>}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1391,7 +2124,7 @@ const EditProductPage: React.FC = () => {
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {[1, 2, 3, 4, 5, 6].map((step) => (
+            {[1, 2, 3, 4, 5, 6, 7].map((step) => (
               <div
                 key={step}
                 className={`flex items-center justify-center w-8 h-8 rounded-full ${
@@ -1405,7 +2138,7 @@ const EditProductPage: React.FC = () => {
           <div className="mt-2 h-2 bg-berlin-gray-200 rounded-full">
             <div
               className="h-full bg-blue-600 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 6) * 100}%` }}
+              style={{ width: `${(currentStep / 7) * 100}%` }}
             />
           </div>
         </div>
@@ -1424,7 +2157,7 @@ const EditProductPage: React.FC = () => {
               Previous
             </button>
             <div className="flex items-center gap-4">
-              {currentStep < 6 && (
+              {currentStep < 7 && (
                 <button
                   onClick={handleNext}
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"

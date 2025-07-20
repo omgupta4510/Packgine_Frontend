@@ -16,8 +16,8 @@ export const SustainabilityScore = ({
 }: SustainabilityScoreProps) => {
   // Determine color based on score
   const getColor = () => {
-    if (score >= 80) return 'text-berlin-red-500 border-berlin-red-500';
-    if (score >= 60) return 'text-berlin-red-400 border-berlin-red-400';
+    if (score >= 80) return 'text-green-500 border-green-500';
+    if (score >= 60) return 'text-green-400 border-green-400';
     if (score >= 40) return 'text-yellow-500 border-yellow-500';
     if (score >= 20) return 'text-orange-500 border-orange-500';
     return 'text-red-500 border-red-500';

@@ -15,6 +15,8 @@ import SupplierProductsPage from './pages/SupplierProductsPage';
 import SupplierProfilePage from './pages/SupplierProfilePage';
 import SupplierInquiriesPage from './pages/SupplierInquiriesPage';
 import AddProductPage from './pages/AddProductPage';
+import ProductEntryChoice from './pages/ProductEntryChoice';
+import AIProductEntryPage from './pages/AIProductEntryPage';
 import EditProductPage from './pages/EditProductPage';
 import SustainabilityPage from './pages/SustainabilityPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -73,6 +75,10 @@ function App() {
                 <SupplierInquiriesPage />
               </ProtectedRoute>
             } />
+            {/* New Product Entry Choice and Bulk AI Entry */}
+            <Route path="/supplier/add-product" element={<ProductEntryChoice />} />
+            <Route path="/add-product/manual" element={<AddProductPage />} />
+            <Route path="/add-product/ai" element={<AIProductEntryPage />} />
           </Routes>
         </main>
         <Footer />

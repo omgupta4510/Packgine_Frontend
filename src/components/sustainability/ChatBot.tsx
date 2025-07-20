@@ -1,20 +1,13 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Send, Bot, User, Trash2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { openaiService, ChatMessage } from '../../services/openaiService';
 
 // Types
 interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-}
-
-interface GroqResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
-  }>;
 }
 
 interface ChatBotRef {
@@ -32,11 +25,6 @@ const ChatBot = forwardRef<ChatBotRef>((_, ref) => {
 
   // System prompt for the sustainability chatbot
   const SYSTEM_PROMPT = `You are a sustainability and packaging expert specializing in Life Cycle Assessment (LCA), ESG (Environmental, Social, Governance) reporting, and materiality analysis for packaging. Answer user questions as an industry authority, using up-to-date standards, real-world examples, and clear explanations tailored to packaging solutions.`;
-
-  // Configuration - Get API key from environment
-  const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-  const MODEL = "llama-3.3-70b-versatile";
-  const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
   // Only scroll to bottom for user messages, not bot responses
   useEffect(() => {
@@ -167,43 +155,19 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
     ]);
   }, []);
 
-  const askGroq = async (conversationMessages: Message[]): Promise<string | null> => {
-    if (!GROQ_API_KEY) {
-      return "I apologize, but I'm currently unavailable. Please try again later or contact support.";
-    }
-
-    const headers = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${GROQ_API_KEY}`
-    };
-
-    const data = {
-      model: MODEL,
-      messages: [
+  const askOpenAI = async (conversationMessages: Message[]): Promise<string | null> => {
+    try {
+      // Convert messages to the format expected by OpenAI service
+      const chatMessages: ChatMessage[] = [
         { role: "system", content: SYSTEM_PROMPT },
         ...conversationMessages.map(msg => ({
-          role: msg.role,
+          role: msg.role as 'user' | 'assistant' | 'system',
           content: msg.content
         }))
-      ],
-      temperature: 0.7,
-      max_tokens: 800
-    };
+      ];
 
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error ${response.status}: ${errorText}`);
-      }
-
-      const result: GroqResponse = await response.json();
-      return result.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
+      const response = await openaiService.sendChatMessage(chatMessages);
+      return response;
     } catch (error) {
       console.error('Chat error:', error);
       return `Error: ${error instanceof Error ? error.message : 'Failed to get response'}`;
@@ -224,7 +188,7 @@ Ask me anything about sustainable packaging, carbon footprint, recyclability, or
     setIsLoading(true);
 
     try {
-      const response = await askGroq([...messages, userMessage]);
+      const response = await askOpenAI([...messages, userMessage]);
       
       if (response) {
         setIsLoading(false);

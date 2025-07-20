@@ -52,6 +52,16 @@ interface ProductData {
     closure?: string;
     minimumOrderQuantity: number;
     availableQuantity?: number;
+    
+    // Dynamic specifications
+    dynamicSpecs?: Array<{
+      name: string;
+      value: string | number;
+      unit?: string;
+      category: 'physical' | 'material' | 'technical' | 'custom';
+      displayOrder: number;
+      isRequired: boolean;
+    }>;
   };
   pricing: {
     basePrice: number;
@@ -90,8 +100,8 @@ interface ProductData {
   };
   features?: string[];
   // Filter fields for multiple materials and locations
-  categoryFilters?: any;
-  commonFilters?: any;
+  categoryFilters?: { [key: string]: any };
+  commonFilters?: { [key: string]: any };
   supplier: {
     _id: string;
     companyName: string;
@@ -121,11 +131,24 @@ const getMaterials = (product: ProductData): string[] => {
   const materials: string[] = [];
   
   // Add materials from common filters  
-  if (product.commonFilters[0].Material) {
-    const commonMaterials = Array.isArray(product.commonFilters[0].Material)
-      ? product.commonFilters[0].Material
+  if (product.commonFilters?.Material) {
+    const commonMaterials = Array.isArray(product.commonFilters.Material)
+      ? product.commonFilters.Material
       : [product.commonFilters.Material];
     materials.push(...commonMaterials);
+  }
+  
+  // Add materials from category filters
+  if (product.categoryFilters?.Material) {
+    const categoryMaterials = Array.isArray(product.categoryFilters.Material)
+      ? product.categoryFilters.Material
+      : [product.categoryFilters.Material];
+    materials.push(...categoryMaterials);
+  }
+  
+  // Fallback to specifications material
+  if (materials.length === 0 && product.specifications.material) {
+    materials.push(product.specifications.material);
   }
   
   // Remove duplicates and filter out empty values
@@ -136,11 +159,24 @@ const getMaterials = (product: ProductData): string[] => {
 const getLocation = (product: ProductData): string => {
   
   // Try to get from common filters
-  if (product.commonFilters[0].Location) {
-    const locations = Array.isArray(product.commonFilters[0].Location)
-      ? product.commonFilters[0].Location
-      : [product.commonFilters[0].Location];
+  if (product.commonFilters?.Location) {
+    const locations = Array.isArray(product.commonFilters.Location)
+      ? product.commonFilters.Location
+      : [product.commonFilters.Location];
     return locations[0] || 'Location not specified';
+  }
+  
+  // Try to get from category filters
+  if (product.categoryFilters?.Location) {
+    const locations = Array.isArray(product.categoryFilters.Location)
+      ? product.categoryFilters.Location
+      : [product.categoryFilters.Location];
+    return locations[0] || 'Location not specified';
+  }
+  
+  // Fallback to supplier address
+  if (product.supplier.address?.country) {
+    return product.supplier.address.country;
   }
   
   return 'Location not specified';
@@ -257,7 +293,6 @@ export const ProductDetailPage = () => {
     );
   }
 
-// console.log(product.commonFilters[0].Location[0]);
   return (
     <div className="pt-20 min-h-screen bg-berlin-gray-50">
       {/* Breadcrumb */}
@@ -348,12 +383,12 @@ export const ProductDetailPage = () => {
 
               <div className="mb-6">
                 {getMaterials(product).map((material, index) => (
-                  <div key={index} className="inline-flex items-center bg-berlin-red-50 text-berlin-red-800 py-1 px-2 rounded text-sm mr-2 mb-2">
+                  <div key={index} className="inline-flex items-center bg-berlin-gray-50 text-berlin-gray-800 py-1 px-2 rounded text-sm mr-2 mb-2">
                     <Leaf className="h-4 w-4 mr-1" />
                     {material}
                   </div>
                 ))}
-                <div className="inline-flex items-center bg-berlin-red-50 text-berlin-red-800 py-1 px-2 rounded text-sm mr-2 mb-2">
+                <div className="inline-flex items-center bg-blue-50 text-blue-800 py-1 px-2 rounded text-sm mr-2 mb-2">
                   <Leaf className="h-4 w-4 mr-1" />
                   Made in {getLocation(product)}
                 </div>
@@ -534,6 +569,7 @@ export const ProductDetailPage = () => {
                   <div className="overflow-hidden bg-white shadow-sm rounded-lg border border-berlin-gray-200">
                     <table className="min-w-full divide-y divide-berlin-gray-200">
                       <tbody className="divide-y divide-berlin-gray-200">
+                        {/* Standard Specifications */}
                         {product.specifications.dimensions && (
                           <tr>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50 w-1/3">Dimensions</td>
@@ -581,6 +617,41 @@ export const ProductDetailPage = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.closure}</td>
                           </tr>
                         )}
+                        
+                        {/* Dynamic Specifications - Sorted by category and display order */}
+                        {product.specifications.dynamicSpecs && product.specifications.dynamicSpecs
+                          .sort((a, b) => {
+                            // Sort by category first, then by display order
+                            const categoryOrder = { 'physical': 1, 'material': 2, 'technical': 3, 'custom': 4 };
+                            const categoryDiff = categoryOrder[a.category] - categoryOrder[b.category];
+                            return categoryDiff !== 0 ? categoryDiff : a.displayOrder - b.displayOrder;
+                          })
+                          .map((spec, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">
+                                <div className="flex items-center gap-2">
+                                  {spec.name}
+                                  {spec.isRequired && (
+                                    <span className="text-xs px-1 py-0.5 rounded bg-red-100 text-red-700">Required</span>
+                                  )}
+                                  <span className={`text-xs px-1 py-0.5 rounded ${
+                                    spec.category === 'physical' ? 'bg-blue-100 text-blue-700' :
+                                    spec.category === 'material' ? 'bg-green-100 text-green-700' :
+                                    spec.category === 'technical' ? 'bg-purple-100 text-purple-700' :
+                                    'bg-gray-100 text-gray-700'
+                                  }`}>
+                                    {spec.category}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">
+                                {spec.value}{spec.unit && ` ${spec.unit}`}
+                              </td>
+                            </tr>
+                          ))
+                        }
+                        
+                        {/* Core specifications at the bottom */}
                         <tr>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-berlin-gray-900 bg-berlin-gray-50">Minimum Order Quantity</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-berlin-gray-700">{product.specifications.minimumOrderQuantity.toLocaleString()} units</td>
@@ -668,7 +739,7 @@ export const ProductDetailPage = () => {
                         <h3 className="text-lg font-medium text-berlin-gray-900">Eco Score</h3>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-berlin-red-600">{product.ecoScore}/100</div>
+                        <div className="text-3xl font-bold text-green-600">{product.ecoScore}/100</div>
                         <p className="text-sm text-berlin-gray-600 mt-1">Sustainability Rating</p>
                       </div>
                     </div>
@@ -683,7 +754,7 @@ export const ProductDetailPage = () => {
                         <div className="overflow-hidden h-6 mb-2 text-xs flex rounded-full bg-berlin-gray-200">
                           <div
                             style={{ width: `${product.sustainability.recycledContent || 0}%` }}
-                            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-berlin-red-500"
+                            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
                           >
                             {product.sustainability.recycledContent || 0}%
                           </div>

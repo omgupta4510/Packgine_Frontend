@@ -130,8 +130,8 @@ const SustainabilityPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {activeTab === 'chat' ? (
+      {activeTab === 'chat' ? (
+        <div className="max-w-4xl mx-auto px-4 py-8">
           <div>
             <ChatBot ref={chatBotRef} />
             {/* Sample Questions for Chat */}
@@ -158,10 +158,13 @@ const SustainabilityPage = () => {
               </div>
             </div>
           </div>
-        ) : (
+        </div>
+      ) : (
+        // ESG Analysis - Full Screen (no container constraints)
+        <div className="w-full">
           <ESGAnalyzer />
-        )}
-      </div>
+        </div>
+      )}
       </div>
       
       {/* Login overlay for non-authenticated users */}

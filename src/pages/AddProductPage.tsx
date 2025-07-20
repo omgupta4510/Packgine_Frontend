@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import broaderCategories from '../data/broaderCategories.json';
 import categorySpecificFilters from '../data/categorySpecificFilters.json';
 import commonFilters from '../data/commonFilters.json';
+import specificationTemplates from '../data/specificationTemplates.json';
 const API_URL= import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 
@@ -39,18 +40,15 @@ const AddProductPage: React.FC = () => {
     minimumOrderQuantity: 1,
     availableQuantity: 100,
     features: [] as string[],
-    // Capacity
+    // Legacy fields for backward compatibility
     capacity: '',
     capacityUnit: 'ml',
-    // Dimensions
     height: '',
     width: '',
     depth: '',
     dimensionUnit: 'mm',
-    // Weight
     weight: '',
     weightUnit: 'g',
-    // Other specifications
     color: '',
     finish: '',
     closure: '',
@@ -64,6 +62,26 @@ const AddProductPage: React.FC = () => {
     keywords: [] as string[]
   });
 
+  // Dynamic specifications
+  const [dynamicSpecs, setDynamicSpecs] = useState<Array<{
+    name: string;
+    value: string | number;
+    unit?: string;
+    category: 'physical' | 'material' | 'technical' | 'custom';
+    displayOrder: number;
+    isRequired: boolean;
+  }>>([]);
+
+  const [newDynamicSpec, setNewDynamicSpec] = useState({
+    name: '',
+    value: '',
+    unit: '',
+    category: 'custom' as 'physical' | 'material' | 'technical' | 'custom',
+    isRequired: false
+  });
+
+  const [showTemplates, setShowTemplates] = useState(false);
+
   const [sustainability, setSustainability] = useState({
     recycledContent: 0,
     biodegradable: false,
@@ -72,6 +90,10 @@ const AddProductPage: React.FC = () => {
     sustainableSourcing: false,
     carbonNeutral: false
   });
+
+  const [sustainabilityCertificates, setSustainabilityCertificates] = useState<{
+    [key: string]: string
+  }>({});
 
   const [certifications, setCertifications] = useState<Array<{
     name: string;
@@ -189,6 +211,45 @@ const AddProductPage: React.FC = () => {
     }
   };
 
+  const handleSustainabilityCertificateUpload = async (featureName: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    console.log(`Starting upload of certificate for ${featureName}:`, file.name);
+    
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dit8gwqom';
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ecopack';
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', uploadPreset);
+      
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`;
+      
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        setSustainabilityCertificates(prev => ({
+          ...prev,
+          [featureName]: data.secure_url
+        }));
+        console.log(`Certificate uploaded successfully for ${featureName}:`, data.secure_url);
+      } else {
+        console.error('No secure_url in response:', data);
+        alert(`Certificate upload failed: ${data.error?.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Certificate upload failed:', error);
+      alert(`Certificate upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
@@ -221,6 +282,7 @@ const AddProductPage: React.FC = () => {
         primaryImage: uploadedImages[0] || null,
         features: productInfo.features,
         specifications: {
+          // Legacy fields for backward compatibility
           material: (selectedCategoryFilters['Material'] || selectedCommonFilters['Material'] || ['Not specified']).join(', '),
           capacity: productInfo.capacity ? {
             value: parseFloat(productInfo.capacity),
@@ -240,7 +302,10 @@ const AddProductPage: React.FC = () => {
           finish: productInfo.finish || undefined,
           closure: productInfo.closure || undefined,
           minimumOrderQuantity: productInfo.minimumOrderQuantity,
-          availableQuantity: productInfo.availableQuantity
+          availableQuantity: productInfo.availableQuantity,
+          
+          // Dynamic specifications
+          dynamicSpecs: dynamicSpecs
         },
         pricing: {
           basePrice: parseFloat(productInfo.price),
@@ -1281,128 +1346,274 @@ const AddProductPage: React.FC = () => {
               {/* Specifications */}
               <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
                 <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Product Specifications</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Dimensions */}
-                  <div>
-                    <h4 className="font-medium text-berlin-gray-900 mb-3">Dimensions</h4>
-                    <div className="grid grid-cols-3 gap-2">
-                      <input
-                        type="number"
-                        placeholder="Height"
-                        value={productInfo.height}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, height: e.target.value }))}
-                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Width"
-                        value={productInfo.width}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, width: e.target.value }))}
-                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Depth"
-                        value={productInfo.depth}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, depth: e.target.value }))}
-                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                      />
-                    </div>
-                    <select
-                      value={productInfo.dimensionUnit}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, dimensionUnit: e.target.value }))}
-                      className="mt-2 w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    >
-                      <option value="mm">mm</option>
-                      <option value="cm">cm</option>
-                      <option value="inch">inch</option>
-                    </select>
-                  </div>
-
-                  {/* Weight */}
-                  <div>
-                    <h4 className="font-medium text-berlin-gray-900 mb-3">Weight</h4>
-                    <div className="flex gap-2">
-                      <input
-                        type="number"
-                        placeholder="Weight"
-                        value={productInfo.weight}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, weight: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                      />
+                
+                {/* Standard Specifications */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-berlin-gray-900 mb-3">Standard Specifications</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Dimensions */}
+                    <div>
+                      <h5 className="font-medium text-berlin-gray-900 mb-3">Dimensions</h5>
+                      <div className="grid grid-cols-3 gap-2">
+                        <input
+                          type="number"
+                          placeholder="Height"
+                          value={productInfo.height}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, height: e.target.value }))}
+                          className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Width"
+                          value={productInfo.width}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, width: e.target.value }))}
+                          className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Depth"
+                          value={productInfo.depth}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, depth: e.target.value }))}
+                          className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                      </div>
                       <select
-                        value={productInfo.weightUnit}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, weightUnit: e.target.value }))}
-                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        value={productInfo.dimensionUnit}
+                        onChange={(e) => setProductInfo(prev => ({ ...prev, dimensionUnit: e.target.value }))}
+                        className="mt-2 w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
-                        <option value="g">g</option>
-                        <option value="kg">kg</option>
-                        <option value="oz">oz</option>
-                        <option value="lb">lb</option>
+                        <option value="mm">mm</option>
+                        <option value="cm">cm</option>
+                        <option value="inch">inch</option>
                       </select>
                     </div>
-                  </div>
 
-                  {/* Capacity */}
-                  <div>
-                    <h4 className="font-medium text-berlin-gray-900 mb-3">Capacity</h4>
-                    <div className="flex gap-2">
+                    {/* Weight */}
+                    <div>
+                      <h5 className="font-medium text-berlin-gray-900 mb-3">Weight</h5>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Weight"
+                          value={productInfo.weight}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, weight: e.target.value }))}
+                          className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <select
+                          value={productInfo.weightUnit}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, weightUnit: e.target.value }))}
+                          className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        >
+                          <option value="g">g</option>
+                          <option value="kg">kg</option>
+                          <option value="oz">oz</option>
+                          <option value="lb">lb</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Capacity */}
+                    <div>
+                      <h5 className="font-medium text-berlin-gray-900 mb-3">Capacity</h5>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Capacity"
+                          value={productInfo.capacity}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, capacity: e.target.value }))}
+                          className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <select
+                          value={productInfo.capacityUnit}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, capacityUnit: e.target.value }))}
+                          className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        >
+                          <option value="ml">ml</option>
+                          <option value="L">L</option>
+                          <option value="oz">oz</option>
+                          <option value="gal">gal</option>
+                          <option value="cc">cc</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Basic Properties */}
+                    <div>
+                      <h5 className="font-medium text-berlin-gray-900 mb-3">Basic Properties</h5>
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          placeholder="Color (e.g., Transparent, White)"
+                          value={productInfo.color}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, color: e.target.value }))}
+                          className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Finish (e.g., Matte, Glossy)"
+                          value={productInfo.finish}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, finish: e.target.value }))}
+                          className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Closure (e.g., Pump, Spray, Cap)"
+                          value={productInfo.closure}
+                          onChange={(e) => setProductInfo(prev => ({ ...prev, closure: e.target.value }))}
+                          className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dynamic Specifications */}
+                <div className="border-t border-berlin-gray-200 pt-6">
+                  <h4 className="font-medium text-berlin-gray-900 mb-3">Custom Specifications</h4>
+                  <p className="text-sm text-berlin-gray-600 mb-4">Add product-specific details that customers need to know</p>
+                  
+                  {/* Add New Specification Form */}
+                  <div className="bg-berlin-gray-50 p-4 rounded-lg mb-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <h5 className="font-medium text-berlin-gray-900">Add Custom Specification</h5>
+                      
+                      {/* Template Suggestions */}
+                      {selectedCategory && specificationTemplates.templates[selectedCategory as keyof typeof specificationTemplates.templates] && (
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={() => setShowTemplates(!showTemplates)}
+                            className="text-sm text-berlin-red-600 hover:text-berlin-red-700"
+                          >
+                            📋 Use Template Suggestions
+                          </button>
+                          {showTemplates && (
+                            <div className="absolute right-0 top-8 bg-white border border-berlin-gray-200 rounded-lg shadow-lg p-4 w-80 z-10">
+                              <h6 className="font-medium mb-2">Common {selectedCategory} Specifications:</h6>
+                              <div className="max-h-40 overflow-y-auto space-y-1">
+                                {specificationTemplates.templates[selectedCategory as keyof typeof specificationTemplates.templates]?.map((template: any, index: number) => (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    onClick={() => {
+                                      setNewDynamicSpec({
+                                        name: template.name,
+                                        value: '',
+                                        unit: template.unit || '',
+                                        category: template.category,
+                                        isRequired: template.isRequired
+                                      });
+                                      setShowTemplates(false);
+                                    }}
+                                    className="w-full text-left text-sm p-2 hover:bg-berlin-gray-50 rounded border"
+                                  >
+                                    <div className="font-medium">{template.name}</div>
+                                    <div className="text-xs text-berlin-gray-500">
+                                      {template.category} {template.unit && `• ${template.unit}`} {template.isRequired && '• Required'}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowTemplates(false)}
+                                className="mt-2 text-xs text-berlin-gray-500 hover:text-berlin-gray-700"
+                              >
+                                Close
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
                       <input
-                        type="number"
-                        placeholder="Capacity"
-                        value={productInfo.capacity}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, capacity: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        type="text"
+                        placeholder="Specification name"
+                        value={newDynamicSpec.name}
+                        onChange={(e) => setNewDynamicSpec(prev => ({ ...prev, name: e.target.value }))}
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Value"
+                        value={newDynamicSpec.value}
+                        onChange={(e) => setNewDynamicSpec(prev => ({ ...prev, value: e.target.value }))}
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Unit (optional)"
+                        value={newDynamicSpec.unit}
+                        onChange={(e) => setNewDynamicSpec(prev => ({ ...prev, unit: e.target.value }))}
+                        className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       />
                       <select
-                        value={productInfo.capacityUnit}
-                        onChange={(e) => setProductInfo(prev => ({ ...prev, capacityUnit: e.target.value }))}
+                        value={newDynamicSpec.category}
+                        onChange={(e) => setNewDynamicSpec(prev => ({ ...prev, category: e.target.value as any }))}
                         className="px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
                       >
-                        <option value="ml">ml</option>
-                        <option value="L">L</option>
-                        <option value="oz">oz</option>
-                        <option value="gal">gal</option>
-                        <option value="cc">cc</option>
+                        <option value="physical">Physical</option>
+                        <option value="material">Material</option>
+                        <option value="technical">Technical</option>
+                        <option value="custom">Custom</option>
                       </select>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={newDynamicSpec.isRequired}
+                          onChange={(e) => setNewDynamicSpec(prev => ({ ...prev, isRequired: e.target.checked }))}
+                          className="mr-2"
+                        />
+                        <span className="text-sm text-berlin-gray-700">Required specification</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={addDynamicSpec}
+                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
+                      >
+                        Add Specification
+                      </button>
                     </div>
                   </div>
 
-                  {/* Color */}
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Color</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Transparent, White, Black"
-                      value={productInfo.color}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, color: e.target.value }))}
-                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  {/* Finish */}
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Finish</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Matte, Glossy, Textured"
-                      value={productInfo.finish}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, finish: e.target.value }))}
-                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  {/* Closure */}
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Closure Type</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Pump, Spray, Cap, Screw-on"
-                      value={productInfo.closure}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, closure: e.target.value }))}
-                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    />
-                  </div>
+                  {/* List of Dynamic Specifications */}
+                  {dynamicSpecs.length > 0 && (
+                    <div className="space-y-2">
+                      <h5 className="font-medium text-berlin-gray-900">Added Specifications:</h5>
+                      {dynamicSpecs.map((spec, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-white border rounded-lg">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{spec.name}:</span>
+                              <span>{spec.value}</span>
+                              {spec.unit && <span className="text-berlin-gray-500">{spec.unit}</span>}
+                              <span className={`text-xs px-2 py-1 rounded ${
+                                spec.category === 'physical' ? 'bg-blue-100 text-blue-700' :
+                                spec.category === 'material' ? 'bg-green-100 text-green-700' :
+                                spec.category === 'technical' ? 'bg-purple-100 text-purple-700' :
+                                'bg-gray-100 text-gray-700'
+                              }`}>
+                                {spec.category}
+                              </span>
+                              {spec.isRequired && (
+                                <span className="text-xs px-2 py-1 rounded bg-red-100 text-red-700">Required</span>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeDynamicSpec(index)}
+                            className="text-red-600 hover:text-red-800 ml-3"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1507,6 +1718,28 @@ const AddProductPage: React.FC = () => {
                       Carbon Neutral
                     </label>
                   </div>
+                  {/* Require certificate for each selected sustainability feature */}
+                  {(["biodegradable", "compostable", "refillable", "sustainableSourcing", "carbonNeutral"] as (keyof typeof sustainability)[])
+                    .filter(f => sustainability[f])
+                    .map((feature) => (
+                    <div key={feature} className="mt-4">
+                      <label className="block text-sm font-medium text-berlin-gray-700 mb-2">
+                        Certificate for {feature.charAt(0).toUpperCase() + feature.slice(1)} (required)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={`Enter certificate name for ${feature}`}
+                        value={certifications.find(c => c.name === feature)?.certificateNumber || ""}
+                        onChange={e => {
+                          const certs = certifications.filter(c => c.name !== feature);
+                          certs.push({ name: feature, certificateNumber: e.target.value });
+                          setCertifications(certs);
+                        }}
+                        className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1573,190 +1806,6 @@ const AddProductPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Customization Options */}
-              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
-                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Customization Options</h3>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={customization.printingAvailable}
-                        onChange={(e) => setCustomization(prev => ({ ...prev, printingAvailable: e.target.checked }))}
-                        className="mr-2"
-                      />
-                      Printing Available
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={customization.labelingAvailable}
-                        onChange={(e) => setCustomization(prev => ({ ...prev, labelingAvailable: e.target.checked }))}
-                        className="mr-2"
-                      />
-                      Labeling Available
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={customization.customSizes}
-                        onChange={(e) => setCustomization(prev => ({ ...prev, customSizes: e.target.checked }))}
-                        className="mr-2"
-                      />
-                      Custom Sizes
-                    </label>
-                  </div>
-
-                  {/* Color Options */}
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Color Options</label>
-                    <div className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        placeholder="Add color option..."
-                        value={newColorOption}
-                        onChange={(e) => setNewColorOption(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                        onKeyPress={(e) => e.key === 'Enter' && addColorOption()}
-                      />
-                      <button
-                        type="button"
-                        onClick={addColorOption}
-                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                    {customization.colorOptions.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {customization.colorOptions.map((color, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
-                          >
-                            {color}
-                            <button
-                              type="button"
-                              onClick={() => removeColorOption(index)}
-                              className="ml-2 hover:text-red-600"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Printing Methods */}
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Printing Methods</label>
-                    <div className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        placeholder="Add printing method..."
-                        value={newPrintingMethod}
-                        onChange={(e) => setNewPrintingMethod(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                        onKeyPress={(e) => e.key === 'Enter' && addPrintingMethod()}
-                      />
-                      <button
-                        type="button"
-                        onClick={addPrintingMethod}
-                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                    {customization.printingMethods.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {customization.printingMethods.map((method, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800"
-                          >
-                            {method}
-                            <button
-                              type="button"
-                              onClick={() => removePrintingMethod(index)}
-                              className="ml-2 hover:text-red-600"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* SEO Information */}
-              <div className="bg-white p-6 rounded-lg border border-berlin-gray-200">
-                <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">SEO Information</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Title</label>
-                    <input
-                      type="text"
-                      placeholder="SEO friendly title..."
-                      value={productInfo.metaTitle}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaTitle: e.target.value }))}
-                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Meta Description</label>
-                    <textarea
-                      placeholder="SEO friendly description..."
-                      value={productInfo.metaDescription}
-                      onChange={(e) => setProductInfo(prev => ({ ...prev, metaDescription: e.target.value }))}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-berlin-gray-700 mb-2">Keywords</label>
-                    <div className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        placeholder="Add keyword..."
-                        value={newKeyword}
-                        onChange={(e) => setNewKeyword(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-berlin-gray-300 rounded-lg focus:ring-2 focus:ring-berlin-red-500 focus:border-transparent"
-                        onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
-                      />
-                      <button
-                        type="button"
-                        onClick={addKeyword}
-                        className="px-4 py-2 bg-berlin-red-600 text-white rounded-lg hover:bg-berlin-red-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                    {productInfo.keywords.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {productInfo.keywords.map((keyword, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-berlin-gray-100 text-berlin-gray-800"
-                          >
-                            {keyword}
-                            <button
-                              type="button"
-                              onClick={() => removeKeyword(index)}
-                              className="ml-2 hover:text-red-600"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               {/* Review Summary */}
               <div className="bg-berlin-gray-50 rounded-lg p-6 mt-8">
                 <h3 className="text-lg font-semibold text-berlin-gray-900 mb-4">Review Summary</h3>
@@ -1772,7 +1821,7 @@ const AddProductPage: React.FC = () => {
                     <p><strong>Category Filters:</strong> {Object.keys(selectedCategoryFilters).length} selected</p>
                     <p><strong>Common Filters:</strong> {Object.keys(selectedCommonFilters).length} selected</p>
                     <p><strong>Sustainability Features:</strong> {Object.values(sustainability).filter(v => typeof v === 'boolean' && v).length} enabled</p>
-                    <p><strong>Customization Options:</strong> {Object.values(customization).filter(v => typeof v === 'boolean' && v).length} enabled</p>
+                    <p><strong>Dynamic Specifications:</strong> {dynamicSpecs.length} added</p>
                   </div>
                 </div>
               </div>
@@ -1870,13 +1919,35 @@ const AddProductPage: React.FC = () => {
     setCertifications(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Dynamic specifications helpers
+  const addDynamicSpec = () => {
+    if (newDynamicSpec.name.trim() && newDynamicSpec.value.trim()) {
+      setDynamicSpecs(prev => [...prev, {
+        ...newDynamicSpec,
+        value: isNaN(Number(newDynamicSpec.value)) ? newDynamicSpec.value : Number(newDynamicSpec.value),
+        displayOrder: prev.length
+      }]);
+      setNewDynamicSpec({
+        name: '',
+        value: '',
+        unit: '',
+        category: 'custom',
+        isRequired: false
+      });
+    }
+  };
+
+  const removeDynamicSpec = (index: number) => {
+    setDynamicSpecs(prev => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-berlin-red-50 to-blue-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-8">
             <button
-              onClick={() => navigate('/supplier/products')}
+              onClick={() => navigate('/supplier/dashboard')}
               className="text-berlin-red-600 hover:text-berlin-red-700 mb-4"
             >
               ← Back to Products

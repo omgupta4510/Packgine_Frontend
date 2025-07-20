@@ -1,18 +1,12 @@
 import { useState, useRef } from 'react';
-import { Upload, BarChart3, AlertCircle, CheckCircle } from 'lucide-react';
+import { Upload, BarChart3, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { openaiService } from '../../services/openaiService';
+import ESGReportDisplay from './ESGReportDisplay';
 import * as pdfjs from 'pdfjs-dist';
 
 // Set up PDF.js worker - using exact version match
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
-
-interface GroqResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
-  }>;
-}
 
 const ESGAnalyzer = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -20,11 +14,6 @@ const ESGAnalyzer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Configuration - Get API key from environment
-  const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-  const MODEL = "llama-3.3-70b-versatile";
-  const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
@@ -63,95 +52,14 @@ const ESGAnalyzer = () => {
   };
 
   const analyzeWithAI = async (extractedText: string, fileName: string): Promise<string> => {
-    if (!GROQ_API_KEY) {
-      throw new Error("AI service is currently unavailable. Please check your API configuration in the .env file.");
-    }
-
-    // Truncate text if too long (Groq has token limits)
-    const maxLength = 8000; // Approximate character limit for context
-    const truncatedText = extractedText.length > maxLength 
-      ? extractedText.substring(0, maxLength) + "...[truncated]"
-      : extractedText;
-
-    const systemPrompt = `You are an expert ESG (Environmental, Social, Governance) analyst with deep knowledge of sustainability frameworks including GRI, SASB, TCFD, and UN SDGs. 
-
-Analyze the provided sustainability/ESG report text and generate a comprehensive, professional ESG assessment. Your analysis must be specific to the actual content provided, not generic.
-
-Structure your response with these sections:
-## Executive Summary
-## Environmental Impact Analysis
-- Score: X/10 with specific justification
-- Key metrics and performance
-- Areas of concern
-
-## Social Responsibility Analysis  
-- Score: X/10 with specific justification
-- Workforce and community impact
-- Areas for improvement
-
-## Governance Analysis
-- Score: X/10 with specific justification
-- Leadership and transparency
-- Risk management
-
-## Overall ESG Rating
-- Letter grade (A+ to F) with rationale
-- Comparative industry benchmarking
-
-## Key Recommendations
-- Specific, actionable recommendations
-- Priority improvements
-- Implementation suggestions
-
-## Risk Assessment
-- Material ESG risks identified
-- Mitigation strategies
-
-Base your analysis ONLY on the actual content provided. Cite specific data points, metrics, and initiatives mentioned in the report.`;
-
-    const headers = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${GROQ_API_KEY}`
-    };
-
-    const data = {
-      model: MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { 
-          role: "user", 
-          content: `Please analyze this ESG/sustainability report from "${fileName}". Base your analysis strictly on the content provided below. Do not use generic examples or assumptions.
-
-REPORT CONTENT:
-${truncatedText}
-
-Please provide a detailed, specific analysis based on the actual data and information in this report.`
-        }
-      ],
-      temperature: 0.2, // Lower temperature for more consistent, factual analysis
-      max_tokens: 2000
-    };
-
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(data)
-      });
+      // Truncate text if too long (OpenAI has token limits)
+      const maxLength = 8000; // Approximate character limit for context
+      const truncatedText = extractedText.length > maxLength 
+        ? extractedText.substring(0, maxLength) + "...[truncated]"
+        : extractedText;
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', errorText);
-        throw new Error(`AI Analysis Error ${response.status}: Failed to analyze report. Please check your API configuration.`);
-      }
-
-      const result: GroqResponse = await response.json();
-      const analysis = result.choices[0]?.message?.content;
-      
-      if (!analysis) {
-        throw new Error("AI did not generate an analysis. Please try again.");
-      }
-      
+      const analysis = await openaiService.analyzeESGReport(truncatedText, fileName);
       return analysis;
     } catch (error) {
       console.error('AI Analysis error:', error);
@@ -426,8 +334,8 @@ Please provide a detailed, specific analysis based on the actual data and inform
     <div className="bg-white rounded-2xl border border-berlin-gray-200 shadow-lg p-8">
       <div className="text-center mb-8">
         <BarChart3 className="w-16 h-16 text-berlin-red-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-berlin-gray-900 mb-2">AI-Powered ESG Report Analysis</h2>
-        <p className="text-berlin-gray-600">Upload your PDF report for comprehensive AI-driven ESG analysis and insights</p>
+        <h2 className="text-2xl font-bold text-berlin-gray-900 mb-2">AI-Powered Sustainability Report Analysis</h2>
+        <p className="text-berlin-gray-600">Upload your PDF report for comprehensive AI-driven sustainability analysis and insights</p>
       </div>
 
       {!uploadedFile && !analysisResult && !error ? (
@@ -440,7 +348,7 @@ Please provide a detailed, specific analysis based on the actual data and inform
             className="hidden"
           />
           <Upload className="w-12 h-12 text-berlin-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">Upload ESG Report</h3>
+          <h3 className="text-lg font-semibold text-berlin-gray-900 mb-2">Upload Sustainability Report</h3>
           <p className="text-berlin-gray-600 mb-4">Drop your PDF file here or click to browse</p>
           <Button
             onClick={() => fileInputRef.current?.click()}
@@ -470,7 +378,7 @@ Please provide a detailed, specific analysis based on the actual data and inform
         <div className="text-center py-12">
           <div className="inline-flex items-center gap-3 text-berlin-red-600 mb-4">
             <div className="w-8 h-8 border-2 border-berlin-red-600 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-lg font-medium">Analyzing ESG Report with AI...</span>
+            <span className="text-lg font-medium">Analyzing Sustainability Report with AI...</span>
           </div>
           <div className="space-y-2 text-berlin-gray-500 max-w-md mx-auto">
             <p>📄 Extracting text from PDF document</p>
@@ -481,74 +389,11 @@ Please provide a detailed, specific analysis based on the actual data and inform
           <p className="text-sm text-berlin-gray-400 mt-4">This process may take 30-90 seconds depending on document size</p>
         </div>
       ) : analysisResult ? (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-berlin-gray-200">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-6 h-6 text-berlin-red-600" />
-              <div>
-                <span className="font-medium text-berlin-gray-900">{uploadedFile?.name}</span>
-                <p className="text-sm text-berlin-gray-500">AI Analysis Complete</p>
-              </div>
-            </div>
-            <Button
-              onClick={resetAnalysis}
-              variant="outline"
-              className="text-sm"
-            >
-              Upload New File
-            </Button>
-          </div>
-          
-          <div className="bg-white rounded-lg border border-berlin-gray-200 shadow-sm">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-lg p-6 text-white">
-              <div className="flex items-center gap-4">
-                <div className="bg-white bg-opacity-20 p-3 rounded-lg">
-                  <BarChart3 className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold tracking-tight">ESG Analysis Report</h3>
-                  <p className="text-blue-100 text-sm mt-1">
-                    Comprehensive sustainability assessment • Generated by AI
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="p-8 bg-berlin-gray-50">
-              <div className="max-w-none">
-                {formatContent(analysisResult)}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg border border-berlin-gray-200 p-6 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <span className="text-blue-600 text-lg">💡</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-berlin-gray-900 text-lg mb-3">Analysis Methodology</h4>
-                <div className="text-sm text-berlin-gray-700 leading-relaxed space-y-2">
-                  <p>
-                    This comprehensive ESG analysis was generated using advanced artificial intelligence trained on industry-leading sustainability frameworks:
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-berlin-gray-50 p-3 rounded-md">
-                      <div className="font-medium text-berlin-gray-900 mb-1">Frameworks</div>
-                      <div className="text-xs text-berlin-gray-600">GRI, SASB, TCFD Standards</div>
-                    </div>
-                    <div className="bg-berlin-gray-50 p-3 rounded-md">
-                      <div className="font-medium text-berlin-gray-900 mb-1">Benchmarking</div>
-                      <div className="text-xs text-berlin-gray-600">Industry best practices</div>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-xs text-berlin-gray-600">
-                    The AI model evaluated your report content against established ESG criteria to provide data-driven insights and actionable recommendations for improvement.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ESGReportDisplay 
+          analysisResult={analysisResult}
+          fileName={uploadedFile?.name || 'Sustainability Report'}
+          onReset={resetAnalysis}
+        />
       ) : null}
     </div>
   );

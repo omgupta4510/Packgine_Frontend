@@ -89,7 +89,7 @@ const SupplierDashboardPage: React.FC = () => {
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
+            <div className='my-1'>
               <h1 className="text-2xl font-bold text-berlin-gray-900">
                 Welcome back, {supplier?.companyName}
               </h1>
@@ -120,7 +120,7 @@ const SupplierDashboardPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <CheckCircle className="h-8 w-8 text-berlin-red-600" />
+                <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-berlin-gray-600">Approved</p>
@@ -177,7 +177,7 @@ const SupplierDashboardPage: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-4 mb-8">
           <button
-            onClick={() => navigate('/supplier/products/add')}
+            onClick={() => navigate('/supplier/add-product')}
             className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
           >
             <Plus className="h-5 w-5 mr-2" />
@@ -311,7 +311,7 @@ const SupplierDashboardPage: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <TrendingUp className="h-5 w-5 text-berlin-red-600" />
+                        <TrendingUp className="h-5 w-5 text-green-600" />
                         <button
                           onClick={() => navigate(`/supplier/products/edit/${product._id}`)}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"

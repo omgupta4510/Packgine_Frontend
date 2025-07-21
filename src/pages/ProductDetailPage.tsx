@@ -713,8 +713,8 @@ export const ProductDetailPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-berlin-red-50 p-4 rounded-lg border border-berlin-red-100">
                       <div className="flex items-center mb-2">
-                        <Recycle className="h-6 w-6 text-berlin-red-600 mr-2" />
-                        <h3 className="text-lg font-medium text-berlin-gray-900">End of Life</h3>
+                        {/* <Recycle className="h-6 w-6 text-berlin-red-600 mr-2" /> */}
+                        <h3 className="text-lg font-medium text-berlin-gray-900">Product Attribute</h3>
                       </div>
                       <p className="text-sm text-berlin-gray-700 mb-2">This product is:</p>
                       <ul className="space-y-1">

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import commonFilters from '../data/commonFilters.json';
 import categoryFilters from '../data/categorySpecificFilters.json';
 import CountryFlag from 'react-country-flag';
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 // Types for supplier data from backend
 interface SupplierData {
   _id: string;
